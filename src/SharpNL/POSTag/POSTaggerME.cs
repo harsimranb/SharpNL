@@ -22,7 +22,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Threading;
 using SharpNL.ML;
 using SharpNL.ML.Model;
 using SharpNL.NGram;
@@ -71,7 +70,24 @@ namespace SharpNL.POSTag {
         /// and the default beam size of 3.
         /// </summary>
         /// <param name="model">The model.</param>
-        public POSTaggerME(POSModel model) : this(model, DefaultBeamSize, 0) { }
+        public POSTaggerME(POSModel model) {
+
+            if (model == null)
+                throw new ArgumentNullException("model");
+
+            var beamSize = model.Manifest.Get(Parameters.BeamSize, DefaultBeamSize);
+
+            size = beamSize;
+
+            modelPackage = model;
+
+            TagDictionary = model.Factory.TagDictionary;
+            
+            ContextGenerator = model.Factory.GetPOSContextGenerator(beamSize);
+            SequenceValidator = model.Factory.GetSequenceValidator();
+
+            this.model = model.PosSequenceModel ?? new ML.BeamSearch<string>(beamSize, model.MaxentModel, 0);
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="POSTaggerME" /> with the provided
@@ -82,6 +98,7 @@ namespace SharpNL.POSTag {
         /// <param name="cacheSize">Size of the cache.</param>
         /// <exception cref="System.ArgumentNullException"><paramref name="model"/></exception>
         /// <exception cref="System.InvalidOperationException">Unable to retrieve the model.</exception>
+        [Obsolete("The beam size should be specified in the params during training.")]
         public POSTaggerME(POSModel model, int beamSize, int cacheSize) {
             if (model == null)
                 throw new ArgumentNullException("model");

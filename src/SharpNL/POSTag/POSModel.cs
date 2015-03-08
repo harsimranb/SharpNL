@@ -22,9 +22,9 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using SharpNL.ML.Model;
-using SharpNL.NameFind;
 using SharpNL.Utility;
 using SharpNL.Utility.Model;
 
@@ -79,8 +79,9 @@ namespace SharpNL.POSTag {
             get {
                 var posModel = artifactMap[EntryName];
                 var meModel = posModel as IMaxentModel;
+
                 if (meModel != null) {
-                    var beamSize = Manifest.Get(Parameters.BeamSize, NameFinderME.DefaultBeamSize);
+                    var beamSize = Manifest.Get(Parameters.BeamSize, POSTaggerME.DefaultBeamSize);
                     return new ML.BeamSearch<string>(beamSize, meModel);
                 }
 
@@ -110,8 +111,12 @@ namespace SharpNL.POSTag {
         public POSModel(string languageCode, Dictionary<string, string> manifestInfoEntries,
             BaseToolFactory toolFactory) : base(ComponentName, languageCode, manifestInfoEntries, toolFactory) {}
 
-        public POSModel(string languageCode, IMaxentModel posModel,
-            Dictionary<string, string> manifestInfoEntries, POSTaggerFactory posFactory)
+        public POSModel(
+            string languageCode, 
+            IMaxentModel posModel,
+            Dictionary<string, string> manifestInfoEntries, 
+            POSTaggerFactory posFactory)
+
             : this(languageCode, posModel, POSTaggerME.DefaultBeamSize, manifestInfoEntries, posFactory) {
             
         }
@@ -120,10 +125,10 @@ namespace SharpNL.POSTag {
         public POSModel(string languageCode, IMaxentModel posModel, int beamSize, Dictionary<string, string> manifestInfoEntries, POSTaggerFactory posFactory)
             : base(ComponentName, languageCode, manifestInfoEntries, posFactory) {
 
-            // TODO: fix the beamSize parameter or use it !
-
             if (posModel == null)
                 throw new InvalidOperationException("The maxentPosModel param must not be null!");
+
+            Manifest[Parameters.BeamSize] = beamSize.ToString(CultureInfo.InvariantCulture);
 
             artifactMap[EntryName] = posModel;
             
