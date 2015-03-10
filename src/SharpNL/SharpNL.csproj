@@ -73,6 +73,14 @@
     <Compile Include="Text\Category.cs" />
     <Compile Include="Text\Extensions.cs" />
     <Compile Include="Text\ICategory.cs" />
+    <Compile Include="Utility\FeatureGen\BrownBigramFeatureGenerator.cs" />
+    <Compile Include="Utility\FeatureGen\BrownCluster.cs" />
+    <Compile Include="Utility\FeatureGen\BrownTokenClasses.cs" />
+    <Compile Include="Utility\FeatureGen\BrownTokenClassFeatureGenerator.cs" />
+    <Compile Include="Utility\FeatureGen\BrownTokenFeatureGenerator.cs" />
+    <Compile Include="Utility\FeatureGen\Factories\BrownClusterBigramFeatureGeneratorFactory.cs" />
+    <Compile Include="Utility\FeatureGen\Factories\BrownClusterTokenClassFeatureGeneratorFactory.cs" />
+    <Compile Include="Utility\FeatureGen\Factories\BrownClusterTokenFeatureGeneratorFactory.cs" />
     <Compile Include="Utility\StringTokenizer.cs" />
     <Compile Include="Utility\StringToken.cs" />
     <Compile Include="Tokenize\TokenizerAnalyzer.cs" />

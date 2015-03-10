@@ -20,17 +20,24 @@
 //   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 //  
 
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using SharpNL.Java;
 
 namespace SharpNL.Utility.FeatureGen {
+    /// <summary>
+    /// Word2vec and clark clustering style lexicon dictionary.
+    /// </summary>
     [TypeClass("opennlp.tools.util.featuregen.W2VClassesDictionary")]
     public class W2VClassesDictionary {
 
         private readonly Dictionary<string, string> tokenToClusterMap;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="W2VClassesDictionary"/> class.
+        /// </summary>
+        /// <param name="inputStream">The input stream.</param>
         public W2VClassesDictionary(Stream inputStream) {
             tokenToClusterMap = new Dictionary<string, string>();
 
@@ -40,17 +47,48 @@ namespace SharpNL.Utility.FeatureGen {
             while ((line = reader.ReadLine()) != null) {
                 var parts = line.Split(' ');
 
-                if (parts.Length == 2) {
+                if (parts.Length == 2 || parts.Length == 3) {
                     tokenToClusterMap.Add(parts[0], parts[1]);
                 }
             }
         }
 
 
+        /// <summary>
+        /// Lookups the token.
+        /// </summary>
+        /// <param name="value">The value.</param>
+        /// <returns>System.String.</returns>
         public string LookupToken(string value) {
             return tokenToClusterMap[value];
         }
 
+        /// <summary>
+        /// Gets the <see cref="System.String"/> with the specified key.
+        /// </summary>
+        /// <param name="key">The key to look-up.</param>
+        /// <returns>The brown class if such key is in the dictionary.</returns>
+        public string this[string key] {
+            get { return tokenToClusterMap[key]; }
+        }
+
+        internal static void Serialize(object artifact, Stream outputStream) {
+
+            var w2v = artifact as W2VClassesDictionary;
+            if (w2v == null)
+                throw new InvalidOperationException();
+
+            using (var writer = new StreamWriter(outputStream, Encoding.UTF8, 1024, true)) {
+                foreach (var pair in w2v.tokenToClusterMap) {
+                    writer.WriteLine("{0}\t{1}\n", pair.Key, pair.Value);
+                }
+                writer.Flush();
+            }
+        }
+
+        internal static object Deserialize(Stream inputStream) {
+            return new W2VClassesDictionary(inputStream);
+        }
 
 
         

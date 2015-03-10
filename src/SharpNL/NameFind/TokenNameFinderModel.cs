@@ -26,6 +26,7 @@ using System.Globalization;
 using System.IO;
 using SharpNL.ML.Model;
 using SharpNL.Utility;
+using SharpNL.Utility.FeatureGen;
 using SharpNL.Utility.Model;
 using SharpNL.Utility.Serialization;
 
@@ -203,6 +204,11 @@ namespace SharpNL.NameFind {
             base.CreateArtifactSerializers();
 
             RegisterArtifactType("featuregen", SerializeFeatureGen, DeserializeFeatureGen);
+            RegisterArtifactType("w2vwordcluster", W2VClassesDictionary.Serialize, W2VClassesDictionary.Deserialize);
+            RegisterArtifactType("brownclustertoken", BrownCluster.Serialize, BrownCluster.Deserialize);
+            RegisterArtifactType("brownclustertokenclass", BrownCluster.Serialize, BrownCluster.Deserialize);
+            RegisterArtifactType("brownclusterbigram", BrownCluster.Serialize, BrownCluster.Deserialize);
+
         }
 
         #endregion
