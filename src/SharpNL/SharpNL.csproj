@@ -81,6 +81,8 @@
     <Compile Include="Utility\FeatureGen\Factories\BrownClusterBigramFeatureGeneratorFactory.cs" />
     <Compile Include="Utility\FeatureGen\Factories\BrownClusterTokenClassFeatureGeneratorFactory.cs" />
     <Compile Include="Utility\FeatureGen\Factories\BrownClusterTokenFeatureGeneratorFactory.cs" />
+    <Compile Include="Utility\FeatureGen\PreviousTwoMapFeatureGenerator.cs" />
+    <Compile Include="Utility\FeatureGen\TrigramNameFeatureGenerator.cs" />
     <Compile Include="Utility\FeatureGen\WordClusterDictionary.cs" />
     <Compile Include="Utility\StringTokenizer.cs" />
     <Compile Include="Utility\StringToken.cs" />
