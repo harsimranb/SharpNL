@@ -204,7 +204,7 @@ namespace SharpNL.NameFind {
             base.CreateArtifactSerializers();
 
             RegisterArtifactType("featuregen", SerializeFeatureGen, DeserializeFeatureGen);
-            RegisterArtifactType("w2vwordcluster", W2VClassesDictionary.Serialize, W2VClassesDictionary.Deserialize);
+            RegisterArtifactType("wordcluster", WordClusterDictionary.Serialize, WordClusterDictionary.Deserialize);
             RegisterArtifactType("brownclustertoken", BrownCluster.Serialize, BrownCluster.Deserialize);
             RegisterArtifactType("brownclustertokenclass", BrownCluster.Serialize, BrownCluster.Deserialize);
             RegisterArtifactType("brownclusterbigram", BrownCluster.Serialize, BrownCluster.Deserialize);

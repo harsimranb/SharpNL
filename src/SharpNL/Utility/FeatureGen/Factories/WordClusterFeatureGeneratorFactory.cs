@@ -20,13 +20,18 @@
 //   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 //  
 
+using System;
 using System.Xml;
-using SharpNL.Java;
 
 namespace SharpNL.Utility.FeatureGen.Factories {
+    /// <summary>
+    /// Defines a word cluster generator factory; it reads an element containing
+    /// 'w2vwordcluster' as a tag name; these clusters are typically produced by
+    /// word2vec or clark pos induction systems.
+    /// </summary>
     [TypeClass("opennlp.tools.util.featuregen.GeneratorFactory.W2VClassesFeatureGeneratorFactory")]
-    internal class W2VClassesFeatureGeneratorFactory : XmlFeatureGeneratorFactory {
-        public W2VClassesFeatureGeneratorFactory() : base("w2vwordcluster") {}
+    internal class WordClusterFeatureGeneratorFactory : XmlFeatureGeneratorFactory {
+        public WordClusterFeatureGeneratorFactory() : base("wordcluster") { }
 
         /// <summary>
         /// Creates an <see cref="IAdaptiveFeatureGenerator"/> from a the describing XML element.
@@ -36,16 +41,15 @@ namespace SharpNL.Utility.FeatureGen.Factories {
         /// <returns>The configured <see cref="IAdaptiveFeatureGenerator"/> </returns>
         public override IAdaptiveFeatureGenerator Create(XmlElement generatorElement,
             FeatureGeneratorResourceProvider provider) {
+
+
             var dictKey = generatorElement.GetAttribute("dict");
+            var dictResource = provider(dictKey) as WordClusterDictionary;
 
-            // TODO: create W2VClassesDictionary serialization.
-            var dictObj = provider(dictKey);
-            var dict = dictObj as W2VClassesDictionary;
+            if (dictResource == null)
+                throw new InvalidOperationException("Not a WordClusterDictionary resource for key: " + dictKey);
 
-            if (dict == null)
-                throw new InvalidFormatException("Not a W2VClassesDictionary resource for key: " + dictKey);
-
-            return new WordClusterFeatureGenerator(dict);
+            return new WordClusterFeatureGenerator(dictResource, dictKey);
         }
     }
 }

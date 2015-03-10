@@ -81,6 +81,7 @@
     <Compile Include="Utility\FeatureGen\Factories\BrownClusterBigramFeatureGeneratorFactory.cs" />
     <Compile Include="Utility\FeatureGen\Factories\BrownClusterTokenClassFeatureGeneratorFactory.cs" />
     <Compile Include="Utility\FeatureGen\Factories\BrownClusterTokenFeatureGeneratorFactory.cs" />
+    <Compile Include="Utility\FeatureGen\WordClusterDictionary.cs" />
     <Compile Include="Utility\StringTokenizer.cs" />
     <Compile Include="Utility\StringToken.cs" />
     <Compile Include="Tokenize\TokenizerAnalyzer.cs" />
@@ -481,7 +482,7 @@
     <Compile Include="Utility\FeatureGen\Factories\TokenClassFeatureGeneratorFactory.cs" />
     <Compile Include="Utility\FeatureGen\Factories\TokenFeatureGeneratorFactory.cs" />
     <Compile Include="Utility\FeatureGen\Factories\TokenPatternFeatureGeneratorFactory.cs" />
-    <Compile Include="Utility\FeatureGen\Factories\W2VClassesFeatureGeneratorFactory.cs" />
+    <Compile Include="Utility\FeatureGen\Factories\WordClusterFeatureGeneratorFactory.cs" />
     <Compile Include="Utility\FeatureGen\Factories\WindowFeatureGeneratorFactory.cs" />
     <Compile Include="Utility\FeatureGen\FeatureGeneratorAdapter.cs" />
     <Compile Include="Utility\FeatureGen\FeatureGeneratorException.cs" />

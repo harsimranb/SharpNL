@@ -21,15 +21,18 @@
 //  
 
 using System.Collections.Generic;
-using SharpNL.Java;
 
 namespace SharpNL.Utility.FeatureGen {
     [TypeClass("opennlp.tools.util.featuregen.WordClusterFeatureGenerator")]
     public class WordClusterFeatureGenerator : FeatureGeneratorAdapter {
-        private readonly W2VClassesDictionary dictionary;
 
-        public WordClusterFeatureGenerator(W2VClassesDictionary dict) {
+        private readonly WordClusterDictionary dictionary;
+
+        private readonly string resourceName;
+
+        public WordClusterFeatureGenerator(WordClusterDictionary dict, string resourceName) {
             dictionary = dict;
+            this.resourceName = resourceName;
         }
 
         /// <summary>
@@ -41,9 +44,9 @@ namespace SharpNL.Utility.FeatureGen {
         /// <param name="index">The index of the token which is currently being processed.</param>
         /// <param name="previousOutcomes">The outcomes for the tokens prior to the specified index.</param>
         public override void CreateFeatures(List<string> features, string[] tokens, int index, string[] previousOutcomes) {
-            var id = dictionary.LookupToken(tokens[index]);
+            var id = dictionary[tokens[index]];
             if (id != null)
-                features.Add("cluster=" + id);
+                features.Add(resourceName + id);
         }
     }
 }
