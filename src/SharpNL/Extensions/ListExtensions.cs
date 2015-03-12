@@ -1,5 +1,5 @@
 ﻿// 
-//  Copyright 2014 Gustavo J Knuppe (https://github.com/knuppe)
+//  Copyright 2015 Gustavo J Knuppe (https://github.com/knuppe)
 // 
 //   Licensed under the Apache License, Version 2.0 (the "License");
 //   you may not use this file except in compliance with the License.
@@ -22,12 +22,28 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SharpNL.Extensions {
     /// <summary>
     /// Provide a set of methods for lists.
     /// </summary>
     public static class ListExtensions {
+
+        #region . Contains(string) .
+        /// <summary>
+        /// Determines whether the specified list contains the matching string value.
+        /// </summary>
+        /// <param name="list">The list.</param>
+        /// <param name="value">The value to match.</param>
+        /// <param name="ignoreCase">if set to <c>true</c> the case is ignored.</param>
+        /// <returns><c>true</c> if the specified list contains the matching string; otherwise, <c>false</c>.</returns>
+        public static bool Contains(this List<string> list, string value, bool ignoreCase = false) {
+            return ignoreCase
+                ? list.Any(s => s.Equals(value, StringComparison.OrdinalIgnoreCase))
+                : list.Contains(value);
+        }
+        #endregion
 
         #region . First .
         /// <summary>
@@ -42,9 +58,11 @@ namespace SharpNL.Extensions {
 
             return list[0];
         }
+
         #endregion
 
         #region . Last .
+
         /// <summary>
         /// Returns the last element of a list.
         /// </summary>
@@ -57,9 +75,11 @@ namespace SharpNL.Extensions {
 
             return list[list.Count - 1];
         }
+
         #endregion
 
         #region . Pop .
+
         /// <summary>
         /// Removes the object at the top of the <see cref="IList{T}" />, and returns it.
         /// </summary>
@@ -78,10 +98,11 @@ namespace SharpNL.Extensions {
             if (list.IsReadOnly)
                 throw new InvalidOperationException("The list is read-only.");
 
-            T item = list[0];
+            var item = list[0];
             list.RemoveAt(0);
             return item;
         }
+
         #endregion
 
     }

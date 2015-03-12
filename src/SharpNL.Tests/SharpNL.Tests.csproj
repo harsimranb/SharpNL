@@ -159,6 +159,7 @@
     <Compile Include="Chunker\DummyChunker.cs" />
     <Compile Include="Chunker\DummyChunkerFactory.cs" />
     <Compile Include="Chunker\DummyChunkSampleStream.cs" />
+    <Compile Include="Classifier\ClassifierTest.cs" />
     <Compile Include="Compatibility\ChunkerTest.cs" />
     <Compile Include="Compatibility\PosTaggerTest.cs" />
     <Compile Include="Dictionary\DictionaryTest.cs" />
