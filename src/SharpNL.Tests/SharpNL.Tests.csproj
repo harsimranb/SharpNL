@@ -246,6 +246,7 @@
     <Compile Include="Tokenize\TokenizerMETest.cs" />
     <Compile Include="Tokenize\TokenizerTestUtil.cs" />
     <Compile Include="Tokenize\TokenSampleTest.cs" />
+    <Compile Include="Tokenize\TokenUtilitiesTest.cs" />
     <Compile Include="Tokenize\WhitespaceTokenizerTest.cs" />
     <Compile Include="Utility\BeamSearchTest.cs" />
     <Compile Include="Utility\Evaluation\CrossValidationPartitionerTest.cs" />
