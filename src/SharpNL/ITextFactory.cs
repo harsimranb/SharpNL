@@ -21,11 +21,15 @@
 //  
 
 
+using System.Collections.Generic;
+using SharpNL.Chunker;
+using SharpNL.DocumentCategorizer;
+using SharpNL.NameFind;
+using SharpNL.SentenceDetector;
+using SharpNL.Tokenize;
 using SharpNL.Utility;
 
-using System.Collections.Generic;
-
-namespace SharpNL.Text {
+namespace SharpNL {
     /// <summary>
     /// A factory that provides text resources from any implementation.
     /// </summary>

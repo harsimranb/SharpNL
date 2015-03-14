@@ -33,3 +33,5 @@ Release 1.0 (2014-12-06)
 
 2015-03-14 Knuppe
  * A token utility class added to help in the classifiers.
+ * The SharpNL.Text namespace was completely refactored to the appropriated namespaces
+   (sorry if I broke some implementation) but I warned you, the 1.0 is a beta :)

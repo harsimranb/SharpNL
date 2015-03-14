@@ -21,9 +21,10 @@
 //  
 
 using System;
+using SharpNL.SentenceDetector;
 using SharpNL.Utility;
 
-namespace SharpNL.Text {
+namespace SharpNL.NameFind {
     /// <summary>
     /// Represents a generic entity.
     /// </summary>

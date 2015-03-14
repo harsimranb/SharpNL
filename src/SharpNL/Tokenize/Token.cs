@@ -23,10 +23,11 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using SharpNL.SentenceDetector;
 using SharpNL.Utility;
 using SharpNL.WordNet;
 
-namespace SharpNL.Text {
+namespace SharpNL.Tokenize {
     /// <summary>
     /// Represents a token, which is a word, its lemma, its morphological posTag and the 
     /// position of it in the sentence.

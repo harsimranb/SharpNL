@@ -22,7 +22,7 @@
 
 using SharpNL.Utility;
 
-namespace SharpNL.Text {
+namespace SharpNL.NameFind {
     /// <summary>
     /// Represents a named entity.
     /// </summary>

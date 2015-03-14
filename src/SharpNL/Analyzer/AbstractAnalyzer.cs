@@ -21,7 +21,6 @@
 //  
 
 using System;
-using SharpNL.Text;
 
 namespace SharpNL.Analyzer {
     /// <summary>

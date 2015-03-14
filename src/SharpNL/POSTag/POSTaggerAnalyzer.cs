@@ -23,7 +23,7 @@
 using System;
 using System.Linq;
 using SharpNL.Analyzer;
-using SharpNL.Text;
+using SharpNL.SentenceDetector;
 
 namespace SharpNL.POSTag {
     /// <summary>

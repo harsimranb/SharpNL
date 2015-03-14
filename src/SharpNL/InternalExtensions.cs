@@ -28,7 +28,7 @@ using System.Linq;
 
 using System.Collections.Generic;
 using SharpNL.Extensions;
-using SharpNL.Text;
+using SharpNL.Tokenize;
 
 namespace SharpNL {
     /// <summary>

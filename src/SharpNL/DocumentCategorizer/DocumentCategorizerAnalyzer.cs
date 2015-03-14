@@ -24,7 +24,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using SharpNL.Analyzer;
-using SharpNL.Text;
+using SharpNL.Extensions;
 
 namespace SharpNL.DocumentCategorizer {
     /// <summary>

@@ -22,9 +22,14 @@
 
 using System;
 using System.Collections.Generic;
+using SharpNL.Chunker;
+using SharpNL.DocumentCategorizer;
+using SharpNL.NameFind;
+using SharpNL.SentenceDetector;
+using SharpNL.Tokenize;
 using SharpNL.Utility;
 
-namespace SharpNL.Text {
+namespace SharpNL {
 
     /// <summary>
     /// The factory that provides the default implementations and resources for the SharpNL text objects. 

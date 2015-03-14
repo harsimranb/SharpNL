@@ -24,7 +24,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
-using SharpNL.Text;
+using SharpNL.SentenceDetector;
 using SharpNL.Utility;
 using StringTokenizer = SharpNL.Java.StringTokenizer;
 

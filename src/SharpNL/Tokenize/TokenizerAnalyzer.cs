@@ -28,7 +28,6 @@ using System.Linq;
 using System.Text.RegularExpressions;
 
 using SharpNL.Analyzer;
-using SharpNL.Text;
 using SharpNL.Utility;
 
 namespace SharpNL.Tokenize {

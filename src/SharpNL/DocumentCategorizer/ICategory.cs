@@ -20,23 +20,27 @@
 //   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 //  
 
-namespace SharpNL.Text {
+namespace SharpNL.DocumentCategorizer {
     /// <summary>
     /// Represents a category.
     /// </summary>
-    public class Category : BaseObject, ICategory {
+    public interface ICategory {
 
+        #region . Name .
         /// <summary>
         /// Gets or sets the category name.
         /// </summary>
-        /// <value>The category name string.</value>
-        public string Name { get; set; }
+        /// <value>The category name.</value>
+        string Name { get; set; }
+        #endregion
 
+        #region . Probability .
         /// <summary>
         /// Gets or sets the category probability.
         /// </summary>
         /// <value>The category probability.</value>
-        public double Probability { get; set; }
+        double Probability { get; set; }
+        #endregion
 
     }
 }

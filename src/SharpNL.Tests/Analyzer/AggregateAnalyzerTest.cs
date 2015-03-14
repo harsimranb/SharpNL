@@ -22,7 +22,6 @@
 
 using NUnit.Framework;
 using SharpNL.Analyzer;
-using SharpNL.Text;
 
 namespace SharpNL.Tests.Analyzer {
     [TestFixture]

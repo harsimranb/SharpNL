@@ -30,7 +30,6 @@ using SharpNL.NameFind;
 using SharpNL.Parser;
 using SharpNL.POSTag;
 using SharpNL.SentenceDetector;
-using SharpNL.Text;
 using SharpNL.Tokenize;
 using SharpNL.Utility.Model;
 

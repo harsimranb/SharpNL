@@ -23,9 +23,9 @@
 using System;
 using System.Collections.Generic;
 
-namespace SharpNL.Text {
+namespace SharpNL {
     /// <summary>
-    /// Provides the basic properties for text objects.
+    /// Provides the basic properties for data holder objects.
     /// </summary>
     public abstract class BaseObject {
 

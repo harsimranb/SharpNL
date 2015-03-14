@@ -22,7 +22,6 @@
 
 using System;
 using SharpNL.Analyzer;
-using SharpNL.Text;
 
 namespace SharpNL.Lemmatizer {
     /// <summary>

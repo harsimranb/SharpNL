@@ -21,9 +21,13 @@
 //  
 
 using System.Collections.Generic;
+using SharpNL.Chunker;
+using SharpNL.DocumentCategorizer;
+using SharpNL.NameFind;
 using SharpNL.Parser;
+using SharpNL.Tokenize;
 
-namespace SharpNL.Text {
+namespace SharpNL.SentenceDetector {
     /// <summary>
     /// Represents a sentence.
     /// </summary>

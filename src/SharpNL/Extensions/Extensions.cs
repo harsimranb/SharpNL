@@ -22,9 +22,11 @@
 
 using System;
 using System.Linq;
+using SharpNL.SentenceDetector;
 using SharpNL.Stemmer;
+using SharpNL.Tokenize;
 
-namespace SharpNL.Text {
+namespace SharpNL.Extensions {
     /// <summary>
     /// Provides extensions methods for the <c>SharpNL.Text</c> namespace.
     /// </summary>

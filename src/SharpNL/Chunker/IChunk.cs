@@ -21,32 +21,13 @@
 //  
 
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Text;
-using SharpNL.Utility;
+using SharpNL.Tokenize;
 
-namespace SharpNL.Text {
+namespace SharpNL.Chunker {
     /// <summary>
     /// Represents a chunk.
     /// </summary>
-    [TypeConverter(typeof(ExpandableObjectConverter))]
-    public class Chunk : BaseObject, IChunk {
-
-        private readonly Sentence sentence;
-
-        #region . Constructor .
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Chunk"/> class.
-        /// </summary>
-        /// <param name="sentence">The sentence.</param>
-        /// <param name="span">The chunk span.</param>
-        public Chunk(Sentence sentence, Span span) {
-            HeadIndex = -1;
-            Span = span;
-            this.sentence = sentence;
-        }
-        #endregion
+    public interface IChunk {
 
         #region + Properties .
 
@@ -55,7 +36,7 @@ namespace SharpNL.Text {
         /// Gets the chunk end position.
         /// </summary>
         /// <value>The chunk end position.</value>
-        public int End { get { return Span.End; } }
+        int End { get; }
         #endregion
 
         #region . HeadIndex .
@@ -63,7 +44,7 @@ namespace SharpNL.Text {
         /// Gets or sets the index of the head. Default value is -1.
         /// </summary>
         /// <value>The index of the head.</value>
-        public int HeadIndex { get; set; }
+        int HeadIndex { get; set; }
         #endregion
 
         #region . Length .
@@ -71,9 +52,7 @@ namespace SharpNL.Text {
         /// Gets the chunk length.
         /// </summary>
         /// <value>The chunk length.</value>
-        public int Length {
-            get { return End - Start; }
-        }
+        int Length { get; }
         #endregion
 
         #region . Start .
@@ -81,74 +60,27 @@ namespace SharpNL.Text {
         /// Gets the chunk start position.
         /// </summary>
         /// <value>The chunk start position.</value>
-        public int Start { get { return Span.Start; } }
-        #endregion
-
-        #region . Span .
-        /// <summary>
-        /// Gets the chunk span.
-        /// </summary>
-        /// <value>The chunk span.</value>
-        public Span Span { get; private set; }
+        int Start { get; }
         #endregion
 
         #region . Tag .
-
         /// <summary>
         /// Gets the chunk tag.
         /// </summary>
         /// <value>The chunk tag.</value>
-        public string Tag {
-            get { return Span.Type; }
-        }
-
+        string Tag { get; }
         #endregion
 
         #region . Tokens .
 
-        private IReadOnlyList<Token> tokens;
         /// <summary>
         /// Gets the chunk tokens.
         /// </summary>
         /// <value>The chunk tokens.</value>
-        public IReadOnlyList<Token> Tokens {
-            get {
-                if (tokens != null)
-                    return tokens;
-
-                return (tokens = sentence.Tokens.SubList(Start, End - Start));
-            }
-        }
-        IReadOnlyList<IToken> IChunk.Tokens {
-            get { return Tokens; }   
-        }
+        IReadOnlyList<IToken> Tokens { get; }
 
         #endregion
 
-        #endregion
-
-        #region . ToString .
-        /// <summary>
-        /// Returns a string that represents the current object.
-        /// </summary>
-        /// <returns>
-        /// A string that represents the current object.
-        /// </returns>
-        public override string ToString() {
-            var sb = new StringBuilder(10 + Length + (Tokens.Count * 2));
-
-            sb.AppendFormat("Chunk: {0} [ ", Tag);
-
-            for (int i = Start; i < End; i++) {
-                if (i == HeadIndex)
-                    sb.Append('*');
-
-                sb.Append(tokens[i - Start].Lexeme).Append(" ");
-            }
-            sb.AppendLine("]");
-
-            return sb.ToString();
-        }
         #endregion
 
     }

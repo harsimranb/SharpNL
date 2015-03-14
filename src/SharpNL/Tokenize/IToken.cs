@@ -20,7 +20,9 @@
 //   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 //  
 
-namespace SharpNL.Text {
+using SharpNL.SentenceDetector;
+
+namespace SharpNL.Tokenize {
     /// <summary>
     /// Represents a token.
     /// </summary>

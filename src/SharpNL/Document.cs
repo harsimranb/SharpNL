@@ -24,8 +24,10 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using SharpNL.NameFind;
+using SharpNL.SentenceDetector;
 
-namespace SharpNL.Text {
+namespace SharpNL {
     /// <summary>
     /// Represents a document with its texts and sentences.
     /// </summary>

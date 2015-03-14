@@ -23,10 +23,13 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using SharpNL.Chunker;
+using SharpNL.DocumentCategorizer;
+using SharpNL.NameFind;
 using SharpNL.Parser;
+using SharpNL.Tokenize;
 
-
-namespace SharpNL.Text {
+namespace SharpNL.SentenceDetector {
     /// <summary>
     /// Represents a sentence.
     /// </summary>

@@ -20,27 +20,37 @@
 //   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 //  
 
-namespace SharpNL.Text {
+using System.Collections.Generic;
+using SharpNL.SentenceDetector;
+
+namespace SharpNL {
     /// <summary>
-    /// Represents a category.
+    /// Represents a text document which can be several sentences, a sentence or even a single word.
     /// </summary>
-    public interface ICategory {
-
-        #region . Name .
+    public interface IDocument {
         /// <summary>
-        /// Gets or sets the category name.
+        /// Gets the document text.
         /// </summary>
-        /// <value>The category name.</value>
-        string Name { get; set; }
-        #endregion
+        /// <value>The document text.</value>
+        string Text { get; }
 
-        #region . Probability .
         /// <summary>
-        /// Gets or sets the category probability.
+        /// Gets the language of this document.
         /// </summary>
-        /// <value>The category probability.</value>
-        double Probability { get; set; }
-        #endregion
+        /// <value>The language of this document.</value>
+        string Language { get; }
+
+        /// <summary>
+        /// Gets the document sentences.
+        /// </summary>
+        /// <value>The document sentences.</value>
+        IReadOnlyList<ISentence> Sentences { get; set; }
+
+        /// <summary>
+        /// Gets the factory associated to this document.
+        /// </summary>
+        /// <value>The factory associated to this document.</value>
+        ITextFactory Factory { get; }
 
     }
 }

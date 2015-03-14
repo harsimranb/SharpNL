@@ -20,8 +20,6 @@
 //   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 //  
 
-using SharpNL.Text;
-
 namespace SharpNL.Analyzer {
     /// <summary>
     /// Defines a method to analyze a <see cref="IDocument"/> object 
