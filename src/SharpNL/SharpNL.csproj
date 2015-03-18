@@ -99,6 +99,10 @@
     <Compile Include="Stemmer\RSLP\RSLPStep.cs" />
     <Compile Include="Stemmer\Stem.cs" />
     <Compile Include="Stemmer\Suffixes.cs" />
+    <Compile Include="Summarizer\AbstractSummarizer.cs" />
+    <Compile Include="Summarizer\ISummarizer.cs" />
+    <Compile Include="Summarizer\SimpleSummarizer.cs" />
+    <Compile Include="Summarizer\SimpleSummarizerMethods.cs" />
     <Compile Include="Tokenize\IToken.cs" />
     <Compile Include="Tokenize\Token.cs" />
     <Compile Include="Tokenize\TokenUtilities.cs" />
