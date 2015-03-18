@@ -54,6 +54,9 @@
     <Compile Include="Classifier\IClass.cs" />
     <Compile Include="Classifier\IClassClassifierResult.cs" />
     <Compile Include="Classifier\StringClass.cs" />
+    <Compile Include="Globalization\Culture.cs" />
+    <Compile Include="Globalization\Cultures\en.cs" />
+    <Compile Include="Globalization\Cultures\pt_BR.cs" />
     <Compile Include="DefaultTextFactory.cs" />
     <Compile Include="Document.cs" />
     <Compile Include="DocumentCategorizer\Category.cs" />
@@ -67,6 +70,7 @@
     <Compile Include="Extensions\StringBuilderExtensions.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="Formats\Brat\AttributeAnnotation.cs" />
+    <Compile Include="Globalization\GenericCulture.cs" />
     <Compile Include="IDocument.cs" />
     <Compile Include="Inflecter\IInfleter.cs" />
     <Compile Include="Inflecter\Inflector.cs" />
@@ -98,6 +102,7 @@
     <Compile Include="Tokenize\IToken.cs" />
     <Compile Include="Tokenize\Token.cs" />
     <Compile Include="Tokenize\TokenUtilities.cs" />
+    <Compile Include="Utility\AbstractStopwordProvider.cs" />
     <Compile Include="Utility\FeatureGen\BrownBigramFeatureGenerator.cs" />
     <Compile Include="Utility\FeatureGen\BrownCluster.cs" />
     <Compile Include="Utility\FeatureGen\BrownTokenClasses.cs" />
@@ -109,6 +114,7 @@
     <Compile Include="Utility\FeatureGen\PreviousTwoMapFeatureGenerator.cs" />
     <Compile Include="Utility\FeatureGen\TrigramNameFeatureGenerator.cs" />
     <Compile Include="Utility\FeatureGen\WordClusterDictionary.cs" />
+    <Compile Include="Utility\IStopwordProvider.cs" />
     <Compile Include="Utility\StringTokenizer.cs" />
     <Compile Include="Utility\StringToken.cs" />
     <Compile Include="Tokenize\TokenizerAnalyzer.cs" />
