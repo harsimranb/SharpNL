@@ -3,10 +3,9 @@ using System.Collections.Generic;
 
 namespace SharpNL.Utility {
     /// <summary>
-    /// Represents a cool cache dictionary.
+    /// Provides fixed size, pre-allocated, least recently used (LRU) replacement cache.
     /// </summary>
-    /// <remarks>The other methods have not been ported to this class, because they were badly implemented in the OpenNLP.</remarks>
-    public class Cache {
+    public sealed class Cache : IDisposable {
         /// <summary>
         /// The element in the linked list which was most recently used.
         /// </summary>
@@ -97,6 +96,15 @@ namespace SharpNL.Utility {
         }
         #endregion
 
+        #region . Dispose .
+        /// <summary>
+        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// </summary>
+        public void Dispose() {
+            map.Clear();
+        }
+        #endregion
+
         #region . Get .
         /// <summary>
         /// Gets the value associated with the specified key in this cache object.
@@ -133,6 +141,35 @@ namespace SharpNL.Utility {
             }
 
             return null;
+        }
+        #endregion
+
+        #region . GetOrPut .
+        /// <summary>
+        /// Gets the value associated with the specified key in this cache object or initialize the <paramref name="lazy"/>
+        /// object and add the entry in the cache and return it. 
+        /// </summary>
+        /// <typeparam name="T">The value type.</typeparam>
+        /// <param name="key">The object to use as the key of the element to add.</param>
+        /// <param name="lazy">The lazy object that will be initialized if the key is not present in the cache.</param>
+        /// <returns>The cached value or the initialized value.</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="key"/>
+        /// or
+        /// <paramref name="lazy"/>
+        /// </exception>
+        public T GetOrPut<T>(object key, Lazy<T> lazy) {
+            if (key == null)
+                throw new ArgumentNullException("key");
+
+            if (lazy == null)
+                throw new ArgumentNullException("lazy");
+
+
+            if (!map.ContainsKey(key))
+                Put(key, lazy.Value);
+
+            return (T)Get(key);
         }
         #endregion
 
@@ -263,6 +300,7 @@ namespace SharpNL.Utility {
         }
 
         #endregion
+
 
     }
 }

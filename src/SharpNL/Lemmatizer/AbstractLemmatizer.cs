@@ -28,19 +28,24 @@ namespace SharpNL.Lemmatizer {
     /// <summary>
     /// Represents a abstract lemmatizer with cache support.
     /// </summary>
-    public abstract class AbstractLemmatizer : CacheBase<string[]>, ILemmatizer {
+    public abstract class AbstractLemmatizer : ILemmatizer {
 
         private readonly HashSet<string> ignoreSet;
+        private readonly Cache cache;
 
         #region . Constructor .
+
         /// <summary>
         /// Initializes a new instance of the <see cref="AbstractLemmatizer"/> class.
         /// </summary>
-        /// <param name="cache">if set to <c>true</c> the cache will be enabled.</param>
-        protected AbstractLemmatizer(bool cache = true)
-            : base(cache) {
+        protected AbstractLemmatizer(int cacheSize = 124) {
             ignoreSet = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+            if (cacheSize > 0)
+                cache = new Cache(cacheSize);
+
         }
+
         #endregion
 
         #region . AddIgnore .
@@ -76,19 +81,20 @@ namespace SharpNL.Lemmatizer {
             if (ignoreSet.Contains(word))
                 return new []{ word };
 
-            if (!CacheEnabled)
+            if (cache == null)
                 return Process(word, posTag);
 
-            if (IsCached(word, posTag))
-                return Get(word, posTag);
-
-            var lemma = Process(word, posTag);
-
-            Set(word, lemma, posTag);
-
-            return lemma;
+            return cache.GetOrPut(CacheKey(word, posTag), new Lazy<string[]>(
+                () => Process(word, posTag))
+            );
         }
         #endregion
+
+        private static string CacheKey(string key, string ns) {
+            return string.IsNullOrEmpty(ns) 
+                ? key 
+                : string.Format("{0}-{1}", ns, key);
+        }
 
         #region . Process .
         /// <summary>

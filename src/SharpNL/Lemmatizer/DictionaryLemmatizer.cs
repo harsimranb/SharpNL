@@ -39,29 +39,25 @@ namespace SharpNL.Lemmatizer {
 
         #region + Constructors .
 
-        /// <summary>
-        /// Initializes a empty instance of the <see cref="DictionaryLemmatizer" />.
-        /// </summary>
-        /// <param name="cache">if set to <c>true</c> a cache will be enabled on this lemmatizer.</param>
-        public DictionaryLemmatizer(bool cache = true) : base(cache) {
+        public DictionaryLemmatizer(int cacheSize = 124) : base(cacheSize) {
             dictionary = new Dictionary<string, Dictionary<string, string[]>>(StringComparer.OrdinalIgnoreCase);
         }
 
+
         /// <summary>
-        /// Initializes a new instance of the <see cref="DictionaryLemmatizer"/> using
-        /// a <see cref="StreamReader"/> to read the dictionary.
+        /// Initializes a new instance of the <see cref="DictionaryLemmatizer" /> using
+        /// a <see cref="StreamReader" /> to read the dictionary.
         /// </summary>
         /// <param name="reader">The stream reader.</param>
-        /// <exception cref="System.ArgumentNullException">
-        /// <paramref name="reader"/>
-        /// </exception>
-        /// <remarks>
-        /// Expected format per line (without spaces):
+        /// <param name="cacheSize">The cache size.</param>
+        /// <exception cref="ArgumentNullException">reader</exception>
+        /// <exception cref="System.ArgumentNullException"><paramref name="reader" /></exception>
+        /// <remarks>Expected format per line (without spaces):
         /// <para>word [tab] tag [tab] lemma</para>
         /// or
-        /// <para>word [tab] lemma</para>
-        /// </remarks>
-        public DictionaryLemmatizer(StreamReader reader) {
+        /// <para>word [tab] lemma</para></remarks>
+        public DictionaryLemmatizer(StreamReader reader, int cacheSize = 124) : base(cacheSize) {
+
             if (reader == null)
                 throw new ArgumentNullException("reader");
 

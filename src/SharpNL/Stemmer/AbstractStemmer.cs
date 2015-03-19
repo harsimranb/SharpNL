@@ -22,26 +22,28 @@
 
 using System;
 using System.Collections.Generic;
-using System.Runtime.Caching;
 using SharpNL.Utility;
 
 namespace SharpNL.Stemmer {
     /// <summary>
     /// Represents a abstract stemmer.
     /// </summary>
-    public abstract class AbstractStemmer : CacheBase<string>, IStemmer {
+    public abstract class AbstractStemmer : IStemmer {
 
+        private readonly Cache cache;
         private readonly HashSet<string> ignoreSet;
 
-        #region . Constructor .
+        #region + Constructors .
         /// <summary>
         /// Initializes a new instance of the <see cref="AbstractStemmer"/> class.
         /// </summary>
-        protected AbstractStemmer(bool cache = true) : base(cache) {
+        protected AbstractStemmer(int cacheSize = 128) {
             ignoreSet = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
-
+            if (cacheSize > 0) 
+                cache = new Cache(cacheSize);
         }
+
         #endregion
 
         #region . AddIgnore .
@@ -80,17 +82,18 @@ namespace SharpNL.Stemmer {
 
             word = word.ToLowerInvariant();
 
-            if (!CacheEnabled) 
+            if (cache == null) 
                 return Stemming(word, posTag);
 
-            if (IsCached(word, posTag))
-                return Get(word, posTag);
+            return cache.GetOrPut(CacheKey(word, posTag), new Lazy<string>(
+                () => Stemming(word, posTag))
+            );
+        }
+        #endregion
 
-            var stem = Stemming(word, posTag);
-
-            Set(word, stem, posTag);
-
-            return stem;
+        #region . CacheKey .
+        private static string CacheKey(string key, string ns) {
+            return string.Format("{0}-{1}", ns, key);
         }
         #endregion
 
