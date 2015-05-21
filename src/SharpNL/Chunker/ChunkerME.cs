@@ -203,6 +203,8 @@ namespace SharpNL.Chunker {
 
             var manifestInfoEntries = new Dictionary<string, string>();
 
+            
+
             IMaxentModel chunkerModel = null;
             ML.Model.ISequenceClassificationModel<string> seqChunkerModel = null;
 
@@ -226,8 +228,10 @@ namespace SharpNL.Chunker {
                     throw new NotSupportedException("Trainer type is not supported.");
             }
 
+            var beamSize = parameters.Get(Parameters.BeamSize, DefaultBeamSize);
+
             return chunkerModel != null
-                ? new ChunkerModel(languageCode, chunkerModel, manifestInfoEntries, factory) 
+                ? new ChunkerModel(languageCode, chunkerModel, beamSize, manifestInfoEntries, factory) 
                 : new ChunkerModel(languageCode, seqChunkerModel, manifestInfoEntries, factory);
         }
 

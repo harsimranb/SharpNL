@@ -105,13 +105,12 @@ namespace SharpNL.Chunker {
             get {
                 return Manifest.Contains(Parameters.BeamSize)
                     ? int.Parse(Manifest[Parameters.BeamSize])
-                    : NameFinderME.DefaultBeamSize;
+                    : ChunkerME.DefaultBeamSize;
             }
         }
         #endregion
 
         #region . ChunkerSequenceModel .
-
         /// <summary>
         /// Gets the chunker sequence model.
         /// </summary>
@@ -119,9 +118,8 @@ namespace SharpNL.Chunker {
         public ISequenceClassificationModel<string> ChunkerSequenceModel {
             get {
                 var maxentModel = artifactMap[ChunkerEntry] as IMaxentModel;
-                if (maxentModel != null) {
+                if (maxentModel != null) 
                     return new BeamSearch(BeamSize, maxentModel);
-                }
 
                 return artifactMap[ChunkerEntry] as ISequenceClassificationModel<string>;
             }
