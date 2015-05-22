@@ -107,6 +107,7 @@
     <Compile Include="Tokenize\Token.cs" />
     <Compile Include="Tokenize\TokenUtilities.cs" />
     <Compile Include="Utility\AbstractStopwordProvider.cs" />
+    <Compile Include="Utility\Evaluation\CrossEvaluator.cs" />
     <Compile Include="Utility\FeatureGen\BrownBigramFeatureGenerator.cs" />
     <Compile Include="Utility\FeatureGen\BrownCluster.cs" />
     <Compile Include="Utility\FeatureGen\BrownTokenClasses.cs" />
