@@ -30,9 +30,9 @@ namespace SharpNL.Parser {
     /// Parser Evaluator.
     /// </summary>
     public class ParserEvaluator : Evaluator<Parse, Span> {
-        private readonly Chunking.Parser parser;
+        private readonly IParser parser;
 
-        public ParserEvaluator(Chunking.Parser parser, params IEvaluationMonitor<Parse>[] listeners)
+        public ParserEvaluator(IParser parser, params IEvaluationMonitor<Parse>[] listeners)
             : base(listeners) {
             this.parser = parser;
             FMeasure = new FMeasure<Span>();
