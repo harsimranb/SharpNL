@@ -527,7 +527,6 @@
     <Compile Include="Utility\FeatureGen\TokenClassFeatureGenerator.cs" />
     <Compile Include="Utility\FeatureGen\TokenFeatureGenerator.cs" />
     <Compile Include="Utility\FeatureGen\TokenPatternFeatureGenerator.cs" />
-    <Compile Include="Utility\FeatureGen\W2VClassesDictionary.cs" />
     <Compile Include="Utility\FeatureGen\WindowFeatureGenerator.cs" />
     <Compile Include="Utility\FeatureGen\WordClusterFeatureGenerator.cs" />
     <Compile Include="Utility\FeatureGen\XmlFeatureGeneratorFactory.cs" />
