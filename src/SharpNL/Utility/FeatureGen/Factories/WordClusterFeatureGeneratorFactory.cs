@@ -39,17 +39,18 @@ namespace SharpNL.Utility.FeatureGen.Factories {
         /// <param name="generatorElement">The element which contains the configuration.</param>
         /// <param name="provider">The resource provider which could be used to access referenced resources.</param>
         /// <returns>The configured <see cref="IAdaptiveFeatureGenerator"/> </returns>
-        public override IAdaptiveFeatureGenerator Create(XmlElement generatorElement,
+        public override IAdaptiveFeatureGenerator Create(
+            XmlElement generatorElement,
             FeatureGeneratorResourceProvider provider) {
-
-
+            
             var dictKey = generatorElement.GetAttribute("dict");
+            var lowerCase = generatorElement.GetAttribute("lowerCase") == "true";
             var dictResource = provider(dictKey) as WordClusterDictionary;
 
             if (dictResource == null)
                 throw new InvalidOperationException("Not a WordClusterDictionary resource for key: " + dictKey);
 
-            return new WordClusterFeatureGenerator(dictResource, dictKey);
+            return new WordClusterFeatureGenerator(dictResource, dictKey, lowerCase);
         }
     }
 }
