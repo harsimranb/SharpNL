@@ -27,12 +27,14 @@ using SharpNL.Utility;
 using SharpNL.Utility.FeatureGen;
 
 namespace SharpNL.NameFind {
+
     /// <summary>
     /// Represents a tool factory for the extensions of the name finder.
     /// </summary>
     /// <remarks>
     /// The implementations of this class will work only if they are used during the training.
     /// </remarks>
+    [TypeClass("opennlp.tools.namefind.TokenNameFinderFactory")]
     public class TokenNameFinderFactory : BaseToolFactory {
 
         #region + Constructors .

@@ -54,14 +54,16 @@ namespace SharpNL.NameFind {
         public TokenNameFinderModel(Stream inputStream) : base(ComponentName, inputStream) { }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="TokenNameFinderModel"/> class.
+        /// Initializes a new instance of the <see cref="TokenNameFinderModel" /> class.
         /// </summary>
         /// <param name="languageCode">The language code.</param>
         /// <param name="nameFinderModel">The name finder model.</param>
         /// <param name="generatorDescriptor">The generator descriptor.</param>
         /// <param name="resources">The resources.</param>
         /// <param name="manifestInfoEntries">The manifest information entries.</param>
-        /// <param name="sequenceCodec">The sequence codec.</param>
+        /// <param name="seqCodec">The sequence codec.</param>
+        /// <param name="factory">The tool factory.</param>
+        /// <exception cref="InvalidOperationException">Model not compatible with name finder!</exception>
         /// <exception cref="System.InvalidOperationException">Model not compatible with name finder!</exception>
         public TokenNameFinderModel(
             string languageCode,
@@ -69,11 +71,12 @@ namespace SharpNL.NameFind {
             byte[] generatorDescriptor,
             Dictionary<string, object> resources,
             Dictionary<string, string> manifestInfoEntries,
-            ISequenceCodec<string> sequenceCodec)
-            : base(ComponentName, languageCode, manifestInfoEntries) {
-            Init(nameFinderModel, generatorDescriptor, resources, sequenceCodec);
+            ISequenceCodec<string> seqCodec,
+            TokenNameFinderFactory factory)
+            : base(ComponentName, languageCode, manifestInfoEntries, factory) {
+            Init(nameFinderModel, generatorDescriptor, resources, seqCodec);
 
-            if (!sequenceCodec.AreOutcomesCompatible(nameFinderModel.GetOutcomes())) {
+            if (!seqCodec.AreOutcomesCompatible(nameFinderModel.GetOutcomes())) {
                 throw new InvalidOperationException("Model not compatible with name finder!");
             }
         }
@@ -88,6 +91,8 @@ namespace SharpNL.NameFind {
         /// <param name="resources">The resources.</param>
         /// <param name="manifestInfoEntries">The manifest information entries.</param>
         /// <param name="sequenceCodec">The sequence codec.</param>
+        /// <param name="factory">The tool factory.</param>
+        /// <exception cref="InvalidOperationException">Model not compatible with name finder!</exception>
         /// <exception cref="System.InvalidOperationException">Model not compatible with name finder!</exception>
         public TokenNameFinderModel(
             string languageCode,
@@ -96,8 +101,9 @@ namespace SharpNL.NameFind {
             byte[] generatorDescriptor,
             Dictionary<string, object> resources,
             Dictionary<string, string> manifestInfoEntries,
-            ISequenceCodec<string> sequenceCodec)
-            : base(ComponentName, languageCode, manifestInfoEntries) {
+            ISequenceCodec<string> sequenceCodec,
+            TokenNameFinderFactory factory)
+            : base(ComponentName, languageCode, manifestInfoEntries, factory) {
             Manifest[Parameters.BeamSize] = beamSize.ToString(CultureInfo.InvariantCulture);
 
             Init(nameFinderModel, generatorDescriptor, resources, sequenceCodec);
@@ -121,7 +127,7 @@ namespace SharpNL.NameFind {
             byte[] generatorDescriptor, 
             Dictionary<string, object> resources,
             Dictionary<string, string> manifestInfoEntries)
-            : this(languageCode, nameFinderModel, NameFinderME.DefaultBeamSize, generatorDescriptor, resources, manifestInfoEntries, new BioCodec()) {
+            : this(languageCode, nameFinderModel, NameFinderME.DefaultBeamSize, generatorDescriptor, resources, manifestInfoEntries, new BioCodec(), new TokenNameFinderFactory()) {
             
         }
 
@@ -302,7 +308,8 @@ namespace SharpNL.NameFind {
                     descriptor, 
                     new Dictionary<string, object>(), 
                     new Dictionary<string, string>(), 
-                    Factory.CreateSequenceCodec());
+                    Factory.CreateSequenceCodec(),
+                    Factory);
 
                 goto found;
             } 
@@ -315,7 +322,8 @@ namespace SharpNL.NameFind {
                     descriptor, 
                     new Dictionary<string, object>(), 
                     new Dictionary<string, string>(), 
-                    Factory.CreateSequenceCodec());
+                    Factory.CreateSequenceCodec(),
+                    Factory);
                 goto found;
             }
 

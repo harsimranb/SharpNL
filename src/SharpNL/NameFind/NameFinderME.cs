@@ -307,7 +307,7 @@ namespace SharpNL.NameFind {
             var trainerType = TrainerFactory.GetTrainerType(parameters);
 
             IMaxentModel meModel = null;
-            ML.Model.ISequenceClassificationModel<string> scModel = null;
+            ML.Model.ISequenceClassificationModel<string> seqModel = null;
 
             switch (trainerType) {
                 case TrainerType.EventModelTrainer:
@@ -328,20 +328,21 @@ namespace SharpNL.NameFind {
                     var sqTrainer = TrainerFactory.GetSequenceModelTrainer(parameters, manifestInfoEntries, monitor);
 
 
-                    scModel = sqTrainer.Train(sequenceStream);
+                    seqModel = sqTrainer.Train(sequenceStream);
                     break;
                 default:
                     throw new InvalidOperationException("Unexpected trainer type!");
             }
 
-            if (scModel != null) {
+            if (seqModel != null) {
                 return new TokenNameFinderModel(
                     languageCode,
-                    scModel,
+                    seqModel,
                     factory.FeatureGenerator,
                     factory.Resources,
                     manifestInfoEntries,
-                    factory.SequenceCodec);
+                    factory.SequenceCodec,
+                    factory);
             }
 
             return new TokenNameFinderModel(
@@ -351,7 +352,8 @@ namespace SharpNL.NameFind {
                 factory.FeatureGenerator,
                 factory.Resources,
                 manifestInfoEntries,
-                factory.SequenceCodec);
+                factory.SequenceCodec,
+                factory);
         }
 
         #endregion
