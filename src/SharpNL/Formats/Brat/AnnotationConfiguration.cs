@@ -24,6 +24,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using SharpNL.Tokenize;
 
 namespace SharpNL.Formats.Brat {
     /// <summary>
@@ -92,22 +93,24 @@ namespace SharpNL.Formats.Brat {
                 while ((line = reader.ReadLine()) != null) {
                     line = line.Trim();
 
-                    if (line.Length == 0 || line.StartsWith("#")) {
+                    if (string.IsNullOrWhiteSpace(line) || line.StartsWith("#"))
                         continue;
-                    }
 
                     if (line.StartsWith("[") && line.EndsWith("]")) {
                         sectionType = line.TrimStart('[').TrimEnd(']');
                     } else {
+
+                        var typeName = WhitespaceTokenizer.Instance.Tokenize(line)[0];
+
                         switch (sectionType) {
                             case "attributes":
-                                typeToClassMap.Add(line.Substring(0, line.IndexOf(" ", StringComparison.Ordinal)), ATTRIBUTE_TYPE);
+                                typeToClassMap.Add(typeName, ATTRIBUTE_TYPE);
                                 continue;
                             case "entities":
-                                typeToClassMap.Add(line, ENTITY_TYPE);
+                                typeToClassMap.Add(typeName, ENTITY_TYPE);
                                 continue;
                             case "relations":
-                                typeToClassMap.Add(line.Substring(0, line.IndexOf(' ')), RELATION_TYPE);
+                                typeToClassMap.Add(typeName, RELATION_TYPE);
                                 continue;
                         }
                     }
