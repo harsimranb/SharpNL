@@ -21,24 +21,19 @@
 //  
 
 using System.Collections.Generic;
-using SharpNL.Chunker;
 using SharpNL.Utility;
 
 namespace SharpNL.Parser {
     public class ParserChunkerSequenceValidator : ISequenceValidator<string> {
         private readonly Dictionary<string, string> continueStartMap;
 
-        public ParserChunkerSequenceValidator(ChunkerModel model) {
-            var seqModel = model.ChunkerSequenceModel;
-            var outcomes = seqModel.GetOutcomes();
+        public ParserChunkerSequenceValidator(string[] outcomes) {
 
-            continueStartMap = new Dictionary<string, string>();
+            continueStartMap = new Dictionary<string, string>(outcomes.Length);
 
             foreach (var outcome in outcomes) {
-                if (outcome.StartsWith(AbstractBottomUpParser.CONT)) {
-                    continueStartMap.Add(outcome,
-                        AbstractBottomUpParser.START + outcome.Substring(AbstractBottomUpParser.CONT.Length));
-                }
+                if (outcome.StartsWith(AbstractBottomUpParser.CONT))
+                    continueStartMap.Add(outcome, AbstractBottomUpParser.START + outcome.Substring(AbstractBottomUpParser.CONT.Length));               
             }
         }
 
@@ -52,29 +47,28 @@ namespace SharpNL.Parser {
         /// <param name="outcome">The next proposed outcome for the outcomes sequence.</param>
         /// <returns><c>true</c> if the sequence would still be valid with the new outcome, <c>false</c> otherwise.</returns>
         public bool ValidSequence(int index, string[] inputSequence, string[] outcomesSequence, string outcome) {
-            if (continueStartMap.ContainsKey(outcome)) {
-                var lti = outcomesSequence.Length - 1;
+            if (!continueStartMap.ContainsKey(outcome)) 
+                return true;
 
-                if (lti == -1) {
-                    return false;
-                }
+            var length = outcomesSequence.Length - 1;
 
-                if (outcomesSequence[lti].Equals(outcome)) {
-                    return true;
-                }
-
-                if (outcomesSequence[lti].Equals(continueStartMap[outcome])) {
-                    return true;
-                }
-
-                if (outcomesSequence[lti].Equals(AbstractBottomUpParser.OTHER)) {
-                    return false;
-                }
-
+            if (length == -1) {
                 return false;
             }
 
-            return true;
+            if (outcomesSequence[length].Equals(outcome)) {
+                return true;
+            }
+
+            if (outcomesSequence[length].Equals(continueStartMap[outcome])) {
+                return true;
+            }
+
+            if (outcomesSequence[length].Equals(AbstractBottomUpParser.OTHER)) {
+                return false;
+            }
+
+            return false;
         }
     }
 }

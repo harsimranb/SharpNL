@@ -159,7 +159,6 @@ namespace SharpNL.ML.Model {
         #endregion
 
         #region . GetOutcome .
-
         /// <summary>
         /// Gets the string name of the outcome associated with the index,
         /// </summary>
@@ -168,8 +167,18 @@ namespace SharpNL.ML.Model {
         public string GetOutcome(int index) {
             return outcomeNames[index];
         }
-
         #endregion
+
+        #region . GetOutcomes .
+        /// <summary>
+        /// Gets an array of the current outcome names.
+        /// </summary>
+        /// <returns>An array of the current outcome names.</returns>
+        public string[] GetOutcomes() {
+            return outcomeNames;
+        }
+        #endregion
+
 
         #region . GetIndex .
 
@@ -189,7 +198,6 @@ namespace SharpNL.ML.Model {
         #endregion
 
         #region . GetNumOutcomes .
-
         /// <summary>
         /// Gets the data structures relevant to storing the model.
         /// </summary>

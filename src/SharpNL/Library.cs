@@ -45,7 +45,9 @@ namespace SharpNL {
         static Library() {
             Version = typeof(Library).Assembly.GetName().Version;
 
-            OpenNLPVersion = new Ver(1, 5, 3, false);
+
+            MinOpenNLPVersion = new Ver(1, 5, 0, false);
+            MaxOpenNLPVersion = new Ver(1, 5, 3, false);
 
             LoadKnownTypes();
 
@@ -68,14 +70,20 @@ namespace SharpNL {
 
         #region + Properties .
 
-        #region . OpenNLPVersion .
-
+        #region . MinOpenNLPVersion .
         /// <summary>
-        /// Gets the supported OpenNLP version.
+        /// Gets the minimum supported version of OpenNLP.
+        /// </summary>
+        /// <value>The minimum supported version of OpenNLP</value>
+        public static Ver MinOpenNLPVersion { get; private set; }
+        #endregion
+
+        #region . MaxOpenNLPVersion .
+        /// <summary>
+        /// Gets the highest supported OpenNLP version.
         /// </summary>
         /// <value>The supported OpenNLP version.</value>
-        public static Ver OpenNLPVersion { get; private set; }
-
+        public static Ver MaxOpenNLPVersion { get; private set; }
         #endregion
 
         #region . Version .
@@ -152,6 +160,7 @@ namespace SharpNL {
 
         #region . GetLang .
         private static readonly Dictionary<string, string> langCache;
+
         /// <summary>
         /// Gets the ISO 639-1 two-letter code for the language of the specified <paramref name="cultureName"/>.
         /// </summary>
@@ -161,15 +170,16 @@ namespace SharpNL {
             if (string.IsNullOrEmpty(cultureName))
                 return null;
 
-            if (!langCache.ContainsKey(cultureName)) {
-                lock (langCache) {
-                    var info = CultureInfo.GetCultureInfo(cultureName);
+            lock (langCache) {
+                if (langCache.ContainsKey(cultureName))
+                    return langCache[cultureName];
 
-                    langCache[cultureName] = info.TwoLetterISOLanguageName;
-                }
-            }
+                var info = CultureInfo.GetCultureInfo(cultureName);
 
-            return langCache[cultureName];
+                langCache[cultureName] = info.TwoLetterISOLanguageName;
+
+                return langCache[cultureName];
+            }           
         }
         #endregion
 

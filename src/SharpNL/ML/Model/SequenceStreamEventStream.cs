@@ -55,18 +55,16 @@ namespace SharpNL.ML.Model {
         /// The next object or null to signal that the stream is exhausted.
         /// </returns>
         public Event Read() {
-            if (enumerator != null && enumerator.MoveNext()) {
-                return enumerator.Current;
-            }
+            while (true) {
+                if (enumerator != null && enumerator.MoveNext()) 
+                    return enumerator.Current;
 
-            var sequence = sequenceStream.Read();
+                var sequence = sequenceStream.Read();
+                if (sequence == null)
+                    return null;
 
-            if (sequence != null) {
                 enumerator = new List<Event>(sequence.Events).GetEnumerator();
-                return Read();
             }
-
-            return null;
         }
 
         /// <summary>

@@ -95,6 +95,10 @@ namespace SharpNL.Tests.Utility {
                 return oc[index];
             }
 
+            public string[] GetOutcomes() {
+                return oc;
+            }
+
             public int GetIndex(string outcome) {
                 return 0;
             }

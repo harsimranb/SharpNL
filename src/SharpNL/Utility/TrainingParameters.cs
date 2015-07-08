@@ -152,6 +152,17 @@ namespace SharpNL.Utility {
 
         #endregion
 
+        #region . GetParameters .
+
+#if DEBUG
+        [Obsolete("Use GetNamespace instead.", true)]
+        public TrainingParameters GetParameters(string ns) {
+            throw new InvalidOperationException();
+        }
+#endif
+
+        #endregion
+
         #region . GetNamespace .
 
         /// <summary>
@@ -165,10 +176,11 @@ namespace SharpNL.Utility {
 
             var p = new TrainingParameters();
             foreach (var pk in properties) {
-                if (pk.StartsWith(ns)) {
-                    string key = pk.Substring(ns.Length);
-                    p.Set(key, properties[pk]);
-                }
+                if (!pk.StartsWith(ns)) 
+                    continue;
+
+                var key = pk.Substring(ns.Length);
+                p.Set(key, properties[pk]);
             }
             return p;
         }

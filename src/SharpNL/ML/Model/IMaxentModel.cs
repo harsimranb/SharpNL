@@ -37,16 +37,6 @@ namespace SharpNL.ML.Model {
         /// <returns>The string name of the best outcome.</returns>
         string GetBestOutcome(double[] outcomes);
 
-        /*
-        /// <summary>
-        /// Return a string matching all the outcome names with all the probabilities produced by the <code>eval(String[] context)</code> method.
-        /// </summary>
-        /// <param name="outcomes">A <code>double[]</code> as returned by the <code>eval(String[] context)</code> method.</param>
-        /// <returns>A string containing outcome names paired with the normalized probability (contained in the <code>double[] ocs</code>) for each one.</returns>
-        /// TODO: This should be removed, can't be used anyway without format spec.
-        string GetAllOutcomes(double[] outcomes);
-        */
-
         /// <summary>
         /// Gets the string name of the outcome associated with the index,
         /// </summary>
@@ -54,6 +44,11 @@ namespace SharpNL.ML.Model {
         /// <returns>The string name of the outcome.</returns>
         string GetOutcome(int index);
 
+        /// <summary>
+        /// Gets an array of the outcome names.
+        /// </summary>
+        /// <returns>An array of the current outcome names.</returns>
+        string[] GetOutcomes();
 
         /// <summary>
         /// Gets the index associated with the String name of the given outcome.
@@ -61,7 +56,6 @@ namespace SharpNL.ML.Model {
         /// <param name="outcome">The string name of the outcome for which the index is desired.</param>
         /// <returns>The index if the given outcome label exists for this model, -1 if it does not.</returns>
         int GetIndex(string outcome);
-
 
         /// <summary>
         /// Gets the data structures relevant to storing the model.
