@@ -10,7 +10,7 @@
 
 ## Main features/characteristics
 
-> - Fully C# managed NET 4.5 library
+> - Fully C# managed NET 4.5 library.
 > - Fully compatible with the OpenNLP models.
 > - Was built from scratch by hand, without any assist tool in order to maximize the synergy with .net technology.
 > - There are [analyzers](https://github.com/knuppe/SharpNL/wiki/Analyzers) that help a lot the implementation and abstraction of this library.  
@@ -22,16 +22,23 @@
 
 ## Goals
 
-> Implement the best library of natural language processing in C#, which means:
+> Implement the "best" library of natural language processing in C#, which means:
 > - Be as lightweight as possible
 > - Have a good set of tools available in a single library
 
 ## TODO
 
-> - Run a Profiler to reduce memory and CPU utilization.
+> - Run a Profiler and improve the code to reduce memory and CPU utilization.
 > - Ensure that the library is compatible with Mono.
+> - Make the library compatible with .NET 4.0
 
 > [How to contribute](contributing.md)
+
+## WIP/Planned
+> - [Vector Classifier](https://en.wikipedia.org/wiki/Support_vector_machine)
+> - I'm trying to implement the [IStemmer](http://msdn.microsoft.com/en-us/library/windows/desktop/bb266437(v=vs.85).aspx) from [WindowsSearch](https://msdn.microsoft.com/en-us/library/aa965362.aspx)
+but the documentation from MS is VERY poor... :(
+
 
 ## Support
 
