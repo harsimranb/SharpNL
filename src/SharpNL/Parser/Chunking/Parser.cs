@@ -56,12 +56,8 @@ namespace SharpNL.Parser.Chunking {
             : this(
                 model.BuildModel,
                 model.CheckModel, 
-                new POSTaggerME(model.ParserTaggerModel, 10, 0),
-                new ChunkerME(
-                    model.ParserChunkerModel, 
-                    ChunkerME.DefaultBeamSize, 
-                    new ParserChunkerSequenceValidator(model.ParserChunkerModel),
-                    new ChunkContextGenerator(ChunkerME.DefaultBeamSize)), 
+                new POSTaggerME(model.ParserTaggerModel), 
+                new ChunkerME(model.ParserChunkerModel), 
                 model.HeadRules, 
                 beamSize, 
                 advancePercentage) {
@@ -405,14 +401,21 @@ namespace SharpNL.Parser.Chunking {
             samples.Reset();
 
             // tag
+            var posTaggerParams = parameters.GetNamespace("tagger");
+            if (!posTaggerParams.Contains(Parameters.BeamSize))
+                posTaggerParams.Set(Parameters.BeamSize, "10");
+
+
             var posModel = POSTaggerME.Train(languageCode, new PosSampleStream(samples),
                 parameters.GetNamespace("tagger"), new POSTaggerFactory());
 
             samples.Reset();
 
             // chunk
-            var chunkModel = ChunkerME.Train(languageCode, new ChunkSampleStream(samples),
-                parameters.GetNamespace("chunker"), new ChunkerFactory());
+            var chunkModel = ChunkerME.Train(languageCode, 
+                new ChunkSampleStream(samples),
+                parameters.GetNamespace("chunker"),
+                new ParserChunkerFactory());
 
             samples.Reset();
 

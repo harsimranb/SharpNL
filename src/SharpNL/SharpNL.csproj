@@ -84,6 +84,7 @@
     <Compile Include="NameFind\IEntity.cs" />
     <Compile Include="NameFind\NameFinderAnalyzer.cs" />
     <Compile Include="Parser\ParserAnalyzer.cs" />
+    <Compile Include="Parser\ParserChunkerFactory.cs" />
     <Compile Include="Parser\ParserCrossEvaluator.cs" />
     <Compile Include="POSTag\POSTaggerAnalyzer.cs" />
     <Compile Include="Classifier\IClassClassifier.cs" />

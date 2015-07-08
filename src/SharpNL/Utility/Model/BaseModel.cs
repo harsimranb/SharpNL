@@ -71,7 +71,7 @@ namespace SharpNL.Utility.Model {
 
             Manifest[ManifestVersionProperty] = "1.0";
             Manifest[LanguageEntry] = languageCode;
-            Manifest[VersionProperty] = Library.OpenNLPVersion.ToString();
+            Manifest[VersionProperty] = Library.MaxOpenNLPVersion.ToString();
             Manifest[TimestampEntry] = Library.CurrentTimeMillis().ToString(CultureInfo.InvariantCulture);
             Manifest[ComponentNameEntry] = componentName;
 
@@ -89,10 +89,14 @@ namespace SharpNL.Utility.Model {
 
                 Manifest[FactoryName] = Library.TypeResolver.ResolveName(toolFactory.GetType());
 
+                // Assign the model as the artifact provider.
+                toolFactory.Initialize(this);
+
+                /* TODO: Clean up
                 var map = toolFactory.CreateArtifactMap();
                 foreach (var item in map) {
                     artifactMap.Add(item.Key, item.Value);
-                }
+                } */
 
                 var entries = toolFactory.CreateManifestEntries();
                 foreach (var item in entries) {
@@ -130,6 +134,7 @@ namespace SharpNL.Utility.Model {
         /// <param name="componentName">Name of the component.</param>
         /// <param name="stream">The input stream containing the model.</param>
         protected BaseModel(string componentName, Stream stream) : this(componentName) {
+            IsLoadedFromSerialized = true;
             Deserialize(stream);
         }
 
@@ -175,6 +180,16 @@ namespace SharpNL.Utility.Model {
         public string Language {
             get { return Manifest[LanguageEntry]; }
             protected set { Manifest[LanguageEntry] = value; }
+        }
+        #endregion
+
+        #region . Version .
+        /// <summary>
+        /// Gets the OpenNLP version which was used to create the model.
+        /// </summary>
+        /// <value>The <see cref="Version"/> object.</value>
+        public Version Version {
+            get { return Version.Parse(Manifest[VersionProperty]); }
         }
         #endregion
 
@@ -279,16 +294,15 @@ namespace SharpNL.Utility.Model {
 
             var version = Version.Parse(Manifest[VersionProperty]);
 
-            if (version == null) {
+            if (version == null)
                 throw new InvalidFormatException("Unable to parse the model version.");
-            }
-            if (version.Major != 1 || version.Minor != 5) {
-                throw new InvalidFormatException(string.Format(
-                    "The model version {0} is not supported by this version.", version));
-            }
-            if (version.Snapshot) {
+            
+            if (version < Library.MinOpenNLPVersion || version > Library.MaxOpenNLPVersion)
+                throw new InvalidFormatException(string.Format("The model version {0} is not supported by this version.", version));
+            
+            if (version.Snapshot)
                 throw new InvalidFormatException("Snapshot models are not supported!");
-            }
+           
         }
 
         #endregion

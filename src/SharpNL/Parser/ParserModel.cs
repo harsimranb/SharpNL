@@ -63,6 +63,7 @@ namespace SharpNL.Parser {
             AbstractHeadRules headRules,
             ParserType modelType,
             Dictionary<string, string> manifestInfoEntries) : base(ComponentName, languageCode, manifestInfoEntries) {
+
             switch (modelType) {
                 case ParserType.Chunking:
                     if (attachModel != null)
@@ -234,7 +235,17 @@ namespace SharpNL.Parser {
                     throw new InvalidOperationException();
 
                 model.Serialize(stream);
-            }, stream => new POSModel(stream));
+            }, stream => {
+                var model = new POSModel(stream);
+
+                // The 1.6.x models write the non-default beam size into the model itself.
+                // In 1.5.x the parser configured the beam size when the model was loaded,
+                // this is not possible anymore with the new APIs
+                if (model.Version.Major == 1 && model.Version.Minor == 5 && !model.Manifest.Contains(Parameters.BeamSize))
+                    return new POSModel(model.Language, model.MaxentModel, 10, null, model.Factory);
+
+                return model;
+            });
 
             RegisterArtifactType(".chunker", (artifact, stream) => {
                 var model = artifact as ChunkerModel;
@@ -242,7 +253,15 @@ namespace SharpNL.Parser {
                     throw new InvalidOperationException();
 
                 model.Serialize(stream);
-            }, stream => new ChunkerModel(stream));
+            }, stream => {
+                var model = new ChunkerModel(stream);
+
+                if (model.Version.Major == 1 && model.Version.Minor == 5) {
+                    return new ChunkerModel(model.Language, model.MaxentModel, new ParserChunkerFactory());
+                }
+
+                return model;
+            });
         }
 
         #endregion

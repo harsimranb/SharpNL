@@ -61,6 +61,17 @@ namespace SharpNL.Chunker {
         /// </summary>
         /// <param name="languageCode">The language code.</param>
         /// <param name="chunkerModel">The chunker model.</param>
+        /// <param name="factory">The chunker factory.</param>
+        public ChunkerModel(string languageCode, IMaxentModel chunkerModel, ChunkerFactory factory)
+            : this(languageCode, chunkerModel, ChunkerME.DefaultBeamSize, null, factory) {
+
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ChunkerModel"/> class.
+        /// </summary>
+        /// <param name="languageCode">The language code.</param>
+        /// <param name="chunkerModel">The chunker model.</param>
         /// <param name="manifestInfoEntries">The manifest information entries.</param>
         /// <param name="factory">The chunker factory.</param>
         public ChunkerModel(string languageCode, IMaxentModel chunkerModel, Dictionary<string, string> manifestInfoEntries, ChunkerFactory factory) 

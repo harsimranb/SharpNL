@@ -77,8 +77,6 @@ namespace SharpNL.Tests.Compatibility {
 
         }
 
-
-
         [Test]
         public void TestQuestionsManually() {
             var sentences = new[] {
@@ -96,7 +94,7 @@ namespace SharpNL.Tests.Compatibility {
                 "(TOP (SQ (VBP Do) (NP (NNS animals)) (VP (VB eat) (NP (NN fruit))) (. ?)))",
                 "(TOP (SBARQ (WHNP (WP What)) (SQ (VBP do) (NP (NNS animals)) (VP (VB eat))) (. ?)))", 
                 "(TOP (SBARQ (WHADVP (WRB Why)) (SQ (VBP do) (NP (NNS animals)) (VP (VB eat) (NP (NN fruit)))) (. ?)))",
-                "(TOP (SBAR (WHADJP (WRB How)) (S (NP (JJ much) (NN fruit)) (VP (VBP do) (S (NP (NNS animals)) (VP (VB eat))))) (. ?)))",
+                "(TOP (SBAR (WHADVP (WRB How)) (S (NP (JJ much) (NN fruit)) (VP (VBP do) (S (NP (NNS animals)) (VP (VB eat))))) (. ?)))",
                 "(TOP (SBARQ (WHADVP (WRB Where)) (SQ (VBP do) (NP (NNS animals)) (VP (VB eat))) (. ?)))",
                 "(TOP (SBARQ (WHADVP (WRB When)) (SQ (VBP do) (NP (NNS animals)) (VP (VB eat))) (. ?)))"
             };
@@ -114,39 +112,41 @@ namespace SharpNL.Tests.Compatibility {
         }
 
 
-        //[Test]
+        [Test]
         public void TestParse() {
 
-            // This test can't be done becouse a bug in the OpenNLP IKVM version
-            // https://issues.apache.org/jira/browse/OPENNLP-727
-
-            //const string sentence = "The quick brown fox jumps over the lazy dog .";
-
-            const string sentence = "How much fruit do animals eat ?";
 
             var jParser = CreateJavaParser(modelFile);
             var sParser = CreateSharpParser(modelFile);
 
-            var jParses = opennlp.tools.cmdline.parser.ParserTool.parseLine(sentence, jParser, 1);
-            var sParses = ParserTool.ParseLine(sentence, sParser, 1);
 
-            var jsb = new java.lang.StringBuffer();
+            var sentences = new[] {
+                "Let all your things have their places; let each part of your business have its time.",
+                "It has become appallingly obvious that our technology has exceeded our humanity.",
+                "The real problem is not whether machines think but whether men do.",  
+                "The worst form of inequality is to try to make unequal things equal.",
+                "People won't have time for you if you are always angry or complaining.",
+                "To keep the body in good health is a duty... otherwise we shall not be able to keep our mind strong and clear.",
+                "You, yourself, as much as anybody in the entire universe, deserve your love and affection."
+            };
 
-            jParses[0].show(jsb);
 
-            Assert.AreEqual("(TOP (SBAR (WHADJP (WRB How)) (S (NP (JJ much) (NN fruit)) (VP (VBP do) (S (NP (NNS animals)) (VP (VB eat))))) (. ?)))",
-                jsb.toString());
+            foreach (var sentence in sentences) {
 
-            Assert.AreEqual("(TOP (SBAR (WHADJP (WRB How)) (S (NP (JJ much) (NN fruit)) (VP (VBP do) (S (NP (NNS animals)) (VP (VB eat))))) (. ?)))",
-                sParses[0].ToString());
+                var jParses = opennlp.tools.cmdline.parser.ParserTool.parseLine(sentence, jParser, 1);
+                var sParses = ParserTool.ParseLine(sentence, sParser, 1);
 
-            Assert.NotNull(sParses);
+                var jsb = new java.lang.StringBuffer();
 
-            //CheckParseChild(jParses, sParses);
+                jParses[0].show(jsb);
 
+                Assert.AreEqual(jsb.toString(), sParses[0].ToString());
+
+                jParses[0].show(jsb);
+            }
         }
 
-        //[Test]
+        [Test]
         public void TestQuestions() {
             var sentences = new [] {
                 "How are you?",
