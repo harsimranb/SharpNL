@@ -92,11 +92,10 @@ namespace SharpNL.Utility.Model {
                 // Assign the model as the artifact provider.
                 toolFactory.Initialize(this);
 
-                /* TODO: Clean up
                 var map = toolFactory.CreateArtifactMap();
                 foreach (var item in map) {
                     artifactMap.Add(item.Key, item.Value);
-                } */
+                }
 
                 var entries = toolFactory.CreateManifestEntries();
                 foreach (var item in entries) {
