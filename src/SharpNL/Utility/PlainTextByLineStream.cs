@@ -29,7 +29,7 @@ namespace SharpNL.Utility {
     /// <summary>
     /// Reads a plain text file and return each line as a <see cref="T:string"/> object.
     /// </summary>
-    internal class PlainTextByLineStream : IObjectStream<string> {
+    public class PlainTextByLineStream : IObjectStream<string> {
         private readonly IInputStreamFactory streamFactory;
         private readonly Encoding encoding;
 
