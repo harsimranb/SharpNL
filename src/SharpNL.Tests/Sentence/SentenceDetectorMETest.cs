@@ -20,6 +20,8 @@
 //   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 //  
 
+using System;
+using System.IO;
 using System.Text;
 using NUnit.Framework;
 using SharpNL.SentenceDetector;
@@ -50,24 +52,49 @@ namespace SharpNL.Tests.Sentence {
             }
         }
 
-        /*
         [Test]
-        public void TestSentenceDetectorBosque() {
-            using (var file = Tests.OpenFile("/opennlp/tools/sentdetect/Bosque_CP_8.0.sd")) {
+        public void AbbreviationDefaultBehaviorTest() {
 
-                var mlParams = new TrainingParameters();
+            var samples =
+                "Test E-mail met zowel letsel als 12. Toedracht in het onderwerp." + Environment.NewLine +
+                "Dit is een 2e regel met een tel. 011-4441444 erin." + Environment.NewLine +
+                "Dit is een 2e regel." + Environment.NewLine +
+                "Dit is een 2e regel." + Environment.NewLine + Environment.NewLine +
 
-                mlParams.Set(Parameters.Iterations, "100");
-                mlParams.Set(Parameters.Cutoff, "5");
+                "Dit is een 2e regel met een tel. 033-1333123 erin!" + Environment.NewLine +
+                "Test E-mail met zowel winst als 12. Toedracht in het onderwerp." + Environment.NewLine +
+                "Dit is een 2e regel!" + Environment.NewLine +
+                "Dit is een 2e regel." + Environment.NewLine;
 
-                var sdFactory = new SentenceDetectorFactory("pt", true, null, null);
-                var stream = new SentenceSampleStream(new PlainTextByLineStream(file, Encoding.GetEncoding("ISO-8859-1")));
+            var stringsToIgnoreDictionary = new SharpNL.Dictionary.Dictionary(true) {
+                {"12. Toedracht"},
+                {"Tel."},
+            };
 
-                var model = SentenceDetectorME.Train("pt", stream, sdFactory, mlParams);
+            var trainingParameters = new TrainingParameters();
 
-                Assert.NotNull(model);
+            trainingParameters.Set(Parameters.Algorithm, "MAXENT");
+            trainingParameters.Set(Parameters.TrainerType, "Event");
+            trainingParameters.Set(Parameters.Iterations, "100");
+            trainingParameters.Set(Parameters.Cutoff, "5");
+
+            char[] eos = { '.', '?', '!' };
+            var sdFactory = new SentenceDetectorFactory("nl", true, stringsToIgnoreDictionary, eos);
+            var stringReader = new StringReader(samples);
+            var stream = new SentenceSampleStream(new PlainTextByLineStream(stringReader));
+
+            var sentenceModel = SentenceDetectorME.Train("nl", stream, sdFactory, trainingParameters);
+            var sentenceDetectorMe = new SentenceDetectorME(sentenceModel);
+
+            var sentences = sentenceDetectorMe.SentDetect(samples);
+            var expected = samples.Split(new []{ Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
+
+
+            Assert.AreEqual(8, sentences.Length);
+            for (int i = 0; i < sentences.Length; i++) {
+                Assert.AreEqual(expected[i], sentences[i]);
             }
-        } */
+        }
 
         [Test]
         public void TestWithOpenNLPModel() {

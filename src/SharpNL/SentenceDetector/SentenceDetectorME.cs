@@ -45,18 +45,20 @@ namespace SharpNL.SentenceDetector {
         private readonly ISentenceContextGenerator cgen;
         private readonly IMaxentModel model;
 
-
         private readonly IEndOfSentenceScanner scanner;
 
         private readonly List<double> sentProbs = new List<double>();
 
         private readonly bool useTokenEnd;
 
+        private readonly Dictionary.Dictionary abbDictionary;
+
         public SentenceDetectorME(SentenceModel sentenceModel) {
             model = sentenceModel.MaxentModel;
             cgen = sentenceModel.Factory.GetContextGenerator();
             scanner = sentenceModel.Factory.GetEndOfSentenceScanner();
             useTokenEnd = sentenceModel.UseTokenEnd;
+            abbDictionary = sentenceModel.Abbreviations;
         }
 
         #region . SentDetect .
@@ -196,7 +198,25 @@ namespace SharpNL.SentenceDetector {
         /// <param name="fromIndex">The start of the segment currently being evaluated.</param>
         /// <param name="candidateIndex">The index of the candidate sentence ending.</param>
         /// <returns><c>true</c> if if the break is acceptable; otherwise, <c>false</c>.</returns>
-        protected virtual bool IsAcceptableBreak(String s, int fromIndex, int candidateIndex) {
+        /// <remarks>
+        /// The default behavior of this method was changed to accept the 
+        /// abbreviations when the sentence model has a dictionary specified.
+        /// </remarks>
+        protected virtual bool IsAcceptableBreak(string s, int fromIndex, int candidateIndex) {
+            if (abbDictionary == null)
+                return true;
+
+            foreach (var abb in abbDictionary) {
+                var token = abb.Tokens[0];
+                var tokenLength = token.Length;
+
+                var tokenPosition = s.IndexOf(token, fromIndex, StringComparison.InvariantCultureIgnoreCase);
+                if (tokenPosition + tokenLength < candidateIndex || tokenPosition > candidateIndex) 
+                    continue;
+
+                return false;
+            }
+
             return true;
         }
         #endregion
