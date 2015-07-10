@@ -470,7 +470,9 @@ namespace SharpNL.Parser.TreeInsert {
 
             var manifestInfoEntries = new Dictionary<string, string>();
 
+#if DEBUG
             System.Diagnostics.Debug.Print("Building dictionary");
+#endif
 
             var dictionary = BuildDictionary(samples, rules, parameters);
 
@@ -496,7 +498,11 @@ namespace SharpNL.Parser.TreeInsert {
             samples.Reset();
 
             // build
+
+#if DEBUG
             System.Diagnostics.Debug.Print("Training builder");
+#endif
+
             var bes = new ParserEventStream(samples, rules, ParserEventTypeEnum.Build, dictionary);
             var buildReportMap = new Dictionary<string, string>();
             var buildTrainer = TrainerFactory.GetEventTrainer(parameters.GetNamespace("build"), buildReportMap, monitor);
@@ -508,7 +514,9 @@ namespace SharpNL.Parser.TreeInsert {
             samples.Reset();
 
             // check
+#if DEBUG
             System.Diagnostics.Debug.Print("Training checker");
+#endif
             var kes = new ParserEventStream(samples, rules, ParserEventTypeEnum.Check);
             var checkReportMap = new Dictionary<string, string>();
 
@@ -521,7 +529,9 @@ namespace SharpNL.Parser.TreeInsert {
             samples.Reset();
 
             // attach
+#if DEBUG
             System.Diagnostics.Debug.Print("Training attacher");
+#endif
             var attachEvents = new ParserEventStream(samples, rules, ParserEventTypeEnum.Attach);
             var attachReportMap = new Dictionary<string, string>();
 

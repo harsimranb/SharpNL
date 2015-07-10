@@ -47,7 +47,7 @@ namespace SharpNL {
 
 
             MinOpenNLPVersion = new Ver(1, 5, 0, false);
-            MaxOpenNLPVersion = new Ver(1, 5, 3, false);
+            MaxOpenNLPVersion = new Ver(1, 6, 0, false);
 
             LoadKnownTypes();
 

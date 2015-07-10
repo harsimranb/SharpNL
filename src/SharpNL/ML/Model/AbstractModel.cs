@@ -149,7 +149,7 @@ namespace SharpNL.ML.Model {
         /// </summary>
         /// <param name="outcomes">The outcomes to be evaluated.</param>
         /// <returns>The string name of the best outcome.</returns>
-        string IMaxentModel.GetBestOutcome(double[] outcomes) {
+        public string GetBestOutcome(double[] outcomes) {
             var best = 0;
             for (var i = 1; i < outcomes.Length; i++)
                 if (outcomes[i] > outcomes[best]) best = i;
