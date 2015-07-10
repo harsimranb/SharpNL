@@ -22,6 +22,7 @@
 
 using System;
 using System.Collections.Generic;
+using SharpNL.Inflecter.Lang;
 
 namespace SharpNL.Inflecter {
     /// <summary>
@@ -41,7 +42,7 @@ namespace SharpNL.Inflecter {
         private static bool LoadInternal(string language) {
             switch (language) {
                 case "en":
-                    infletors.Add(language, new Lang.en.Inflecter());
+                    infletors.Add(language, new EnInflecter());
                     return true;
             }
             return false;

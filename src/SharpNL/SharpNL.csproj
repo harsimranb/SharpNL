@@ -77,7 +77,7 @@
     <Compile Include="IDocument.cs" />
     <Compile Include="Inflecter\IInfleter.cs" />
     <Compile Include="Inflecter\Inflector.cs" />
-    <Compile Include="Inflecter\Lang\en\Inflecter.cs" />
+    <Compile Include="Inflecter\Lang\EnInflecter.cs" />
     <Compile Include="ITextFactory.cs" />
     <Compile Include="Lemmatizer\AbstractLemmatizer.cs" />
     <Compile Include="Lemmatizer\DictionaryLemmatizer.cs" />

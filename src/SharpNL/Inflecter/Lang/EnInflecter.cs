@@ -26,7 +26,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using SharpNL.Extensions;
 
-namespace SharpNL.Inflecter.Lang.en {
+namespace SharpNL.Inflecter.Lang {
 
     /// <summary>
     /// Represents a english inflector.
@@ -56,7 +56,7 @@ namespace SharpNL.Inflecter.Lang.en {
     /// OUT OF OR IN CONNECTION WITH THIS SOFTWARE OR THE USE OR OTHER DEALINGS IN
     /// THIS SOFTWARE.
     /// </remarks>
-    public class Inflecter : IInfleter {
+    public class EnInflecter : IInfleter {
 
         // plural
         private static readonly Dictionary<string, List<string>> pluralCategories;
@@ -100,9 +100,9 @@ namespace SharpNL.Inflecter.Lang.en {
 
 
         /// <summary>
-        /// Initializes static members of the <see cref="Inflecter"/> class.
+        /// Initializes static members of the <see cref="EnInflecter"/> class.
         /// </summary>
-        static Inflecter() {
+        static EnInflecter() {
             pluralCategories = new Dictionary<string, List<string>> {
                 {"uninflected", new List<string> {
                      "bison", "bream", "breeches", "britches", "carp", "chassis", "clippers", "cod", "contretemps",
@@ -216,7 +216,7 @@ namespace SharpNL.Inflecter.Lang.en {
                     new PluralRule("sheep$", "sheep", null, false),
                     new PluralRule("deer$", "deer", null, false),
                     new PluralRule("pox$", "pox", null, false),
-                    new PluralRule("(new PluralRule(A-Z).*)ese$", "$1ese", null, false),
+                    new PluralRule("ese$", "$1ese", null, false),
                     new PluralRule("itis$", "itis", null, false),
                     new PluralRule("(fruct|gluc|galact|lact|ket|malt|rib|sacchar|cellul)ose$", "$1ose", null, false)
                 },
@@ -447,9 +447,9 @@ namespace SharpNL.Inflecter.Lang.en {
         #endregion
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Inflecter"/> class using the classical inflection as default.
+        /// Initializes a new instance of the <see cref="EnInflecter"/> class using the classical inflection as default.
         /// </summary>
-        public Inflecter() {
+        public EnInflecter() {
             Classical = true;
 
             AdjectiveTag = "JJ";
@@ -478,7 +478,7 @@ namespace SharpNL.Inflecter.Lang.en {
 
         #region . Classical .
         /// <summary>
-        /// Gets or sets a value indicating whether this <see cref="Inflecter"/> is using the classical inflection. e.g. where "matrix" pluralizes to "matrices" instead of "matrixes"
+        /// Gets or sets a value indicating whether this <see cref="EnInflecter"/> is using the classical inflection. e.g. where "matrix" pluralizes to "matrices" instead of "matrixes"
         /// </summary>
         /// <value><c>true</c> if using classical inflection; otherwise, <c>false</c>.</value>
         public bool Classical { get; set; }
@@ -518,7 +518,7 @@ namespace SharpNL.Inflecter.Lang.en {
             // Remove the apostrophe and any trailing -s,
             // form the plural of the resultant noun, and then append an apostrophe (dog's -> dogs').
             if (word.EndsWith("'") || word.EndsWith("'s", StringComparison.OrdinalIgnoreCase)) {
-                var owner = word.TrimEnd(new[] {'\'', 's'});
+                var owner = word.TrimEnd('\'', 's');
                 var owners = Pluralize(owner, pos);
 
                 return owners.EndsWith("s", StringComparison.OrdinalIgnoreCase)
