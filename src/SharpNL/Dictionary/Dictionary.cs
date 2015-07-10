@@ -341,6 +341,7 @@ namespace SharpNL.Dictionary {
         /// Converts the dictionary to a <see cref="List{T}"/>.
         /// </summary>
         /// <returns>A string list object.</returns>
+        /// <remarks>If this dictionary entries are multi tokens only the first token of the entry will be part of the list.</remarks>
         public virtual List<string> ToList() {
             var toList = new List<string>();
             var e = GetEnumerator();
