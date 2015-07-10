@@ -36,9 +36,6 @@
 
 ## WIP/Planned
 > - [Vector Classifier](https://en.wikipedia.org/wiki/Support_vector_machine)
-> - I'm trying to implement the [IStemmer](http://msdn.microsoft.com/en-us/library/windows/desktop/bb266437(v=vs.85).aspx) from [WindowsSearch](https://msdn.microsoft.com/en-us/library/aa965362.aspx)
-but the documentation from MS is VERY poor... :(
-
 
 ## Support
 
