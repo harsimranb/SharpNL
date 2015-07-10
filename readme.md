@@ -6,12 +6,12 @@
 
 ## Release
 
-> Public release available at [NuGet] \(Current version: 1.0 __Beta__\)
+> Public release available at [NuGet] \(Current version: 1.1)
 
 ## Main features/characteristics
 
 > - Fully C# managed NET 4.5 library.
-> - Fully compatible with the OpenNLP models.
+> - Fully compatible with the OpenNLP models (1.5, 1.5.3 and 1.6).
 > - Was built from scratch by hand, without any assist tool in order to maximize the synergy with .net technology.
 > - There are [analyzers](https://github.com/knuppe/SharpNL/wiki/Analyzers) that help a lot the implementation and abstraction of this library.  
 > - The heavy operations (like training) can be monitored and cancelled.
@@ -28,14 +28,13 @@
 
 ## TODO
 
-> - Run a Profiler and improve the code to reduce memory and CPU utilization.
 > - Ensure that the library is compatible with Mono.
-> - Make the library compatible with .NET 4.0
 
 > [How to contribute](contributing.md)
 
 ## WIP/Planned
 > - [Vector Classifier](https://en.wikipedia.org/wiki/Support_vector_machine)
+> - Run a Profiler and improve the code to reduce memory and CPU utilization.
 
 ## Support
 
