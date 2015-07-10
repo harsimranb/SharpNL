@@ -20,6 +20,7 @@
 //   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 //  
 
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -55,6 +56,23 @@ namespace SharpNL.Formats.Ad {
             eosCharacters = new[] {'.', '?', '!', ';', ':', '(', ')', '«', '»', '\'', '"'};
         }
 
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AdSentenceSampleStream"/> stream from a line stream.
+        /// </summary>
+        /// <param name="adFile">The floresta Sita(c)tica Arvores Deitadas corpus <see cref="FileInfo"/> object.</param>
+        /// <param name="includeTitles">if set to <c>true</c> it will output the sentences marked as news headlines.</param>
+        /// <param name="safeParse">if set to <c>true</c> it will ignore the invalid Ad elements.</param>
+        public AdSentenceSampleStream(FileInfo adFile, bool includeTitles, bool safeParse) {
+            if (adFile == null)
+                throw new ArgumentNullException("adFile");
+            
+            if (!adFile.Exists)
+                throw new FileNotFoundException("The specified floresta Sita(c)tica Arvores Deitadas corpus file does not exist.", adFile.FullName);
+
+            adSentenceStream = new AdSentenceStream(new PlainTextByLineStream(adFile.OpenRead()), safeParse);
+            isIncludeTitles = includeTitles;
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AdSentenceSampleStream"/> stream from a line stream.
