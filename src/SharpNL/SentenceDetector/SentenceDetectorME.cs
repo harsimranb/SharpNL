@@ -207,11 +207,14 @@ namespace SharpNL.SentenceDetector {
                 return true;
 
             foreach (var abb in abbDictionary) {
-                var token = abb.Tokens[0];
-                var tokenLength = token.Length;
+                if (string.IsNullOrWhiteSpace(abb.Tokens[0]))
+                    continue;
+                
+                var tokenPosition = s.IndexOf(abb.Tokens[0], fromIndex, abbDictionary.IsCaseSensitive
+                    ? StringComparison.InvariantCulture
+                    : StringComparison.InvariantCultureIgnoreCase);
 
-                var tokenPosition = s.IndexOf(token, fromIndex, StringComparison.InvariantCultureIgnoreCase);
-                if (tokenPosition + tokenLength < candidateIndex || tokenPosition > candidateIndex) 
+                if (tokenPosition + abb.Tokens[0].Length < candidateIndex || tokenPosition > candidateIndex) 
                     continue;
 
                 return false;
