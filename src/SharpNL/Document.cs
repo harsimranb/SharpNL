@@ -127,6 +127,16 @@ namespace SharpNL {
         }
         #endregion
 
+        #region . IsSentencized .
+        /// <summary>
+        /// Gets a value indicating whether this instance is sentencized.
+        /// </summary>
+        /// <value><c>true</c> if this instance is sentencized; otherwise, <c>false</c>.</value>
+        public bool IsSentencized {
+            get { return Sentences != null; }
+        }
+        #endregion
+
         #region . IsTagged .
         /// <summary>
         /// Gets or sets a value indicating whether this <see cref="Document"/> has the Part-of-Speech tagged.
