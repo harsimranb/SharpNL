@@ -47,6 +47,9 @@ namespace SharpNL.SentenceDetector {
 
         private readonly IEndOfSentenceScanner scanner;
 
+        private Dictionary<string, int> abbriviationTokens;
+        private StringComparison stringComparison;
+
         private readonly List<double> sentProbs = new List<double>();
 
         private readonly bool useTokenEnd;
@@ -59,6 +62,19 @@ namespace SharpNL.SentenceDetector {
             scanner = sentenceModel.Factory.GetEndOfSentenceScanner();
             useTokenEnd = sentenceModel.UseTokenEnd;
             abbDictionary = sentenceModel.Abbreviations;
+
+            if (sentenceModel.Abbreviations != null)
+            {
+                stringComparison = sentenceModel.Abbreviations.IsCaseSensitive
+                    ? StringComparison.Ordinal
+                    : StringComparison.OrdinalIgnoreCase;
+
+                abbriviationTokens = new Dictionary<string, int>();
+
+                foreach (var abbriviation in sentenceModel.Abbreviations)
+                    foreach (var token in abbriviation.Tokens)
+                        abbriviationTokens.Add(token, token.Length);
+            }
         }
 
         #region . SentDetect .
@@ -203,20 +219,18 @@ namespace SharpNL.SentenceDetector {
         /// abbreviations when the sentence model has a dictionary specified.
         /// </remarks>
         protected virtual bool IsAcceptableBreak(string s, int fromIndex, int candidateIndex) {
-            if (abbDictionary == null)
+            if (abbriviationTokens == null)
                 return true;
 
-            foreach (var abb in abbDictionary) {
-                if (string.IsNullOrWhiteSpace(abb.Tokens[0]))
-                    continue;
-                
-                var tokenPosition = s.IndexOf(abb.Tokens[0], fromIndex, abbDictionary.IsCaseSensitive
-                    ? StringComparison.InvariantCulture
-                    : StringComparison.InvariantCultureIgnoreCase);
+            foreach (var token in abbriviationTokens)
+            {
+                var tokenLength = token.Value;
+                var start = candidateIndex - tokenLength;
+                if (start < 0) start = 0;
+                var count = tokenLength * 2;
 
-                if (tokenPosition + abb.Tokens[0].Length < candidateIndex || tokenPosition > candidateIndex) 
-                    continue;
-
+                var tokenPosition = s.IndexOf(token.Key, start, count, stringComparison);
+                if (tokenPosition == -1) continue;
                 return false;
             }
 

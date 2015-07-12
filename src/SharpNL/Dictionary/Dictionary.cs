@@ -110,6 +110,24 @@ namespace SharpNL.Dictionary {
             return Add(new Entry(tokens));
         }
 
+        /// <summary>
+        /// Adds the string token to the dictionary as one new entry.
+        /// </summary>
+        /// <param name="token">The string token.</param>
+        /// <returns>The new entry.</returns>
+        /// <remarks>
+        /// Be careful to use this method as a object initializer, it may create an unexpected result!
+        /// <para>
+        ///  This method is the same as:
+        ///  <code>
+        ///  Add(new Entry(new string[] { ... }));
+        ///  </code>
+        /// </para>
+        /// </remarks>
+        public virtual Entry Add(string token)
+        {
+            return Add(new [] {token});
+        }
         #endregion
 
         #region + Properties .
