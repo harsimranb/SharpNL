@@ -77,9 +77,11 @@ _ReSharper*/
 !**/packages/build/
 # If using the old MSBuild-Integrated Package Restore, uncomment this:
 #!**/packages/repositories.config
-# nuget exe
-**/.nuget/*
 
+#Allow NuGet executable.
+!NuGet.exe
+
+packages*/
 # Others
 *.Cache
 ~$*
