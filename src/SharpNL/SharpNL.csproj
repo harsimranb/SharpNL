@@ -38,6 +38,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Caching" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
@@ -111,6 +112,8 @@
     <Compile Include="Tokenize\Token.cs" />
     <Compile Include="Tokenize\TokenUtilities.cs" />
     <Compile Include="Utility\AbstractStopwordProvider.cs" />
+    <Compile Include="Utility\CacheProvider.cs" />
+    <Compile Include="Utility\Disposable.cs" />
     <Compile Include="Utility\Evaluation\CrossEvaluator.cs" />
     <Compile Include="Utility\FeatureGen\BrownBigramFeatureGenerator.cs" />
     <Compile Include="Utility\FeatureGen\BrownCluster.cs" />
