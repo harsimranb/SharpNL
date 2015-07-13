@@ -47,34 +47,31 @@ namespace SharpNL.SentenceDetector {
 
         private readonly IEndOfSentenceScanner scanner;
 
-        private Dictionary<string, int> abbriviationTokens;
-        private StringComparison stringComparison;
+        private readonly Dictionary<string, int> abbreviationTokens;
+        private readonly StringComparison stringComparison;
 
         private readonly List<double> sentProbs = new List<double>();
 
         private readonly bool useTokenEnd;
-
-        private readonly Dictionary.Dictionary abbDictionary;
 
         public SentenceDetectorME(SentenceModel sentenceModel) {
             model = sentenceModel.MaxentModel;
             cgen = sentenceModel.Factory.GetContextGenerator();
             scanner = sentenceModel.Factory.GetEndOfSentenceScanner();
             useTokenEnd = sentenceModel.UseTokenEnd;
-            abbDictionary = sentenceModel.Abbreviations;
 
-            if (sentenceModel.Abbreviations != null)
-            {
-                stringComparison = sentenceModel.Abbreviations.IsCaseSensitive
-                    ? StringComparison.Ordinal
-                    : StringComparison.OrdinalIgnoreCase;
+            if (sentenceModel.Abbreviations == null) 
+                return;
 
-                abbriviationTokens = new Dictionary<string, int>();
+            stringComparison = sentenceModel.Abbreviations.IsCaseSensitive
+                ? StringComparison.Ordinal
+                : StringComparison.OrdinalIgnoreCase;
 
-                foreach (var abbriviation in sentenceModel.Abbreviations)
-                    foreach (var token in abbriviation.Tokens)
-                        abbriviationTokens.Add(token, token.Length);
-            }
+            abbreviationTokens = new Dictionary<string, int>();
+
+            foreach (var abbreviation in sentenceModel.Abbreviations)
+                foreach (var token in abbreviation.Tokens)
+                    abbreviationTokens.Add(token, token.Length);
         }
 
         #region . SentDetect .
@@ -219,11 +216,10 @@ namespace SharpNL.SentenceDetector {
         /// abbreviations when the sentence model has a dictionary specified.
         /// </remarks>
         protected virtual bool IsAcceptableBreak(string s, int fromIndex, int candidateIndex) {
-            if (abbriviationTokens == null)
+            if (abbreviationTokens == null)
                 return true;
 
-            foreach (var token in abbriviationTokens)
-            {
+            foreach (var token in abbreviationTokens) {
                 var tokenLength = token.Value;
                 var start = candidateIndex - tokenLength;
                 if (start < 0) start = 0;
