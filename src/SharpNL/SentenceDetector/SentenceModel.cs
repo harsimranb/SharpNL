@@ -34,6 +34,7 @@ namespace SharpNL.SentenceDetector {
     public class SentenceModel : BaseModel {
         private const string ComponentName = "SentenceDetectorME";
         private const string EntryName = "sent.model";
+        private Dictionary.Dictionary abbreviationDictionary;
 
         public SentenceModel(string languageCode, IMaxentModel sentModel, Dictionary<string, string> manifestInfoEntries,
             SentenceDetectorFactory sdFactory) : base(ComponentName, languageCode, manifestInfoEntries, sdFactory) {
@@ -75,13 +76,19 @@ namespace SharpNL.SentenceDetector {
         /// </summary>
         /// <value>The abbreviation dictionary.</value>
         /// <remarks>Default value is null.</remarks>
-        public Dictionary.Dictionary Abbreviations {
-            get {
-                if (Factory != null) {
-                    return Factory.AbbreviationDictionary;
-                }
-                return null;
+        public Dictionary.Dictionary Abbreviations
+        {
+            get
+            {
+                if (abbreviationDictionary != null)
+                    return abbreviationDictionary;
+
+                if (Factory != null)
+                    abbreviationDictionary = Factory.AbbreviationDictionary;
+
+                return abbreviationDictionary;
             }
+            set { abbreviationDictionary = value; }
         }
 
         #endregion
