@@ -278,7 +278,7 @@ namespace SharpNL.Inflecter.Lang {
                     new PluralRule("trix$", "trices", null, true),
                     new PluralRule("eau$", "eaux", null, true),
                     new PluralRule("ieu$", "ieu", null, true),
-                    new PluralRule("(new PluralRule(iay))nx$", "$1nges", null, true),
+                    new PluralRule("nx$", "$1nges", null, true),
                     new PluralRule("en$", "ina", "en-ina-classical", true),
                     new PluralRule("a$", "ata", "a-ata-classical", true),
                     new PluralRule("is$", "ides", "is-ides-classical", true),
