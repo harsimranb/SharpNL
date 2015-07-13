@@ -20,7 +20,6 @@
 //   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 //  
 
-using net.didion.jwnl.data;
 using NUnit.Framework;
 
 using SharpNL.WordNet;

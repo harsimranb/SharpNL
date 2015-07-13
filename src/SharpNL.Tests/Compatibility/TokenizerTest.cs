@@ -27,8 +27,7 @@ using SharpNL.Tokenize;
 using SharpNL.Utility;
 
 namespace SharpNL.Tests.Compatibility {
-    // TODO: ignored... opennlp ikvm is not ready for 1.6 yet.
-    [TestFixture(Category = "Compatibility", Ignore = true)]
+    [TestFixture(Category = "Compatibility")]
     internal class TokenizerTest {
 
         internal const string modelFile = "opennlp/models/en-token.bin";

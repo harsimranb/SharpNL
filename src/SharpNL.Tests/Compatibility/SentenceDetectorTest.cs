@@ -34,8 +34,7 @@ using SharpSDME = SharpNL.SentenceDetector.SentenceDetectorME;
 
 namespace SharpNL.Tests.Compatibility {
 
-    // TODO: Remove ikvm is not ready yet
-    [TestFixture(Category = "Compatibility", Ignore = true)]
+    [TestFixture(Category = "Compatibility")]
     internal class SentenceDetectorTest {
         private static JavaModel OpenJavaModel() {
             return new JavaModel(OpenNLP.OpenInputStream("opennlp/models/en-sent.bin"));
