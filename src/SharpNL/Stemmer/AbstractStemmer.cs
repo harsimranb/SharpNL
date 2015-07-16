@@ -28,7 +28,7 @@ namespace SharpNL.Stemmer {
     /// <summary>
     /// Represents a abstract stemmer.
     /// </summary>
-    public abstract class AbstractStemmer : IStemmer {
+    public abstract class AbstractStemmer : Disposable, IStemmer {
 
         private readonly Cache cache;
         private readonly HashSet<string> ignoreSet;
@@ -54,6 +54,19 @@ namespace SharpNL.Stemmer {
         public void AddIgnore(params string[] words) {
             foreach (var word in words)
                 ignoreSet.Add(word);
+        }
+        #endregion
+
+        #region . DisposeManagedResources .
+        /// <summary>
+        /// Releases the managed resources.
+        /// </summary>
+        protected override void DisposeManagedResources() {
+            base.DisposeManagedResources();
+
+            if (cache != null)
+                cache.Dispose();
+
         }
         #endregion
 
