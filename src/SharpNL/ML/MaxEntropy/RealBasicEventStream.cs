@@ -21,6 +21,7 @@
 //  
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using SharpNL.ML.Model;
 using SharpNL.Utility;
 
@@ -29,7 +30,8 @@ namespace SharpNL.ML.MaxEntropy {
     /// <summary>
     /// Represents a real basic event stream.
     /// </summary>
-    public class RealBasicEventStream : IObjectStream<Event> {
+    [SuppressMessage("Microsoft.Design", "CA1063:ImplementIDisposableCorrectly", Justification = "CA is using drugs! The IDisposable is implemented properly.")]
+    public class RealBasicEventStream : Disposable, IObjectStream<Event> {
         private readonly IObjectStream<string> objectStream;
 
         #region + Constructors .
@@ -80,11 +82,12 @@ namespace SharpNL.ML.MaxEntropy {
         protected Monitor Monitor { get; private set; }
         #endregion
 
-        #region . Dispose .
+        #region . DisposeManagedResources .
         /// <summary>
-        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// Releases the managed resources.
         /// </summary>
-        public void Dispose() {
+        protected override void DisposeManagedResources() {
+            base.DisposeManagedResources();
             objectStream.Dispose();
         }
         #endregion
