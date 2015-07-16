@@ -23,7 +23,7 @@
 using System.IO;
 using System.Text;
 using System.Collections.Generic;
-
+using System.Diagnostics.CodeAnalysis;
 using SharpNL.Utility;
 
 namespace SharpNL.ML.Model {
@@ -113,6 +113,7 @@ namespace SharpNL.ML.Model {
         /// <summary>
         /// Performs the data indexing.
         /// </summary>
+        [SuppressMessage("Microsoft.Usage", "CA2202:Do not dispose objects multiple times", Justification = "This method uses the UnclosableStream stream.")]
         protected override void PerformIndexing() {
 
             Display("Indexing events using cutoff of " + Cutoff);
