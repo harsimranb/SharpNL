@@ -28,7 +28,7 @@ namespace SharpNL.Lemmatizer {
     /// <summary>
     /// Represents a abstract lemmatizer with cache support.
     /// </summary>
-    public abstract class AbstractLemmatizer : ILemmatizer {
+    public abstract class AbstractLemmatizer : Disposable, ILemmatizer {
 
         private readonly HashSet<string> ignoreSet;
         private readonly Cache cache;
@@ -56,6 +56,32 @@ namespace SharpNL.Lemmatizer {
         public void AddIgnore(params string[] words) {
             foreach (var word in words)
                 ignoreSet.Add(word);
+        }
+        #endregion
+
+        #region . CacheKey . 
+        /// <summary>
+        /// Gets the cache key using the given parameters.
+        /// </summary>
+        /// <param name="key">The key.</param>
+        /// <param name="ns">The namespace.</param>
+        /// <returns>The cache key.</returns>
+        private static string CacheKey(string key, string ns) {
+            return string.IsNullOrEmpty(ns) 
+                ? key 
+                : string.Format("{0}-{1}", ns, key);
+        }
+        #endregion
+
+        #region . DisposeManagedResources .
+        /// <summary>
+        /// Releases the managed resources.
+        /// </summary>
+        protected override void DisposeManagedResources() {
+            base.DisposeManagedResources();
+
+            if (cache != null)
+                cache.Dispose();
         }
         #endregion
 
@@ -89,12 +115,6 @@ namespace SharpNL.Lemmatizer {
             );
         }
         #endregion
-
-        private static string CacheKey(string key, string ns) {
-            return string.IsNullOrEmpty(ns) 
-                ? key 
-                : string.Format("{0}-{1}", ns, key);
-        }
 
         #region . Process .
         /// <summary>
