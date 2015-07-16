@@ -24,13 +24,14 @@ using System;
 using System.ComponentModel;
 using System.Threading;
 using System.Threading.Tasks;
+using SharpNL.Utility;
 
 namespace SharpNL {
     /// <summary>
     /// Represents a SharpNL task that can be monitored or canceled. This class cannot be inherited.
     /// </summary>
     [TypeConverter(typeof (ExpandableObjectConverter))]
-    public sealed class Monitor {
+    public sealed class Monitor : Disposable {
         private readonly CancellationTokenSource cancelSource;
 
         private Task task;
@@ -171,6 +172,17 @@ namespace SharpNL {
             }
         }
 
+        #endregion
+
+        #region . DisposeManagedResources .
+        /// <summary>
+        /// Releases the managed resources.
+        /// </summary>
+        protected override void DisposeManagedResources() {
+            base.DisposeManagedResources();
+
+            cancelSource.Dispose();
+        }
         #endregion
 
         #region . Execute .
