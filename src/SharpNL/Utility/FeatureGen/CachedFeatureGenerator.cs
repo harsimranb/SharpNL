@@ -29,7 +29,7 @@ namespace SharpNL.Utility.FeatureGen {
     /// Caches features of the aggregated <see cref="IAdaptiveFeatureGenerator"/>s.
     /// </summary>
     [TypeClass("opennlp.tools.util.featuregen.CachedFeatureGenerator")]
-    public class CachedFeatureGenerator : IAdaptiveFeatureGenerator {
+    public class CachedFeatureGenerator : Disposable, IAdaptiveFeatureGenerator {
 
         private readonly Cache contextsCache;
         private readonly IAdaptiveFeatureGenerator generator;
@@ -96,6 +96,17 @@ namespace SharpNL.Utility.FeatureGen {
 
             contextsCache.Put(index, cacheFeatures);
             features.AddRange(cacheFeatures);
+        }
+        #endregion
+
+        #region . DisposeManagedResources .
+        /// <summary>
+        /// Releases the managed resources.
+        /// </summary>
+        protected override void DisposeManagedResources() {
+            base.DisposeManagedResources();
+
+            contextsCache.Dispose();
         }
         #endregion
 

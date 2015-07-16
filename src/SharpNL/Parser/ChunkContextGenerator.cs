@@ -30,7 +30,7 @@ namespace SharpNL.Parser {
     /// <summary>
     /// Creates predictive context for the pre-chunking phases of parsing.
     /// </summary>
-    public class ChunkContextGenerator : IChunkerContextGenerator {
+    public class ChunkContextGenerator : Disposable, IChunkerContextGenerator {
         private const string EOS = "eos";
         private readonly Cache contextsCache;
         private object wordsKey;
@@ -128,7 +128,7 @@ namespace SharpNL.Parser {
             var cacheKey = x0 + t_2 + t1 + t0 + t1 + t2 + p_2 + p_1;
             if (contextsCache != null) {
                 if (wordsKey == tokens) {
-                    var contexts = (String[]) contextsCache.Get(cacheKey);
+                    var contexts = (string[]) contextsCache.Get(cacheKey);
                     if (contexts != null) {
                         return contexts;
                     }
@@ -173,19 +173,31 @@ namespace SharpNL.Parser {
             features.Add(ct0 + "," + ctbo1);
             features.Add(ctbo0 + "," + ctbo1);
 
-            if (contextsCache != null) {
-                var contexts = features.ToArray();
-                contextsCache.Put(cacheKey, contexts);
-                return contexts;
-            }
-            return features.ToArray();
+            if (contextsCache == null) 
+                return features.ToArray();
+
+            var cf = features.ToArray();
+            contextsCache.Put(cacheKey, cf);
+            return cf;
         }
 
-        private string ChunkAndPosTag(int i, string tok, string tag, string chunk) {
+        #region . DisposeManagedResources .
+        /// <summary>
+        /// Releases the managed resources.
+        /// </summary>
+        protected override void DisposeManagedResources() {
+            base.DisposeManagedResources();
+
+            if (contextsCache != null)
+                contextsCache.Dispose();
+        }
+        #endregion
+
+        private static string ChunkAndPosTag(int i, string tok, string tag, string chunk) {
             return string.Format("{0}={1}|{2}{3}", i, tok, tag, i < 0 ? "|" + chunk : string.Empty);
         }
 
-        private string ChunkAndPosTagBo(int i, String tag, String chunk) {
+        private static string ChunkAndPosTagBo(int i, String tag, String chunk) {
             return string.Format("{0}*={1}{2}", i, tag, i < 0 ? "|" + chunk : string.Empty);
         }
     }
