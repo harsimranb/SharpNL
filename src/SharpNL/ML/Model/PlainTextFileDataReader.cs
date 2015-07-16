@@ -28,7 +28,7 @@ namespace SharpNL.ML.Model {
     /// <summary>
     /// Represents a plain text data reader.
     /// </summary>
-    public class PlainTextFileDataReader : IDataReader {
+    public class PlainTextFileDataReader : Disposable, IDataReader {
         private readonly StreamReader reader;
 
 
@@ -58,6 +58,16 @@ namespace SharpNL.ML.Model {
                 throw new ArgumentNullException("streamReader");
 
             reader = streamReader;
+        }
+
+        /// <summary>
+        /// Releases the managed resources.
+        /// </summary>
+        protected override void DisposeManagedResources() {
+            base.DisposeManagedResources();
+
+            if (reader != null)
+                reader.Dispose();
         }
 
         /// <summary>
