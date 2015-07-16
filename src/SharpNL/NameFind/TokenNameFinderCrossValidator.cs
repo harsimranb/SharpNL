@@ -29,7 +29,8 @@ namespace SharpNL.NameFind {
     /// <summary>
     /// Represents a cross validator for <see cref="TokenNameFinderModel"/> models.
     /// </summary>
-    public class TokenNameFinderCrossValidator {
+    public class TokenNameFinderCrossValidator : Disposable {
+        private readonly bool ownsFactory;
         private readonly string type;
         private readonly string languageCode;
         private readonly TrainingParameters parameters;
@@ -37,7 +38,6 @@ namespace SharpNL.NameFind {
         private readonly IEvaluationMonitor<NameSample>[] listeners;
 
         #region + Constructors .
-
         /// <summary>
         /// Initializes a new instance of the <see cref="TokenNameFinderCrossValidator"/> class.
         /// </summary>
@@ -50,6 +50,9 @@ namespace SharpNL.NameFind {
             this.type = type;
             this.parameters = parameters;
             this.listeners = listeners;
+
+            ownsFactory = true;
+
             factory = new TokenNameFinderFactory();
             FMeasure = new FMeasure<Span>();
         }
@@ -87,6 +90,18 @@ namespace SharpNL.NameFind {
         public FMeasure<Span> FMeasure { get; private set; }
         #endregion
 
+        #endregion
+
+        #region . DisposeManagedResources .
+        /// <summary>
+        /// Releases the managed resources.
+        /// </summary>
+        protected override void DisposeManagedResources() {
+            base.DisposeManagedResources();
+
+            if (ownsFactory)
+                factory.Dispose();
+        }
         #endregion
 
         #region . Evaluate .
