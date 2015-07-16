@@ -76,7 +76,7 @@ namespace SharpNL.Utility.Model {
                         zip.CloseEntry();
                     }
 
-                    zip.Close();
+                    zip.Flush();
                 }
             } catch (Exception ex) {
                 throw new InvalidFormatException("Unable to load the specified model file.", ex);
