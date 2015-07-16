@@ -26,6 +26,7 @@ namespace SharpNL.Analyzer {
     /// <summary>
     /// Represents a exception that occurs in a <see cref="IAnalyzer"/> object.
     /// </summary>
+    [Serializable]
     public class AnalyzerException : Exception {
         /// <summary>
         /// Initializes a new instance of the <see cref="T:AnalyzerException"/> class.
