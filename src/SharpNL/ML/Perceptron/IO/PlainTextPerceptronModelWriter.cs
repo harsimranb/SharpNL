@@ -64,6 +64,16 @@ namespace SharpNL.ML.Perceptron.IO {
             writer = new StreamWriter(outputStream);
         }
 
+        /// <summary>
+        /// Releases the managed resources.
+        /// </summary>
+        protected override void DisposeManagedResources() {
+            base.DisposeManagedResources();
+
+            if (writer != null)
+                writer.Dispose();
+        }
+
         public override void Close() {
             writer.Flush();
             writer.Close();
