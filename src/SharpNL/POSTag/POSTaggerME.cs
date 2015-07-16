@@ -36,7 +36,7 @@ namespace SharpNL.POSTag {
     /// words are nouns, verbs, or any of 70 other POS tags depending on their
     /// surrounding context.
     /// </summary>
-    public class POSTaggerME : IPOSTagger {
+    public class POSTaggerME : Disposable, IPOSTagger {
 
         /// <summary>
         /// The default beam size for the <see cref="POSTaggerME"/>.
@@ -187,6 +187,19 @@ namespace SharpNL.POSTag {
             return model.ToDictionary();
         }
 
+        #endregion
+
+        #region . DisposeManagedResources .
+        /// <summary>
+        /// Releases the managed resources.
+        /// </summary>
+        protected override void DisposeManagedResources() {
+            base.DisposeManagedResources();
+
+            var m = model as ML.BeamSearch<string>;
+            if (m != null)
+                m.Dispose();
+        }
         #endregion
 
         #region . GetAllPosTags .
