@@ -30,7 +30,7 @@ namespace SharpNL.POSTag {
     /// <summary>
     /// A context generator for the POS Tagger.
     /// </summary>
-    public class DefaultPOSContextGenerator : IPOSContextGenerator {
+    public class DefaultPOSContextGenerator : Disposable, IPOSContextGenerator {
         protected const string SE = "*SE*";
         protected const string SB = "*SB*";
 
@@ -65,10 +65,21 @@ namespace SharpNL.POSTag {
             dict = dictionary;
             dictGram = new string[1];
 
-            if (cacheSize > 0) {
+            if (cacheSize > 0)
                 contextsCache = new Cache(cacheSize);
-            }
         }
+
+        #region . DisposeManagedResources .
+        /// <summary>
+        /// Releases the managed resources.
+        /// </summary>
+        protected override void DisposeManagedResources() {
+            base.DisposeManagedResources();
+
+            if (contextsCache != null)
+                contextsCache.Dispose();
+        }
+        #endregion
 
         #region . GetPrefixes .
 
