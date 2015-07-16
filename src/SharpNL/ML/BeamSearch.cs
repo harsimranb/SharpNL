@@ -32,7 +32,7 @@ namespace SharpNL.ML {
     /// </summary>
     /// <typeparam name="T">The object type.</typeparam>
     /// <remarks>This is based on the description in Ratnaparkhi (1998), PhD diss, Univ. of Pennsylvania.</remarks>
-    public class BeamSearch<T> : Model.ISequenceClassificationModel<T> {
+    public class BeamSearch<T> : Disposable, Model.ISequenceClassificationModel<T> {
         private const double zeroLog = -100000;
         private readonly Cache contextsCache;
         private readonly double[] probs;
@@ -60,9 +60,8 @@ namespace SharpNL.ML {
             this.size = size;
             this.model = model;
 
-            if (cacheSize > 0) {
+            if (cacheSize > 0)
                 contextsCache = new Cache(cacheSize);
-            }
 
             probs = new double[model.GetNumOutcomes()];
         }
@@ -204,6 +203,18 @@ namespace SharpNL.ML {
             return topSequences;
         }
 
+        #endregion
+
+        #region . DisposeManagedResources .
+        /// <summary>
+        /// Releases the managed resources.
+        /// </summary>
+        protected override void DisposeManagedResources() {
+            base.DisposeManagedResources();
+
+            if (contextsCache != null)
+                contextsCache.Dispose();
+        }
         #endregion
 
         #region . GetOutcomes .
