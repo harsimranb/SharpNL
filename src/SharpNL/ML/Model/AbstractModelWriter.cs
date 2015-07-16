@@ -20,8 +20,10 @@
 //   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 //  
 
+using SharpNL.Utility;
+
 namespace SharpNL.ML.Model {
-    public abstract class AbstractModelWriter {
+    public abstract class AbstractModelWriter : Disposable {
         public abstract void Persist();
         public abstract void Close();
 
