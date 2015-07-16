@@ -22,17 +22,25 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using SharpNL.Utility;
 
 namespace SharpNL.ML.Model {
     /// <summary>
     /// Class which turns a sequence stream into an event stream.
     /// </summary>
-    public class SequenceStreamEventStream : IObjectStream<Event> {
+    [SuppressMessage("Microsoft.Design", "CA1063:ImplementIDisposableCorrectly", Justification = "CS is using drugs! The IDisposable is implemented properly.")]
+    public class SequenceStreamEventStream : Disposable, IObjectStream<Event> {
         private readonly ISequenceStream sequenceStream;
-
         private IEnumerator<Event> enumerator;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SequenceStreamEventStream"/> class.
+        /// </summary>
+        /// <param name="sequenceStream">The sequence stream.</param>
+        /// <exception cref="System.ArgumentNullException">
+        /// The <paramref name="sequenceStream"/> is null.
+        /// </exception>
         public SequenceStreamEventStream(ISequenceStream sequenceStream) {
             if (sequenceStream == null)
                 throw new ArgumentNullException("sequenceStream");
@@ -40,13 +48,19 @@ namespace SharpNL.ML.Model {
             this.sequenceStream = sequenceStream;
         }
 
+        #region . DisposeManagedResources .
         /// <summary>
-        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// Releases the managed resources.
         /// </summary>
-        public void Dispose() {
-            sequenceStream.Dispose();
-        }
+        protected override void DisposeManagedResources() {
+            base.DisposeManagedResources();
 
+            if (sequenceStream != null)
+                sequenceStream.Dispose();
+        }        
+        #endregion
+
+        #region . Read .
         /// <summary>
         /// Returns the next object. Calling this method repeatedly until it returns,
         /// null will return each object from the underlying source exactly once.
@@ -66,7 +80,9 @@ namespace SharpNL.ML.Model {
                 enumerator = new List<Event>(sequence.Events).GetEnumerator();
             }
         }
+        #endregion
 
+        #region . Reset .
         /// <summary>
         /// Repositions the stream at the beginning and the previously seen object 
         /// sequence will be repeated exactly. This method can be used to re-read the
@@ -75,5 +91,7 @@ namespace SharpNL.ML.Model {
         public void Reset() {
             sequenceStream.Reset();
         }
+        #endregion
+
     }
 }
