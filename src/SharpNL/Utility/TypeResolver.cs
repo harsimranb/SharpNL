@@ -45,7 +45,7 @@ namespace SharpNL.Utility {
     /// The type resolver is responsible to translate a string representation of a type into a <see cref="Type"/> 
     /// object and vice versa.
     /// </summary>
-    public class TypeResolver {
+    public class TypeResolver : Disposable {
 
         private readonly Dictionary<string, Type> types;
         private readonly ReaderWriterLockSlim lockSlim;
@@ -185,6 +185,17 @@ namespace SharpNL.Utility {
                 lockSlim.ExitReadLock();
             }
             return null;
+        }
+        #endregion
+
+        #region . DisposeManagedResources .
+        /// <summary>
+        /// Releases the managed resources.
+        /// </summary>
+        protected override void DisposeManagedResources() {
+            base.DisposeManagedResources();
+
+            lockSlim.Dispose();
         }
         #endregion
 
