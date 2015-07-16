@@ -21,27 +21,38 @@
 //  
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using SharpNL.Utility;
 
 namespace SharpNL.Tokenize {
     /// <summary>
     /// The <see cref="TokenizerStream"/> uses a tokenizer to tokenize the input string and output <see cref="TokenSample"/>s.
     /// </summary>
-    public class TokenizerStream : IObjectStream<TokenSample> {
+    [SuppressMessage("Microsoft.Design", "CA1063:ImplementIDisposableCorrectly", Justification = "CA is using drugs! The IDisposable is implemented properly.")]
+    public class TokenizerStream : Disposable, IObjectStream<TokenSample> {
 
         private readonly ITokenizer tokenizer;
         private readonly IObjectStream<string> input;
 
+        #region . Constructor .
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TokenizerStream"/> class.
+        /// </summary>
+        /// <param name="tokenizer">The tokenizer.</param>
+        /// <param name="input">The input stream object.</param>
         public TokenizerStream(ITokenizer tokenizer, IObjectStream<string> input) {
             this.tokenizer = tokenizer;
             this.input = input;
         }
+        #endregion
 
-        #region . Dispose .
+        #region . DisposeManagedResources .
         /// <summary>
-        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// Releases the managed resources.
         /// </summary>
-        public void Dispose() {
+        protected override void DisposeManagedResources() {
+            base.DisposeManagedResources();
+
             input.Dispose();
         }
         #endregion
