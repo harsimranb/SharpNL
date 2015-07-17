@@ -20,17 +20,22 @@
 //   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 //  
 
-using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SharpNL.Utility {
     /// <summary>
     /// Represents an abstract object stream.
     /// </summary>
-    /// <typeparam name="T"></typeparam>
-    public abstract class AbstractObjectStream<T> : IObjectStream<T> {
+    /// <typeparam name="T">The type of the object in the stream.</typeparam>
+    [SuppressMessage("Microsoft.Design", "CA1063:ImplementIDisposableCorrectly", Justification = "CA is using drugs! The IDisposable is implemented properly.")]
+    public abstract class AbstractObjectStream<T> : Disposable, IObjectStream<T> {
 
         private readonly IObjectStream<T> stream;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AbstractObjectStream{T}"/> class.
+        /// </summary>
+        /// <param name="objectStream">The object stream.</param>
         protected AbstractObjectStream(IObjectStream<T> objectStream) {
             stream = objectStream;
         }
@@ -43,11 +48,14 @@ namespace SharpNL.Utility {
         public bool IsFinished { get; private set; }
         #endregion
 
-        #region . Dispose .
+        #region . DisposeManagedResources .
+
         /// <summary>
-        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// Releases the managed resources.
         /// </summary>
-        public virtual void Dispose() {
+        protected override void DisposeManagedResources() {
+            base.DisposeManagedResources();
+
             IsFinished = true;
             stream.Dispose();
         }

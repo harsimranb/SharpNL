@@ -21,30 +21,47 @@
 //  
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using SharpNL.ML.Model;
 using SharpNL.Utility;
 using Sequence = SharpNL.ML.Model.Sequence;
 
 namespace SharpNL.POSTag {
-    public class POSSampleSequenceStream : ISequenceStream {
+
+    /// <summary>
+    /// Represents a sequence stream of <seealso cref="POSSample"/> objects.
+    /// </summary>
+    [SuppressMessage("Microsoft.Design", "CA1063:ImplementIDisposableCorrectly", Justification = "CA is using drugs! The IDisposable is implemented properly.")]
+    public class POSSampleSequenceStream : Disposable, ISequenceStream {
         private readonly IPOSContextGenerator contextGenerator;
         private readonly IObjectStream<POSSample> objectStream;
 
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="POSSampleSequenceStream"/> class.
+        /// </summary>
+        /// <param name="objectStream">The object stream.</param>
         public POSSampleSequenceStream(IObjectStream<POSSample> objectStream)
             : this(objectStream, new DefaultPOSContextGenerator(null)) {}
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="POSSampleSequenceStream"/> class.
+        /// </summary>
+        /// <param name="objectStream">The object stream.</param>
+        /// <param name="contextGenerator">The context generator.</param>
         public POSSampleSequenceStream(IObjectStream<POSSample> objectStream, IPOSContextGenerator contextGenerator) {
             this.objectStream = objectStream;
             this.contextGenerator = contextGenerator;
         }
 
-        #region . Dispose .
+        #region . DisposeManagedResources .
 
         /// <summary>
-        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// Releases the managed resources.
         /// </summary>
-        public void Dispose() {
+        protected override void DisposeManagedResources() {
+            base.DisposeManagedResources();
+
             objectStream.Dispose();
         }
 

@@ -21,6 +21,7 @@
 //  
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Text;
 using SharpNL.Tokenize;
@@ -30,7 +31,8 @@ namespace SharpNL.Formats.Brat {
     /// <summary>
     /// Represents a Brat annotation stream.
     /// </summary>
-    public class BratAnnotationStream : IObjectStream<BratAnnotation> {
+    [SuppressMessage("Microsoft.Design", "CA1063:ImplementIDisposableCorrectly", Justification = "CA is using drugs! The IDisposable is implemented properly.")]
+    public class BratAnnotationStream : Disposable, IObjectStream<BratAnnotation> {
 
         private readonly AnnotationConfiguration config;
         private readonly StreamReader reader;
@@ -60,13 +62,17 @@ namespace SharpNL.Formats.Brat {
             reader = new StreamReader(inputStream, Encoding.UTF8);
         }
 
-        #region . Dispose .
+        #region . DisposeManagedResources .
+
         /// <summary>
-        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// Releases the managed resources.
         /// </summary>
-        public void Dispose() {
+        protected override void DisposeManagedResources() {
+            base.DisposeManagedResources();
+
             reader.Dispose();
         }
+
         #endregion
 
         #region . Read .

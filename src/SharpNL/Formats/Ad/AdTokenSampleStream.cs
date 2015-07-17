@@ -26,13 +26,15 @@ using SharpNL.Extensions;
 using SharpNL.Tokenize;
 using SharpNL.Utility;
 using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SharpNL.Formats.Ad {
     /// <summary>
     /// This class reads the <see cref="TokenSample"/>s from the given <see cref="T:IObjectStream{string}"/>
     /// using floresta Sita(c)tica Arvores Deitadas corpus which can be used by the maxent library for training.
     /// </summary>
-    public class AdTokenSampleStream : IObjectStream<TokenSample> {
+    [SuppressMessage("Microsoft.Design", "CA1063:ImplementIDisposableCorrectly", Justification = "CA is using drugs! The IDisposable is implemented properly.")]
+    public class AdTokenSampleStream : Disposable, IObjectStream<TokenSample> {
         private const string Hyphen = "-";
 
         private readonly Monitor monitor;
@@ -89,13 +91,17 @@ namespace SharpNL.Formats.Ad {
         }
         #endregion
 
-        #region . Dispose .
+        #region . DisposeManagedResources .
+
         /// <summary>
-        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// Releases the managed resources.
         /// </summary>
-        public void Dispose() {
+        protected override void DisposeManagedResources() {
+            base.DisposeManagedResources();
+
             adSentenceStream.Dispose();
         }
+
         #endregion
 
         #region . Process .

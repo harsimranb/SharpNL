@@ -21,6 +21,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text.RegularExpressions;
 using SharpNL.POSTag;
 using SharpNL.Utility;
@@ -31,7 +32,8 @@ namespace SharpNL.Formats.Ad {
     /// This class reads the <see cref="POSSample"/>s from the given <see cref="T:IObjectStream{string}"/>
     /// using floresta Sita(c)tica Arvores Deitadas corpus which can be used by the maxent library for training.
     /// </summary>
-    public class AdPosSampleStream : IObjectStream<POSSample> {
+    [SuppressMessage("Microsoft.Design", "CA1063:ImplementIDisposableCorrectly", Justification = "CA is using drugs! The IDisposable is implemented properly.")]
+    public class AdPosSampleStream : Disposable, IObjectStream<POSSample> {
         private const string hyphen = "-";
         private static readonly Regex genderM;
         private static readonly Regex genderF;
@@ -102,11 +104,14 @@ namespace SharpNL.Formats.Ad {
 
         #endregion
 
-        #region . Dispose .
+        #region . DisposeManagedResources .
+
         /// <summary>
-        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// Releases the managed resources.
         /// </summary>
-        public void Dispose() {
+        protected override void DisposeManagedResources() {
+            base.DisposeManagedResources();
+
             adSentenceStream.Dispose();
         }
 

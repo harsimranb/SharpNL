@@ -31,7 +31,7 @@ namespace SharpNL.Utility {
     /// <summary>
     /// Represents a model manager that provides convenient access to culture-specific models at run time.
     /// </summary>
-    public class ModelManager : IEnumerable<ModelInfo>, IDisposable {
+    public class ModelManager : Disposable, IEnumerable<ModelInfo> {
         private readonly Dictionary<string, ModelInfo> infos;
         private readonly List<Models> available;
 
@@ -120,11 +120,14 @@ namespace SharpNL.Utility {
 
         #endregion
 
-        #region . Dispose .
+        #region . DisposeManagedResources .
+
         /// <summary>
-        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// Releases the managed resources.
         /// </summary>
-        public void Dispose() {
+        protected override void DisposeManagedResources() {
+            base.DisposeManagedResources();
+
             infos.Clear();
         }
         #endregion

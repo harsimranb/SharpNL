@@ -27,7 +27,7 @@ namespace SharpNL.Formats {
     /// <summary>
     /// Base class for CoNLL operations.
     /// </summary>
-    public abstract class CoNLL {
+    public abstract class CoNLL : Disposable {
         /// <summary>
         /// Enumerates the supported languages for CoNLL
         /// </summary>

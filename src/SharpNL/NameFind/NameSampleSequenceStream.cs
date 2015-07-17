@@ -22,6 +22,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using SharpNL.ML.Model;
 using SharpNL.Utility;
 using SharpNL.Utility.FeatureGen;
@@ -32,7 +33,8 @@ namespace SharpNL.NameFind {
     /// <summary>
     /// Represents a <seealso cref="NameSample"/> sequence stream used to train the name finder models.
     /// </summary>
-    public class NameSampleSequenceStream : ISequenceStream {
+    [SuppressMessage("Microsoft.Design", "CA1063:ImplementIDisposableCorrectly", Justification = "CA is using drugs! The IDisposable is implemented properly.")]
+    public class NameSampleSequenceStream : Disposable, ISequenceStream {
         private readonly bool useOutcomes;
         private readonly INameContextGenerator pcg;
         private readonly IObjectStream<NameSample> psi;
@@ -91,13 +93,14 @@ namespace SharpNL.NameFind {
 
         #endregion
 
-        #region + Properties .
+        #region . DisposeManagedResources .
 
-        #region . Dispose .
         /// <summary>
-        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// Releases the managed resources.
         /// </summary>
-        public void Dispose() {
+        protected override void DisposeManagedResources() {
+            base.DisposeManagedResources();
+
             psi.Dispose();
         }
         #endregion
@@ -167,8 +170,6 @@ namespace SharpNL.NameFind {
 
             return NameFinderEventStream.GenerateEvents(sentence, tags, pcg).ToArray();
         }
-        #endregion
-
         #endregion
 
     }

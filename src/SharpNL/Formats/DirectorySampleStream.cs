@@ -22,6 +22,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using SharpNL.Utility;
 
@@ -30,7 +31,8 @@ namespace SharpNL.Formats {
     /// The directory sample stream scans a directory (recursively) for plain text
     /// files and outputs each file as a <see cref="FileInfo"/> object.
     /// </summary>
-    public class DirectorySampleStream : IObjectStream<FileInfo> {
+    [SuppressMessage("Microsoft.Design", "CA1063:ImplementIDisposableCorrectly", Justification = "CA is using drugs! The IDisposable is implemented properly.")]
+    public class DirectorySampleStream : Disposable, IObjectStream<FileInfo> {
 
         private readonly DirectoryInfo[] directories;
         private readonly string searchPattern;
@@ -73,15 +75,6 @@ namespace SharpNL.Formats {
         /// <param name="recursive">if set to <c>true</c> searches the directory recursively.</param>
         public DirectorySampleStream(DirectoryInfo directory, string searchPattern, bool recursive)
             : this(new[] { directory }, searchPattern, recursive) {
-
-        }
-        #endregion
-
-        #region . Dispose .
-        /// <summary>
-        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
-        /// </summary>
-        public void Dispose() {
 
         }
         #endregion

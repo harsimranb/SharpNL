@@ -33,7 +33,7 @@ namespace SharpNL.Chunker {
     /// The class represents a maximum-entropy-based chunker. Such a chunker can be used to 
     /// find flat structures based on sequence inputs such as noun phrases or named entities.
     /// </summary>
-    public class ChunkerME : IChunker {
+    public class ChunkerME : Disposable, IChunker {
 
         /// <summary>
         /// The default beam size.
@@ -122,6 +122,20 @@ namespace SharpNL.Chunker {
             return ChunkSample.PhrasesAsSpanList(tokens, tags, preds);
         }
 
+        #endregion
+
+        #region . DisposeManagedResources .
+        /// <summary>
+        /// Releases the managed resources.
+        /// </summary>
+        protected override void DisposeManagedResources() {
+            base.DisposeManagedResources();
+
+            var beamSearch = model as BeamSearch;
+            if (beamSearch != null)
+                beamSearch.Dispose();
+
+        }        
         #endregion
 
         #region + TopKSequences .

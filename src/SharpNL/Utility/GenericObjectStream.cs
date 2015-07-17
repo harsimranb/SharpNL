@@ -22,13 +22,15 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SharpNL.Utility {
     /// <summary>
     /// Represents an generic object stream.
     /// </summary>
     /// <typeparam name="T">The type of the objects in this instance.</typeparam>
-    public class GenericObjectStream<T> : IObjectStream<T> {
+    [SuppressMessage("Microsoft.Design", "CA1063:ImplementIDisposableCorrectly", Justification = "CA is using drugs! The IDisposable is implemented properly.")]
+    public class GenericObjectStream<T> : Disposable, IObjectStream<T> {
         private IEnumerable<T> enumerable;
 
         private IEnumerator<T> enumerator;
@@ -44,9 +46,12 @@ namespace SharpNL.Utility {
 
         #region . Dispose .
         /// <summary>
-        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// Releases the managed resources.
         /// </summary>
-        public void Dispose() {
+        protected override void DisposeManagedResources() {
+            base.DisposeManagedResources();
+
+            // useless?
             enumerable = null;
         }
         #endregion

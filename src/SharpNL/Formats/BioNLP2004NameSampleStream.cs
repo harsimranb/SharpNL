@@ -22,6 +22,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Text;
 using SharpNL.NameFind;
@@ -39,7 +40,8 @@ namespace SharpNL.Formats {
     /// Data can be found on this web site:<br />
     /// <see href="http://www-tsujii.is.s.u-tokyo.ac.jp/GENIA/ERtask/report.html" /> 
     /// </remarks>
-    public class BioNLP2004NameSampleStream : IObjectStream<NameSample> {
+    [SuppressMessage("Microsoft.Design", "CA1063:ImplementIDisposableCorrectly", Justification = "CA is using drugs! The IDisposable is implemented properly.")]
+    public class BioNLP2004NameSampleStream : Disposable, IObjectStream<NameSample> {
 
         internal const int GENERATE_DNA_ENTITIES = 0x01;
         internal const int GENERATE_PROTEIN_ENTITIES = 0x01 << 1;
@@ -73,12 +75,14 @@ namespace SharpNL.Formats {
 
         #endregion
 
-        #region . Dispose .
+        #region . DisposeManagedResources .
 
         /// <summary>
-        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// Releases the managed resources.
         /// </summary>
-        public void Dispose() {
+        protected override void DisposeManagedResources() {
+            base.DisposeManagedResources();
+
             lineStream.Dispose();
         }
 

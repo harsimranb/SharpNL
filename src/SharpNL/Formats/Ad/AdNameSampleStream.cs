@@ -23,6 +23,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -53,7 +54,8 @@ namespace SharpNL.Formats.Ad {
     /// Detailed info about the NER tagset: <see href="http://beta.visl.sdu.dk/visl/pt/info/portsymbol.html#semtags_names"/>
     /// </para>
     /// </remarks>
-    public class AdNameSampleStream : IObjectStream<NameSample> {
+    [SuppressMessage("Microsoft.Design", "CA1063:ImplementIDisposableCorrectly", Justification = "CA is using drugs! The IDisposable is implemented properly.")]
+    public class AdNameSampleStream : Disposable, IObjectStream<NameSample> {
         private const string Hyphen = "-";
 
         private readonly IObjectStream<AdSentence> adSentenceStream;
@@ -249,12 +251,14 @@ namespace SharpNL.Formats.Ad {
         }
         #endregion
 
-        #region . Dispose .
+        #region . DisposeManagedResources .
 
         /// <summary>
-        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// Releases the managed resources.
         /// </summary>
-        public void Dispose() {
+        protected override void DisposeManagedResources() {
+            base.DisposeManagedResources();
+
             adSentenceStream.Dispose();
         }
 

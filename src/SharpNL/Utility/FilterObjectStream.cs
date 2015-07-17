@@ -21,6 +21,7 @@
 //  
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SharpNL.Utility {
     /// <summary>
@@ -29,26 +30,34 @@ namespace SharpNL.Utility {
     /// </summary>
     /// <typeparam name="S">The type of the source/input stream.</typeparam>
     /// <typeparam name="T">The type of this stream.</typeparam>
-    public abstract class FilterObjectStream<S, T> : IObjectStream<T> {
+    [SuppressMessage("Microsoft.Design", "CA1063:ImplementIDisposableCorrectly", Justification = "CA is using drugs! The IDisposable is implemented properly.")]
+    public abstract class FilterObjectStream<S, T> : Disposable, IObjectStream<T> {
         protected FilterObjectStream(IObjectStream<S> samples) {
-            if (samples == null) {
+            if (samples == null)
                 throw new ArgumentNullException("samples", @"The items must not be null.");
-            }
-            Samples = samples;
+            
+            this.samples = samples;
         }
+
+
+        private readonly IObjectStream<S> samples;
 
         /// <summary>
         /// Gets the items from this filtered stream.
         /// </summary>
         /// <value>The items from this filtered stream.</value>
-        protected IObjectStream<S> Samples { get; private set; }
+        protected IObjectStream<S> Samples {
+            get { return samples; } 
+        }
 
 
         /// <summary>
-        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// Releases the managed resources.
         /// </summary>
-        public virtual void Dispose() {
-            Samples.Dispose();
+        protected override void DisposeManagedResources() {
+            base.DisposeManagedResources();
+
+            samples.Dispose();
         }
 
         /// <summary>

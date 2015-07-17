@@ -22,6 +22,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Text;
 using SharpNL.NameFind;
@@ -48,7 +49,8 @@ namespace SharpNL.Formats.Ad {
     /// Detailed info about the NER tagset: <see href="http://beta.visl.sdu.dk/visl/pt/info/portsymbol.html#semtags_names"/>
     /// </para>
     /// </remarks>
-    public class AdContractionNameSampleStream : IObjectStream<NameSample> {
+    [SuppressMessage("Microsoft.Design", "CA1063:ImplementIDisposableCorrectly", Justification = "CA is using drugs! The IDisposable is implemented properly.")]
+    public class AdContractionNameSampleStream : Disposable, IObjectStream<NameSample> {
         private readonly IObjectStream<AdSentence> adSentenceStream;
         private readonly Monitor monitor;
         private string leftContractionPart;
@@ -139,12 +141,14 @@ namespace SharpNL.Formats.Ad {
 
         #endregion
 
-        #region . Dispose .
+        #region . DisposeManagedResources .
 
         /// <summary>
-        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// Releases the managed resources.
         /// </summary>
-        public void Dispose() {
+        protected override void DisposeManagedResources() {
+            base.DisposeManagedResources();
+
             adSentenceStream.Dispose();
         }
 

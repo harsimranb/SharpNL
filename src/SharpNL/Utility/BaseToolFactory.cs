@@ -27,7 +27,7 @@ namespace SharpNL.Utility {
 
     using Serialization;
 
-    public abstract class BaseToolFactory : IDisposable {
+    public abstract class BaseToolFactory : Disposable {
 
         protected BaseToolFactory() {
             Name = GetType().Name;
@@ -97,26 +97,16 @@ namespace SharpNL.Utility {
         }
 
 
-        #region . Free .
         /// <summary>
-        /// Release all resources associated with this tool factory. This method is called by the object disposal.
+        /// Releases the managed resources.
         /// </summary>
-        protected virtual void Free() {
-            ArtifactProvider = null;
-        }
-        #endregion
+        protected override void DisposeManagedResources() {
+            base.DisposeManagedResources();
 
-        #region . Dispose .
-        //internal static BaseToolFactory Create()
-        /// <summary>
-        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
-        /// </summary>
-        public void Dispose() {
-            try {
-                Free();
-            } catch { }
+            if (ArtifactProvider != null)
+                ArtifactProvider = null;
+
         }
-        #endregion
 
     }
 }

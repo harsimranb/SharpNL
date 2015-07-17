@@ -21,6 +21,7 @@
 //  
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using SharpNL.Utility;
 
 namespace SharpNL.Formats.Ptb {
@@ -28,18 +29,32 @@ namespace SharpNL.Formats.Ptb {
     /// Base class for Penn Treebank sample streams.
     /// </summary>
     /// <typeparam name="T">The sample type.</typeparam>
-    public abstract class PtbSampleStream<T> : IObjectStream<T> {
+    [SuppressMessage("Microsoft.Design", "CA1063:ImplementIDisposableCorrectly", Justification = "CA is using drugs! The IDisposable is implemented properly.")]
+    public abstract class PtbSampleStream<T> : Disposable, IObjectStream<T> {
+
+        private readonly bool ownsStream;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PtbSampleStream{T}"/> class.
         /// </summary>
         /// <param name="stream">The stream.</param>
         /// <exception cref="System.ArgumentNullException">stream</exception>
-        protected PtbSampleStream(PtbStreamReader stream) {
+        protected PtbSampleStream(PtbStreamReader stream) : this(stream, true) {
+
+        }
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PtbSampleStream{T}"/> class.
+        /// </summary>
+        /// <param name="stream">The stream.</param>
+        /// <param name="ownsStream"><c>true</c> to indicate that the stream will be disposed when this stream is disposed; <c>false</c> to indicate that the stream will not be disposed when this stream is disposed.</param>
+        /// <exception cref="System.ArgumentNullException">stream</exception>
+        protected PtbSampleStream(PtbStreamReader stream, bool ownsStream) {
             if (stream == null)
                 throw new ArgumentNullException("stream");
 
             Stream = stream;
+
+            this.ownsStream = ownsStream;
         }
 
         #region . Stream .
@@ -50,12 +65,16 @@ namespace SharpNL.Formats.Ptb {
         protected PtbStreamReader Stream { get; private set; }
         #endregion
 
-        #region . Dispose .
+        #region . DisposeManagedResources .
         /// <summary>
-        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// Releases the managed resources.
         /// </summary>
-        public virtual void Dispose() {
-            Stream.Dispose();
+        protected override void DisposeManagedResources() {
+            base.DisposeManagedResources();
+
+            if (ownsStream && Stream != null)
+                Stream.Dispose();
+
         }
         #endregion
 

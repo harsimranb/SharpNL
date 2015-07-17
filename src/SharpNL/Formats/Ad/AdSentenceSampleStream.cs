@@ -22,6 +22,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -32,7 +33,8 @@ namespace SharpNL.Formats.Ad {
     /// <summary>
     /// Represents a <see cref="SentenceSample"/> sample stream for floresta Sita(c)tica Arvores Deitadas corpus.
     /// </summary>
-    public class AdSentenceSampleStream : IObjectStream<SentenceSample> {
+    [SuppressMessage("Microsoft.Design", "CA1063:ImplementIDisposableCorrectly", Justification = "CA is using drugs! The IDisposable is implemented properly.")]
+    public class AdSentenceSampleStream : Disposable, IObjectStream<SentenceSample> {
         /// <summary>
         /// The EOS characters.
         /// </summary>
@@ -50,6 +52,9 @@ namespace SharpNL.Formats.Ad {
         private AdSentence sentence;
         private int text = -1;
 
+        /// <summary>
+        /// Initializes static members of the <see cref="AdSentenceSampleStream"/> class.
+        /// </summary>
         static AdSentenceSampleStream() {
             metaTag1 = new Regex("^(?:[a-zA-Z\\-]*(\\d+)).*?p=(\\d+).*", RegexOptions.Compiled);
 
@@ -98,12 +103,14 @@ namespace SharpNL.Formats.Ad {
             this.monitor = monitor;
         }
 
-        #region . Dispose .
+        #region . DisposeManagedResources .
 
         /// <summary>
-        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// Releases the managed resources.
         /// </summary>
-        public void Dispose() {
+        protected override void DisposeManagedResources() {
+            base.DisposeManagedResources();
+
             adSentenceStream.Dispose();
         }
 

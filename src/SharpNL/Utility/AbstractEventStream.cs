@@ -22,10 +22,16 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using SharpNL.ML.Model;
 
 namespace SharpNL.Utility {
-    public abstract class AbstractEventStream<T> : IObjectStream<Event> {
+    /// <summary>
+    /// Represents a abstract event stream.
+    /// </summary>
+    /// <typeparam name="T">The source object type.</typeparam>
+    [SuppressMessage("Microsoft.Design", "CA1063:ImplementIDisposableCorrectly", Justification = "CA is using drugs! The IDisposable is implemented properly.")]
+    public abstract class AbstractEventStream<T> : Disposable, IObjectStream<Event> {
 
         private readonly IObjectStream<T> samples;
         private IEnumerator<Event> events = new List<Event>().GetEnumerator();
@@ -45,14 +51,18 @@ namespace SharpNL.Utility {
         /// <returns>The events enumerator.</returns>
         protected abstract IEnumerator<Event> CreateEvents(T sample);
 
-        #region . Dispose .
+        #region . DisposeManagedResources .
+
         /// <summary>
-        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// Releases the managed resources.
         /// </summary>
-        public void Dispose() {
+        protected override void DisposeManagedResources() {
+            base.DisposeManagedResources();
+
             events = null;
             samples.Dispose();
         }
+
         #endregion
 
         #region . Read .

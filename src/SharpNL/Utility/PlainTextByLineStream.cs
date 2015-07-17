@@ -21,6 +21,7 @@
 //  
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -29,7 +30,8 @@ namespace SharpNL.Utility {
     /// <summary>
     /// Reads a plain text file and return each line as a <see cref="T:string"/> object.
     /// </summary>
-    public class PlainTextByLineStream : IObjectStream<string> {
+    [SuppressMessage("Microsoft.Design", "CA1063:ImplementIDisposableCorrectly", Justification = "CA is using drugs! The IDisposable is implemented properly.")]
+    public class PlainTextByLineStream : Disposable, IObjectStream<string> {
         private readonly IInputStreamFactory streamFactory;
         private readonly Encoding encoding;
 
@@ -154,12 +156,14 @@ namespace SharpNL.Utility {
 
         #endregion
 
-        #region . Dispose .
+        #region . DisposeManagedResources .
 
         /// <summary>
-        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// Releases the managed resources.
         /// </summary>
-        public void Dispose() {
+        protected override void DisposeManagedResources() {
+            base.DisposeManagedResources();
+
             if (reader != null)
                 reader.Dispose();
            

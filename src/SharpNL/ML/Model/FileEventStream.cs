@@ -21,6 +21,7 @@
 //  
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Text;
 using SharpNL.Utility;
@@ -31,7 +32,8 @@ namespace SharpNL.ML.Model {
     /// Class for using a file of events as an event stream. The format of the file is one event per line with
     /// each line consisting of outcome followed by contexts (space delimited).
     /// </summary>
-    public class FileEventStream : IObjectStream<Event> {
+    [SuppressMessage("Microsoft.Design", "CA1063:ImplementIDisposableCorrectly", Justification = "CA is using drugs! The IDisposable is implemented properly.")]
+    public class FileEventStream : Disposable, IObjectStream<Event> {
 
         #region + Constructors .
 
@@ -67,7 +69,7 @@ namespace SharpNL.ML.Model {
             if (encoding == null)
                 throw new ArgumentNullException("encoding");
 
-            Reader = new StreamReader(inputStream, encoding);
+            reader = new StreamReader(inputStream, encoding);
         }
 
         /// <summary>
@@ -82,7 +84,7 @@ namespace SharpNL.ML.Model {
         /// <param name="fileName">Name of the file.</param>
         /// <param name="encoding">The encoding.</param>
         public FileEventStream(string fileName, Encoding encoding) {
-            Reader = new StreamReader(fileName, encoding);
+            reader = new StreamReader(fileName, encoding);
         }
 
         #endregion
@@ -90,22 +92,29 @@ namespace SharpNL.ML.Model {
         #region + Properties .
 
         #region . Reader .
+
+        private readonly StreamReader reader;
+
         /// <summary>
-        /// Gets the reader.
+        /// Gets the stream reader.
         /// </summary>
-        /// <value>The reader.</value>
-        protected StreamReader Reader { get; private set; }
+        /// <value>The stream reader.</value>
+        protected StreamReader Reader {
+            get { return reader; }
+        }
         #endregion
 
         #endregion
 
         #region . Dispose .
+
         /// <summary>
-        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// Releases the managed resources.
         /// </summary>
-        public virtual void Dispose() {
-            Reader.Close();
-            Reader.Dispose();
+        protected override void DisposeManagedResources() {
+            base.DisposeManagedResources();
+        
+            reader.Dispose();
         }
         #endregion
 

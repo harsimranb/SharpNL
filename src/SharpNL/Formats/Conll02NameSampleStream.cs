@@ -22,6 +22,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using SharpNL.Extensions;
 using SharpNL.NameFind;
@@ -41,12 +42,15 @@ namespace SharpNL.Formats {
     /// <remarks>
     /// Data can be found on this web site: <see href="http://www.cnts.ua.ac.be/conll2002/ner/" />
     /// </remarks>
+    [SuppressMessage("Microsoft.Design", "CA1063:ImplementIDisposableCorrectly", Justification = "CA is using drugs! The IDisposable is implemented properly.")]
     public class CoNLL02NameSampleStream : CoNLL, IObjectStream<NameSample> {
 
         internal const string DocStart = "-DOCSTART-";
 
         internal readonly Language language;
         internal readonly IObjectStream<string> lineStream;
+
+        private readonly bool ownsStream;
 
         internal readonly Types types;
 
@@ -61,7 +65,21 @@ namespace SharpNL.Formats {
         /// <exception cref="System.ArgumentOutOfRangeException"><paramref name="language"/></exception>
         /// <exception cref="System.ArgumentNullException"><paramref name="lineStream"/></exception>
         /// <exception cref="System.ArgumentException">The specified language is not supported.</exception>
-        public CoNLL02NameSampleStream(Language language, IObjectStream<string> lineStream, Types types) {
+        public CoNLL02NameSampleStream(Language language, IObjectStream<string> lineStream, Types types) : this(language, lineStream, types, true) {
+            
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CoNLL02NameSampleStream" /> class.
+        /// </summary>
+        /// <param name="language">The supported conll language.</param>
+        /// <param name="lineStream">The line stream.</param>
+        /// <param name="types">The conll types.</param>
+        /// <param name="ownsStream"><c>true</c> to indicate that the stream will be disposed when this stream is disposed; <c>false</c> to indicate that the stream will not be disposed when this stream is disposed.</param>
+        /// <exception cref="System.ArgumentOutOfRangeException"><paramref name="language" /></exception>
+        /// <exception cref="System.ArgumentNullException"><paramref name="lineStream" /></exception>
+        /// <exception cref="System.ArgumentException">The specified language is not supported.</exception>
+        public CoNLL02NameSampleStream(Language language, IObjectStream<string> lineStream, Types types, bool ownsStream) {
             if (!Enum.IsDefined(typeof(Language), language))
                 throw new ArgumentOutOfRangeException("language");
 
@@ -73,6 +91,7 @@ namespace SharpNL.Formats {
 
             this.language = language;
             this.lineStream = lineStream;
+            this.ownsStream = ownsStream;
             this.types = types;
         }
 
@@ -128,10 +147,13 @@ namespace SharpNL.Formats {
         #region . Dispose .
 
         /// <summary>
-        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// Releases the managed resources.
         /// </summary>
-        public void Dispose() {
-            lineStream.Dispose();
+        protected override void DisposeManagedResources() {
+            base.DisposeManagedResources();
+
+            if (ownsStream && lineStream != null)
+                lineStream.Dispose();
         }
 
         #endregion

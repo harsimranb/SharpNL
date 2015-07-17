@@ -22,12 +22,13 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SharpNL.Utility.Evaluation {
     /// <summary>
     /// Provides access to training and test partitions for n-fold cross validation.
     /// </summary>
-    public class CrossValidationPartitioner<T> {
+    public class CrossValidationPartitioner<T> : Disposable {
         private readonly IObjectStream<T> sampleStream;
         private TrainingSampleStream lastTrainingSampleStream;
         private int testIndex;
@@ -55,6 +56,20 @@ namespace SharpNL.Utility.Evaluation {
         #endregion
 
         #endregion
+
+        /// <summary>
+        /// Releases the managed resources.
+        /// </summary>
+        protected override void DisposeManagedResources() {
+            base.DisposeManagedResources();
+
+            if (sampleStream != null)
+                sampleStream.Dispose();
+
+            if (lastTrainingSampleStream != null)
+                lastTrainingSampleStream.Dispose();
+
+        }
 
         #region @ TestSampleStream .
 
@@ -104,7 +119,8 @@ namespace SharpNL.Utility.Evaluation {
 
         #region @ TrainingSampleStream .
 
-        public class TrainingSampleStream : IObjectStream<T> {
+        [SuppressMessage("Microsoft.Design", "CA1063:ImplementIDisposableCorrectly", Justification = "CA is using drugs! The IDisposable is implemented properly.")]
+        public class TrainingSampleStream : Disposable, IObjectStream<T> {
             private readonly int numberOfPartitions;
             private readonly IObjectStream<T> sampleStream;
             private readonly int testIndex;
@@ -121,9 +137,11 @@ namespace SharpNL.Utility.Evaluation {
             #region . Dispose .
 
             /// <summary>
-            /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+            /// Releases the managed resources.
             /// </summary>
-            public void Dispose() {
+            protected override void DisposeManagedResources() {
+                base.DisposeManagedResources();
+
                 sampleStream.Dispose();
                 Poison();
             }
@@ -211,8 +229,8 @@ namespace SharpNL.Utility.Evaluation {
 
         #endregion
 
-        public CrossValidationPartitioner(IObjectStream<T> inElements, int numberOfPartitions) {
-            sampleStream = inElements;
+        public CrossValidationPartitioner(IObjectStream<T> sampleStream, int numberOfPartitions) {
+            this.sampleStream = sampleStream;
             NumberOfPartitions = numberOfPartitions;
         }
         public CrossValidationPartitioner(IEnumerable<T> enumerable, int numberOfPartitions) : this(new CollectionObjectStream<T>(enumerable), numberOfPartitions) { }

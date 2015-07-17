@@ -23,6 +23,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -34,7 +35,8 @@ namespace SharpNL.Tokenize.Language.en {
     /// This class uses a number of English-specific heuristics to un-separate tokens which
     /// are typically found together in text.
     /// </summary>
-    public class EnTokenSampleStream : IEnumerator<TokenSample> {
+    [SuppressMessage("Microsoft.Design", "CA1063:ImplementIDisposableCorrectly", Justification = "CA is using drugs! The IDisposable is implemented properly.")]
+    public class EnTokenSampleStream : Disposable, IEnumerator<TokenSample> {
         private static readonly Regex alphaNumeric;
         private readonly StreamReader reader;
         private readonly long startPos;
@@ -96,11 +98,14 @@ namespace SharpNL.Tokenize.Language.en {
 
         #endregion
 
-        #region . Dispose .
+        #region . DisposeManagedResources .
+
         /// <summary>
-        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// Releases the managed resources.
         /// </summary>
-        public void Dispose() {
+        protected override void DisposeManagedResources() {
+            base.DisposeManagedResources();
+
             reader.Dispose();
         }
 
