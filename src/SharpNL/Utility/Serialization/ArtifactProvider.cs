@@ -23,8 +23,7 @@
 using System;
 using System.IO;
 using System.Collections.Generic;
-using ICSharpCode.SharpZipLib.Zip;
-using SharpNL.ML.Model;
+using System.IO.Compression;
 
 namespace SharpNL.Utility.Serialization {
 
@@ -180,36 +179,33 @@ namespace SharpNL.Utility.Serialization {
 
             var isSearchingForManifest = true;
 
-            var lazyStack = new Stack<LazyArtifact>();
-            using (var zip = new ZipInputStream(new UnclosableStream(inputStream))) {
-                ZipEntry entry;
-                while ((entry = zip.GetNextEntry()) != null) {
-                    if (entry.Name == ManifestEntry) {
-                        isSearchingForManifest = false;
+            using (var zip = new ZipArchive(inputStream, ZipArchiveMode.Read, true)) {
 
-                        artifactMap[ManifestEntry] = Properties.Deserialize(new UnclosableStream(zip));
+                foreach (var entry in zip.Entries) {
+                    if (entry.Name != ManifestEntry)
+                        continue;
 
-                        zip.CloseEntry();
+                    isSearchingForManifest = false;
 
-                        ManifestDeserialized();
+                    using (var stream = entry.Open())
+                        artifactMap[ManifestEntry] = Properties.Deserialize(stream);
 
-                        CreateArtifactSerializers();
+                    ManifestDeserialized();
 
-                        FinishLoadingArtifacts(lazyStack, zip);
+                    CreateArtifactSerializers();
 
-                        break;
-                    }
+                    FinishLoadingArtifacts(zip);
 
-                    lazyStack.Push(new LazyArtifact(entry, zip));
 
-                    zip.CloseEntry();
+                    break;
                 }
+
             }
 
-            if (isSearchingForManifest) {
-                lazyStack.Clear();
-                throw new InvalidFormatException("Unable to find the manifest file.");
-            }
+            if (!isSearchingForManifest) 
+                return;
+
+            throw new InvalidFormatException("Unable to find the manifest file.");
         }
 
         #endregion
@@ -282,23 +278,17 @@ namespace SharpNL.Utility.Serialization {
         /// <summary>
         /// Finish loading the artifacts now that it knows all serializers.
         /// </summary>
-        private void FinishLoadingArtifacts(Stack<LazyArtifact> lazyStack, ZipInputStream zip) {
+        private void FinishLoadingArtifacts(ZipArchive zip) {
 
-            // process the lazy artifacts
-            while (lazyStack.Count > 0) {
-                using (var lazy = lazyStack.Pop()) {
-                    LoadArtifact(lazy.Name, lazy.Data);
-                }
+            foreach (var entry in zip.Entries) {
+                if (entry.Name == ManifestEntry)
+                    continue;
+
+                using (var stream = entry.Open())
+                    LoadArtifact(entry.Name, stream);
+
             }
 
-            // process the "normal" artifacts
-            ZipEntry entry;
-            while ((entry = zip.GetNextEntry()) != null) {
-                if (entry.Name != ManifestEntry) {
-                    LoadArtifact(entry.Name, zip);
-                }
-                zip.CloseEntry();
-            }
 
             FinishedLoadingArtifacts = true;
         }
@@ -335,70 +325,29 @@ namespace SharpNL.Utility.Serialization {
                 throw new ArgumentException(@"The specified stream is not writable.", "outputStream");
             }
 
-            var zip = new ZipOutputStream(outputStream);
+            using (var zip = new ZipArchive(outputStream, ZipArchiveMode.Create)) {
+                foreach (var artifact in artifactMap) {
 
-            foreach (var artifact in artifactMap) {
-                var model = artifact.Value as AbstractModel;
-                if (model != null && model.info != null) {
-                    zip.SetComment(Library.GetModelComment(model.info));
-                    break;
-                }
-            }
-
-            foreach (var artifact in artifactMap) {
-
-                zip.PutNextEntry(new ZipEntry(artifact.Key));
-
-                // TODO: Remove the old artifact serialization method
-                var serializer = GetArtifactSerializer(artifact.Key, artifact.Value);
-                if (serializer != null) {
-                    serializer.Serialize(artifact.Value, outputStream);
-                } else {
                     var ext = Path.GetExtension(artifact.Key);
-
-                    // all the artifacts must have the file extension.
-                    if (ext == null) {
+                    if (string.IsNullOrEmpty(ext))
                         throw new InvalidOperationException("Invalid artifact entry name.");
-                    }
-                    
+
                     if (artifactSerializers.ContainsKey(ext)) {
+                        var entry = zip.CreateEntry(artifact.Key);
                         var serialization = artifactSerializers[ext];
-                        serialization.Serialize(artifact.Value, new UnclosableStream(zip));
+
+                        using (var stream = entry.Open())
+                            serialization.Serialize(artifact.Value, stream);
+                        
                     } else {
-                        throw new InvalidOperationException("Missing serializer for " + artifact.Key);    
+                        throw new InvalidOperationException("Missing serializer for " + artifact.Key);
                     }
+
+
                 }
-                
-                zip.CloseEntry();
             }
-
-            zip.Flush();
-            zip.Close();
+          
         }
-
         #endregion
-
-        #region . GetArtifactSerializer .
-
-        [Obsolete]
-        private static IArtifactSerializer GetArtifactSerializer(string name, object artifact) {
-            if (string.IsNullOrEmpty(name)) {
-                throw new ArgumentNullException("name");
-            }
-            if (artifact == null) {
-                throw new ArgumentNullException("artifact");
-            }
-
-            var serializableArtifact = artifact as ISerializableArtifact;
-            if (serializableArtifact != null) {
-                var type = serializableArtifact.GetArtifactSerializer();
-
-                return (IArtifactSerializer) Activator.CreateInstance(type);
-            }
-            return null;
-        }
-
-        #endregion
-
     }
 }

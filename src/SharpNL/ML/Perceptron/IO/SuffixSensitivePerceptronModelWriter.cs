@@ -21,7 +21,7 @@
 //  
 
 using System.IO;
-using ICSharpCode.SharpZipLib.GZip;
+using System.IO.Compression;
 using SharpNL.ML.Model;
 
 namespace SharpNL.ML.Perceptron.IO {
@@ -46,7 +46,7 @@ namespace SharpNL.ML.Perceptron.IO {
             string file;
             Stream output;
             if (fileName.EndsWith(".gz")) {
-                output = new GZipOutputStream(new FileStream(fileName, FileMode.Create));
+                output = new GZipStream(new FileStream(fileName, FileMode.Create), CompressionMode.Compress);
                 file = fileName.Substring(0, fileName.Length - 3);
             } else {
                 file = fileName;
