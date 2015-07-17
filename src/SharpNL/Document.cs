@@ -32,7 +32,7 @@ namespace SharpNL {
     /// Represents a document with its texts and sentences.
     /// </summary>
     [TypeConverter(typeof(ExpandableObjectConverter))]
-    public class Document : BaseObject, IDocument {
+    public sealed class Document : BaseObject, IDocument {
 
         #region + Constructors .
 
@@ -189,6 +189,7 @@ namespace SharpNL {
         /// <value>The document sentences.</value>
         [Description("The document sentences.")]
         public IReadOnlyList<Sentence> Sentences { get; private set; }
+
         IReadOnlyList<ISentence> IDocument.Sentences {
             get { return Sentences; }
             set {
