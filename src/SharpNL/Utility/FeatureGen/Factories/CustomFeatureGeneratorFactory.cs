@@ -23,7 +23,6 @@
 using System;
 using System.Linq;
 using System.Xml;
-using SharpNL.Java;
 
 namespace SharpNL.Utility.FeatureGen.Factories {
     // TODO: We have to support custom resources here. How does it work ?!

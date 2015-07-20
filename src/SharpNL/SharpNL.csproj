@@ -128,6 +128,9 @@
     <Compile Include="Utility\FeatureGen\TrigramNameFeatureGenerator.cs" />
     <Compile Include="Utility\FeatureGen\WordClusterDictionary.cs" />
     <Compile Include="Utility\IStopwordProvider.cs" />
+    <Compile Include="Utility\Java\IIterator.cs" />
+    <Compile Include="Utility\Java\IteratorAdapter.cs" />
+    <Compile Include="Utility\Java\StringTokenizer.cs" />
     <Compile Include="Utility\StringTokenizer.cs" />
     <Compile Include="Utility\StringToken.cs" />
     <Compile Include="Tokenize\TokenizerAnalyzer.cs" />
@@ -220,8 +223,6 @@
     <Compile Include="Formats\OntoNotes\DocumentToLineStream.cs" />
     <Compile Include="Formats\OntoNotes\OntoNotesNameSampleStream.cs" />
     <Compile Include="Formats\OntoNotes\OntoNotesParseSampleStream.cs" />
-    <Compile Include="Java\IIterator.cs" />
-    <Compile Include="Java\IteratorAdapter.cs" />
     <Compile Include="Monitor.cs" />
     <Compile Include="MonitorExceptionEventArgs.cs" />
     <Compile Include="MonitorMessageEventArgs.cs" />
@@ -257,7 +258,6 @@
     <Compile Include="Utility\TypeClassAttribute.cs" />
     <Compile Include="Utility\SegmenterObjectStream.cs" />
     <Compile Include="Utility\TypeResolver.cs" />
-    <Compile Include="Java\StringTokenizer.cs" />
     <Compile Include="Library.cs" />
     <Compile Include="ML\AbstractEventModelSequenceTrainer.cs" />
     <Compile Include="ML\MaxEntropy\BasicContextGenerator.cs" />

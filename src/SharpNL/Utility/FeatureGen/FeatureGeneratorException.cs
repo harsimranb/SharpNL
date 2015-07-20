@@ -22,7 +22,6 @@
 
 using System;
 using System.Runtime.Serialization;
-using SharpNL.Java;
 
 namespace SharpNL.Utility.FeatureGen {
     /// <summary>

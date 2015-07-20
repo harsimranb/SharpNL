@@ -22,7 +22,6 @@
 
 using System;
 using System.Collections.Generic;
-using SharpNL.Java;
 
 namespace SharpNL.Utility.FeatureGen {
     /// <summary>

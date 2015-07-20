@@ -21,7 +21,6 @@
 //  
 
 using System.Xml;
-using SharpNL.Java;
 
 namespace SharpNL.Utility.FeatureGen.Factories {
     [TypeClass("opennlp.tools.util.featuregen.GeneratorFactory.DocumentBeginFeatureGenerator")]

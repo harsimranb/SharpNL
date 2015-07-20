@@ -21,10 +21,9 @@
 //  
 
 using System.Collections.Generic;
+using SharpNL.Utility.Java;
 
 namespace SharpNL.SentenceDetector {
-
-    using Java;
     using Utility;
     using ML.Model;
 

@@ -20,7 +20,7 @@
 //   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 //  
 
-using SharpNL.Java;
+using SharpNL.Utility.Java;
 
 namespace SharpNL.ML.Model {
     public abstract class AbstractModelReader {

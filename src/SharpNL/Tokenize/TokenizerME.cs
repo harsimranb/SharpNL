@@ -56,7 +56,7 @@ namespace SharpNL.Tokenize {
         private readonly IMaxentModel model;
 
         private readonly List<Span> newTokens;
-        private readonly List<Double> tokProbs;
+        private readonly List<double> tokProbs;
         private readonly bool useAlphaNumericOptimization;
 
         #region . Constructor .

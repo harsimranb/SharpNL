@@ -24,7 +24,6 @@ using System;
 using System.Text;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
-using SharpNL.Java;
 using SharpNL.Tokenize;
 
 namespace SharpNL.Utility.FeatureGen {

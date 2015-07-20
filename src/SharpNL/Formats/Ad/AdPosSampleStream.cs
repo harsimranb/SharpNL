@@ -25,7 +25,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Text.RegularExpressions;
 using SharpNL.POSTag;
 using SharpNL.Utility;
-using StringTokenizer = SharpNL.Java.StringTokenizer;
+using StringTokenizer = SharpNL.Utility.Java.StringTokenizer;
 
 namespace SharpNL.Formats.Ad {
     /// <summary>

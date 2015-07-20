@@ -21,7 +21,6 @@
 //  
 
 using System.Collections.Generic;
-using SharpNL.Java;
 
 namespace SharpNL.Utility.FeatureGen {
     [TypeClass("opennlp.tools.util.featuregen.IdentityFeatureGenerator")]

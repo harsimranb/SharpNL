@@ -26,7 +26,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using SharpNL.SentenceDetector;
 using SharpNL.Utility;
-using StringTokenizer = SharpNL.Java.StringTokenizer;
+using StringTokenizer = SharpNL.Utility.Java.StringTokenizer;
 
 namespace SharpNL.Parser {
     /// <summary>

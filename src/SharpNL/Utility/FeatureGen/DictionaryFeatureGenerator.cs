@@ -21,7 +21,6 @@
 //  
 
 using System.Collections.Generic;
-using SharpNL.Java;
 using SharpNL.NameFind;
 
 namespace SharpNL.Utility.FeatureGen {

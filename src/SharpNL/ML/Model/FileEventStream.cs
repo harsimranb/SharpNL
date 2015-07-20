@@ -25,7 +25,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Text;
 using SharpNL.Utility;
-using StringTokenizer = SharpNL.Java.StringTokenizer;
+using StringTokenizer = SharpNL.Utility.Java.StringTokenizer;
 
 namespace SharpNL.ML.Model {
     /// <summary>

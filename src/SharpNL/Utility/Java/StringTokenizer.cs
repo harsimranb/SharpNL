@@ -24,7 +24,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace SharpNL.Java {
+namespace SharpNL.Utility.Java {
     /// <summary>
     /// Implements a StringTokenizer class for splitting a string into substrings using a set of delimiters.
     /// </summary>

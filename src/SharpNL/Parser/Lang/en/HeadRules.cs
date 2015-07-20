@@ -22,7 +22,7 @@
 
 using System.Collections.Generic;
 using System.IO;
-using SharpNL.Java;
+using SharpNL.Utility.Java;
 
 namespace SharpNL.Parser.Lang.en {
 

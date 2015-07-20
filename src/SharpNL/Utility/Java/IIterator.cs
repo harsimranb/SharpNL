@@ -20,51 +20,25 @@
 //   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 //  
 
-using System;
-using System.Collections.Generic;
-
-namespace SharpNL.Java {
+namespace SharpNL.Utility.Java {
     /// <summary>
-    /// Represents a <see cref="T:IIterator{T}"/> adapter from an <see cref="T:IEnumerator{T}"/>.
+    /// An iterator over a collection.
     /// </summary>
-    /// <typeparam name="T">The type of objects to enumerate.</typeparam>
-    internal class IteratorAdapter<T> : IIterator<T> {
+    /// <typeparam name="T"></typeparam>
+    /// <remarks>C# port of java.until.Iterator{T}.</remarks>
+    internal interface IIterator<out T> {
 
-        private readonly IEnumerator<T> enumerator;
-        private bool? hasNext;
-
-        public IteratorAdapter(IEnumerable<T> enumerable) {
-            enumerator = enumerable.GetEnumerator();
-        }
-
-        #region . HasNext .
         /// <summary>
         /// Determines whether the iteration has more elements.
         /// </summary>
         /// <returns><c>true</c> if the iteration has more elements.; otherwise, <c>false</c>.</returns>
-        public bool HasNext() {
-            if (hasNext == null) {
-                hasNext = enumerator.MoveNext();
-            }
-            return hasNext.Value;
-        }
-        #endregion
+        bool HasNext();
 
-        #region . Next .
         /// <summary>
         /// Gets the next element in the iteration.
         /// </summary>
         /// <returns>The next element in the iteration.</returns>
-        public T Next() {
-            if (!HasNext()) {
-                throw new InvalidOperationException();
-            }
-
-            hasNext = null;
-
-            return enumerator.Current;
-        }
-        #endregion
+        T Next();
 
     }
 }

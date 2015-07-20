@@ -23,7 +23,6 @@
 using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
-using SharpNL.Java;
 using SharpNL.Utility;
 
 namespace SharpNL.NameFind {
