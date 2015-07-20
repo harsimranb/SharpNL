@@ -20,6 +20,7 @@
 //   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 //  
 
+using System.IO;
 using NUnit.Framework;
 
 using SharpNL.WordNet;
@@ -29,19 +30,24 @@ using SharpNL.WordNet.Providers;
 namespace SharpNL.Tests.WordNet {
     [TestFixture]
     internal class WordNetTest {
-
-
+        
         private SharpNL.WordNet.WordNet wordNet;
 
         [TestFixtureSetUp]
         public void Setup() {
-            wordNet = new SharpNL.WordNet.WordNet(new WordNetFileProvider(@"F:\NLP\WNdb-3.0\dict"));
-            //wordNet = new SharpNL.WordNet.WordNet(new WordNetMemoryProvider(@"F:\NLP\WNdb-3.0\dict"));
-        }
+            // if you like to test, the files are available here: https://github.com/moos/WNdb
 
+            if (Directory.Exists(@"F:\NLP\WNdb-3.0\dict"))
+                wordNet = new SharpNL.WordNet.WordNet(new WordNetFileProvider(@"F:\NLP\WNdb-3.0\dict"));
+
+        }
 
         [Test]
         public void GetSynSetsTest() {
+
+            if (wordNet == null)
+                throw new IgnoreException("WordNet dictionaries are not present.");
+               
             var synsets = wordNet.GetSynSets("nice");
             
             Assert.NotNull(synsets);
@@ -51,6 +57,9 @@ namespace SharpNL.Tests.WordNet {
         [Test]
         public void GetMostCommonSynSetTest() {
 
+            if (wordNet == null)
+                throw new IgnoreException("WordNet dictionaries are not present.");
+
             var synset = wordNet.GetMostCommonSynSet("dog", WordNetPos.Noun);
 
             Assert.NotNull(synset);
@@ -58,6 +67,10 @@ namespace SharpNL.Tests.WordNet {
 
         [Test]
         public void GetAllWords() {
+
+            if (wordNet == null)
+                throw new IgnoreException("WordNet dictionaries are not present.");
+
 
             var alot = wordNet.GetAllWords();
 

@@ -4,6 +4,9 @@
 
 > An awesome and independent reimplementation of the [Apache OpenNLP] software library in C#
 
+> [![Build status](https://ci.appveyor.com/api/projects/status/r11n96yn48jpt6v4/branch/development?svg=true)](https://ci.appveyor.com/project/knuppe/sharpnl/branch/development)
+> [![Coverity Scan](https://scan.coverity.com/projects/5813/badge.svg)](https://scan.coverity.com/projects/5813) 
+
 ## Release
 
 > Public release available at [NuGet] \(Current version: 1.1)
