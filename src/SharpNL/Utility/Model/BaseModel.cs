@@ -23,6 +23,7 @@
 using System;
 using System.IO;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using SharpNL.Utility.Serialization;
 
@@ -59,6 +60,7 @@ namespace SharpNL.Utility.Model {
         /// The <paramref name="languageCode"/> cannot be empty or null.
         /// </exception>
         /// <exception cref="System.InvalidOperationException">Unable to initialize the factory.</exception>
+        [SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors", Justification = "The artifact provider initializes the required fields in order to register serializers.")]
         protected BaseModel(
             string componentName,
             string languageCode,
@@ -111,8 +113,8 @@ namespace SharpNL.Utility.Model {
                 }
             }
 
-            CreateBaseArtifactSerializers();
-
+            // ReSharper disable once DoNotCallOverridableMethodsInConstructor
+            CreateArtifactSerializers();
         }
 
         /// <summary>
@@ -196,13 +198,14 @@ namespace SharpNL.Utility.Model {
 
         #region . CreateArtifactSerializers .
         /// <summary>
-        /// Registers all serializers for their artifact file name extensions.
-        /// Override this method to register custom file extensions.
+        /// Registers all serializers for their artifact file name extensions. Override this method to register custom file extensions.
         /// </summary>
         /// <remarks>
         /// The subclasses should invoke the <see cref="ArtifactProvider.RegisterArtifactType"/> to register 
         /// the proper serialization/deserialization methods for an new extension.
+        /// Warning: This method is called in constructor of the base class!! Be aware that this method is ONLY designed to register serializers.
         /// </remarks>
+        /// <seealso href="https://msdn.microsoft.com/en-us/library/ms182331.aspx"/>
         protected override void CreateArtifactSerializers() {
             base.CreateArtifactSerializers();
 

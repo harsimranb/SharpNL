@@ -251,21 +251,16 @@ namespace SharpNL.Utility.Serialization {
         }
         #endregion
 
-        #region . CreateBaseArtifactSerializers .
-        protected void CreateBaseArtifactSerializers() {
-            CreateArtifactSerializers();
-        }
-        #endregion
-
         #region . CreateArtifactSerializers .
         /// <summary>
-        /// Registers all serializers for their artifact file name extensions.
-        /// Override this method to register custom file extensions.
+        /// Registers all serializers for their artifact file name extensions. Override this method to register custom file extensions.
         /// </summary>
         /// <remarks>
-        /// The subclasses should invoke the <see cref="RegisterArtifactType"/> to register 
+        /// The subclasses should invoke the <see cref="ArtifactProvider.RegisterArtifactType"/> to register 
         /// the proper serialization/deserialization methods for an new extension.
+        /// Warning: This method is called in constructor of the base class!! Be aware that this method is ONLY designed to register serializers.
         /// </remarks>
+        /// <seealso href="https://msdn.microsoft.com/en-us/library/ms182331.aspx"/>
         protected virtual void CreateArtifactSerializers() {
             RegisterArtifactType(".properties", Properties.Serialize, Properties.Deserialize);
             RegisterArtifactType(".dictionary", Dictionary.Dictionary.Serialize, Dictionary.Dictionary.Deserialize);          
@@ -289,41 +284,53 @@ namespace SharpNL.Utility.Serialization {
 
             }
 
-
             FinishedLoadingArtifacts = true;
         }
         #endregion
 
         #region . LoadArtifact .
+
+        /// <summary>
+        /// Loads the artifact with the given name.
+        /// </summary>
+        /// <param name="name">The artifact name.</param>
+        /// <param name="dataStream">The data stream.</param>
+        /// <exception cref="InvalidFormatException">Unknown artifact format.</exception>
+        /// <exception cref="System.InvalidOperationException">The deserializer is not registered.</exception>
         private void LoadArtifact(string name, Stream dataStream) {
             var ext = Path.GetExtension(name);
-            if (string.IsNullOrEmpty(ext) || !artifactSerializers.ContainsKey(ext)) {
+            if (string.IsNullOrEmpty(ext) || !artifactSerializers.ContainsKey(ext))
                 throw new InvalidFormatException("Unknown artifact format: " + name);
-            }
 
-            var serialization = artifactSerializers[ext];
-            if (serialization != null) {
-                artifactMap[name] = serialization.Deserialize(dataStream);
-            } else {
-                throw new InvalidOperationException("Unknown artifact format: " + name);
-            }
+            if (artifactSerializers[ext] == null)
+                throw new InvalidOperationException("The deserializer is not registered.");
+
+            artifactMap[name] = artifactSerializers[ext].Deserialize(dataStream);
         }
+
         #endregion
 
-        #region . Serialize .
+        #region + Serialize .
         /// <summary>
-        /// Serializes the model to the given <see cref="T:Stream"/>
+        /// Serializes the model to the given <see cref="T:Stream" />
         /// </summary>
         /// <param name="outputStream">The output stream.</param>
-        internal void Serialize(Stream outputStream) {
+        /// <exception cref="System.ArgumentNullException">
+        /// The <paramref name="outputStream"/> is null.
+        /// </exception>
+        /// <exception cref="System.ArgumentException">The specified <paramref name="outputStream"/> is not writable.</exception>
+        /// <exception cref="System.InvalidOperationException">
+        /// Invalid artifact entry name.
+        /// or
+        /// Missing serializer for the artifact.
+        /// </exception>
+        public void Serialize(Stream outputStream) {
 
-            if (outputStream == null) {
+            if (outputStream == null)
                 throw new ArgumentNullException("outputStream");
-            }
 
-            if (!outputStream.CanWrite) {
+            if (!outputStream.CanWrite)
                 throw new ArgumentException(@"The specified stream is not writable.", "outputStream");
-            }
 
             using (var zip = new ZipArchive(outputStream, ZipArchiveMode.Create)) {
                 foreach (var artifact in artifactMap) {
@@ -332,22 +339,46 @@ namespace SharpNL.Utility.Serialization {
                     if (string.IsNullOrEmpty(ext))
                         throw new InvalidOperationException("Invalid artifact entry name.");
 
-                    if (artifactSerializers.ContainsKey(ext)) {
-                        var entry = zip.CreateEntry(artifact.Key);
-                        var serialization = artifactSerializers[ext];
-
-                        using (var stream = entry.Open())
-                            serialization.Serialize(artifact.Value, stream);
-                        
-                    } else {
+                    if (!artifactSerializers.ContainsKey(ext))
                         throw new InvalidOperationException("Missing serializer for " + artifact.Key);
-                    }
 
+                    var entry = zip.CreateEntry(artifact.Key);
+                    var serialization = artifactSerializers[ext];
+
+                    using (var stream = entry.Open())
+                        serialization.Serialize(artifact.Value, stream);
 
                 }
             }
-          
         }
+
+        /// <summary>
+        /// Serializes the model to the given filename. If the specified file already exist, the serializer will overwrite the existing file.
+        /// </summary>
+        /// <param name="fileName">A relative or absolute path for the file that the current object will be serialized.</param>
+        /// <exception cref="System.ArgumentNullException">
+        /// The <paramref name="fileName"/> is null.
+        /// </exception>
+        /// <exception cref="ArgumentException">
+        /// The <paramref name="fileName"/> is an empty string (""), contains only white space, or contains one
+        /// or more invalid characters. -or-path refers to a non-file device, such as
+        /// "con:", "com1:", "lpt1:", etc. in an NTFS environment.
+        /// </exception>
+        /// <exception cref="DirectoryNotFoundException">The specified path is invalid, such as being on an unmapped drive.</exception>
+        /// <exception cref="PathTooLongException">
+        /// The specified path, file name, or both exceed the system-defined maximum 
+        /// length. For example, on Windows-based platforms, paths must be less than
+        /// 248 characters, and file names must be less than 260 characters.
+        /// </exception>
+        public void Serialize(string fileName) {
+            if (string.IsNullOrEmpty(fileName)) 
+                throw new ArgumentNullException("fileName");
+
+            using (var stream = new FileStream(fileName, FileMode.Create))
+                Serialize(stream);
+
+        }
+
         #endregion
     }
 }
