@@ -476,15 +476,19 @@ namespace SharpNL.ML.Perceptron {
             // Output the final training stats.
             TrainingStats(evalParams);
 
-            // Create averaged parameters
-            if (useAverage) {
-                for (var pi = 0; pi < numPreds; pi++)
-                    for (var aoi = 0; aoi < numOutcomes; aoi++)
-                        summedParams[pi].SetParameter(aoi, summedParams[pi].Parameters[aoi]/numTimesSummed);
+            
+            if (!useAverage) 
+                return param;
 
-                return summedParams;
-            }
-            return param;
+            if (numTimesSummed == 0) // Improbable but possible according to the Coverity.
+                numTimesSummed = 1;
+
+            // Create averaged parameters
+            for (var pi = 0; pi < numPreds; pi++)
+                for (var aoi = 0; aoi < numOutcomes; aoi++)
+                    summedParams[pi].SetParameter(aoi, summedParams[pi].Parameters[aoi]/numTimesSummed);
+
+            return summedParams;
         }
 
         #endregion
