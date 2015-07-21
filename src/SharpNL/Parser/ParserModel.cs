@@ -29,6 +29,7 @@ using SharpNL.Parser.Lang;
 using SharpNL.POSTag;
 using SharpNL.Utility;
 using SharpNL.Utility.Model;
+using SharpNL.Utility.Serialization;
 
 namespace SharpNL.Parser {
     /// <summary>
@@ -36,23 +37,40 @@ namespace SharpNL.Parser {
     /// </summary>
     public class ParserModel : BaseModel {
         private const string ComponentName = "Parser";
+        private const string EntryBuildModel = "build.model";
+        private const string EntryCheckModel = "check.model";
+        private const string EntryAttachModel = "attach.model";
+        private const string EntryParserTaggerModel = "parsertager.postagger";
+        private const string EntryChunkerTaggerModel = "parserchunker.chunker";
+        private const string EntryHeadRules = "head-rules.headrules";
 
-        private const string BUILD_MODEL_ENTRY_NAME = "build.model";
-
-        private const string CHECK_MODEL_ENTRY_NAME = "check.model";
-
-        private const string ATTACH_MODEL_ENTRY_NAME = "attach.model";
-
-        private const string PARSER_TAGGER_MODEL_ENTRY_NAME = "parsertager.postagger";
-
-        private const string CHUNKER_TAGGER_MODEL_ENTRY_NAME = "parserchunker.chunker";
-
-        private const string HEAD_RULES_MODEL_ENTRY_NAME = "head-rules.headrules";
-
-        private const string PARSER_TYPE = "parser-type";
+        /// <summary>
+        /// The parser type parameter in the manifest.
+        /// </summary>
+        private const string ParserTypeParameter = "parser-type";
 
         #region + Constructors .
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ParserModel"/> using the specified models and head rules.
+        /// </summary>
+        /// <param name="languageCode">The language code.</param>
+        /// <param name="buildModel">The model to assign constituent labels.</param>
+        /// <param name="checkModel">The model to determine a constituent is complete.</param>
+        /// <param name="attachModel">The attach model.</param>
+        /// <param name="parserTagger">The model to assign pos-tags.</param>
+        /// <param name="chunkerTagger">The model to assign flat constituent labels.</param>
+        /// <param name="headRules">The head rules.</param>
+        /// <param name="modelType">Type of the model.</param>
+        /// <param name="manifestInfoEntries">The manifest information entries.</param>
+        /// <exception cref="System.ArgumentException">
+        /// If the <paramref name="modelType"/> is equal to <see cref="Parser.ParserType.Chunking"/> the <paramref name="attachModel"/> must be <c>null</c>.
+        /// or
+        /// If the <paramref name="modelType"/> is equal to <see cref="Parser.ParserType.TreeInsert"/> the <paramref name="attachModel"/> must not be <c>null</c>.
+        /// </exception>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// Unknown <paramref name="modelType"/> value.
+        /// </exception>
         public ParserModel(
             string languageCode,
             IMaxentModel buildModel,
@@ -69,47 +87,114 @@ namespace SharpNL.Parser {
                     if (attachModel != null)
                         throw new ArgumentException(@"attachModel must be null for chunking parser!", "attachModel");
 
-                    Manifest[PARSER_TYPE] = "CHUNKING";
+                    Manifest[ParserTypeParameter] = "CHUNKING";
                     break;
                 case ParserType.TreeInsert:
                     if (attachModel == null)
                         throw new ArgumentException(@"attachModel must not be null for treeinsert parser!",
                             "attachModel");
 
-                    Manifest[PARSER_TYPE] = "TREEINSERT";
+                    Manifest[ParserTypeParameter] = "TREEINSERT";
 
-                    artifactMap[ATTACH_MODEL_ENTRY_NAME] = attachModel;
+                    artifactMap[EntryAttachModel] = attachModel;
 
                     break;
                 default:
-                    throw new ArgumentException(@"Unknown mode type.", "modelType");
+                    throw new ArgumentOutOfRangeException("modelType", "Unknown model type");
             }
 
-            artifactMap[BUILD_MODEL_ENTRY_NAME] = buildModel;
-            artifactMap[CHECK_MODEL_ENTRY_NAME] = checkModel;
-            artifactMap[PARSER_TAGGER_MODEL_ENTRY_NAME] = parserTagger;
-            artifactMap[CHUNKER_TAGGER_MODEL_ENTRY_NAME] = chunkerTagger;
-            artifactMap[HEAD_RULES_MODEL_ENTRY_NAME] = headRules;
+            artifactMap[EntryBuildModel] = buildModel;
+            artifactMap[EntryCheckModel] = checkModel;
+            artifactMap[EntryParserTaggerModel] = parserTagger;
+            artifactMap[EntryChunkerTaggerModel] = chunkerTagger;
+            artifactMap[EntryHeadRules] = headRules;
 
             CheckArtifactMap();
         }
 
-        public ParserModel(string languageCode, IMaxentModel buildModel, IMaxentModel checkModel,
-            IMaxentModel attachModel, POSModel parserTagger, ChunkerModel chunkerTagger, AbstractHeadRules headRules,
-            ParserType modelType)
-            : this(
-                languageCode, buildModel, checkModel, attachModel, parserTagger, chunkerTagger, headRules, modelType,
-                null) {}
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ParserModel"/> using the specified models and head rules without manifest information entries.
+        /// </summary>
+        /// <param name="languageCode">The language code.</param>
+        /// <param name="buildModel">The model to assign constituent labels.</param>
+        /// <param name="checkModel">The model to determine a constituent is complete.</param>
+        /// <param name="attachModel">The attach model.</param>
+        /// <param name="parserTagger">The model to assign pos-tags.</param>
+        /// <param name="chunkerTagger">The model to assign flat constituent labels.</param>
+        /// <param name="headRules">The head rules.</param>
+        /// <param name="modelType">Type of the model.</param>
+        /// <exception cref="System.ArgumentException">
+        /// If the <paramref name="modelType"/> is equal to <see cref="Parser.ParserType.Chunking"/> the <paramref name="attachModel"/> must be <c>null</c>.
+        /// or
+        /// If the <paramref name="modelType"/> is equal to <see cref="Parser.ParserType.TreeInsert"/> the <paramref name="attachModel"/> must not be <c>null</c>.
+        /// </exception>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// Unknown <paramref name="modelType"/> value.
+        /// </exception>
+        public ParserModel(
+            string languageCode,
+            IMaxentModel buildModel,
+            IMaxentModel checkModel,
+            IMaxentModel attachModel,
+            POSModel parserTagger,
+            ChunkerModel chunkerTagger,
+            AbstractHeadRules headRules,
+            ParserType modelType) : this(
+
+                languageCode,
+                buildModel,
+                checkModel,
+                attachModel,
+                parserTagger,
+                chunkerTagger,
+                headRules,
+                modelType,
+                null) {
+
+        }
 
 
-        public ParserModel(string languageCode, IMaxentModel buildModel, IMaxentModel checkModel, POSModel parserTagger,
-            ChunkerModel chunkerTagger, AbstractHeadRules headRules, ParserType type,
-            Dictionary<string, string> manifestInfoEntries)
-            : this(
-                languageCode, buildModel, checkModel, null, parserTagger, chunkerTagger, headRules, type,
-                manifestInfoEntries) {}
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ParserModel"/> using the specified models and head rules using the model type as chunking.
+        /// </summary>
+        /// <param name="languageCode">The language code.</param>
+        /// <param name="buildModel">The model to assign constituent labels.</param>
+        /// <param name="checkModel">The model to determine a constituent is complete.</param>
+        /// <param name="parserTagger">The model to assign pos-tags.</param>
+        /// <param name="chunkerTagger">The model to assign flat constituent labels.</param>
+        /// <param name="headRules">The head rules.</param>
+        /// <param name="manifestInfoEntries">The manifest information entries.</param>
+        public ParserModel(
+            string languageCode,
+            IMaxentModel buildModel,
+            IMaxentModel checkModel,
+            POSModel parserTagger,
+            ChunkerModel chunkerTagger,
+            AbstractHeadRules headRules,
+            Dictionary<string, string> manifestInfoEntries) : this(
 
-        public ParserModel(Stream inputStream) : base(ComponentName, inputStream) {}
+                languageCode,
+                buildModel,
+                checkModel,
+                null,
+                parserTagger,
+                chunkerTagger,
+                headRules,
+                ParserType.Chunking,
+                manifestInfoEntries) {
+
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ParserModel"/> class deserializing the input stream.
+        /// </summary>
+        /// <param name="inputStream">The input stream.</param>
+        /// <exception cref="ArgumentNullException">
+        /// The <paramref name="inputStream"/> is null.
+        /// </exception>
+        public ParserModel(Stream inputStream) : base(ComponentName, inputStream) {
+            
+        }
 
         #endregion
 
@@ -119,8 +204,8 @@ namespace SharpNL.Parser {
 
         public IMaxentModel AttachModel {
             get {
-                if (artifactMap.ContainsKey(ATTACH_MODEL_ENTRY_NAME))
-                    return artifactMap[ATTACH_MODEL_ENTRY_NAME] as IMaxentModel;
+                if (artifactMap.ContainsKey(EntryAttachModel))
+                    return artifactMap[EntryAttachModel] as IMaxentModel;
 
                 return null;
             }
@@ -131,8 +216,8 @@ namespace SharpNL.Parser {
 
         public IMaxentModel BuildModel {
             get {
-                if (artifactMap.ContainsKey(BUILD_MODEL_ENTRY_NAME))
-                    return artifactMap[BUILD_MODEL_ENTRY_NAME] as IMaxentModel ;
+                if (artifactMap.ContainsKey(EntryBuildModel))
+                    return artifactMap[EntryBuildModel] as IMaxentModel ;
 
                 return null;
             }
@@ -143,8 +228,8 @@ namespace SharpNL.Parser {
 
         public IMaxentModel CheckModel {
             get {
-                if (artifactMap.ContainsKey(CHECK_MODEL_ENTRY_NAME))
-                    return artifactMap[CHECK_MODEL_ENTRY_NAME] as IMaxentModel;
+                if (artifactMap.ContainsKey(EntryCheckModel))
+                    return artifactMap[EntryCheckModel] as IMaxentModel;
 
                 return null;
             }
@@ -165,8 +250,8 @@ namespace SharpNL.Parser {
 
         public AbstractHeadRules HeadRules {
             get {
-                if (artifactMap.ContainsKey(HEAD_RULES_MODEL_ENTRY_NAME))
-                    return artifactMap[HEAD_RULES_MODEL_ENTRY_NAME] as AbstractHeadRules;
+                if (artifactMap.ContainsKey(EntryHeadRules))
+                    return artifactMap[EntryHeadRules] as AbstractHeadRules;
 
                 return null;
             }
@@ -177,8 +262,8 @@ namespace SharpNL.Parser {
 
         public ChunkerModel ParserChunkerModel {
             get {
-                if (artifactMap.ContainsKey(CHUNKER_TAGGER_MODEL_ENTRY_NAME))
-                    return artifactMap[CHUNKER_TAGGER_MODEL_ENTRY_NAME] as ChunkerModel;
+                if (artifactMap.ContainsKey(EntryChunkerTaggerModel))
+                    return artifactMap[EntryChunkerTaggerModel] as ChunkerModel;
 
                 return null;
             }
@@ -189,8 +274,8 @@ namespace SharpNL.Parser {
 
         public POSModel ParserTaggerModel {
             get {
-                if (artifactMap.ContainsKey(PARSER_TAGGER_MODEL_ENTRY_NAME))
-                    return artifactMap[PARSER_TAGGER_MODEL_ENTRY_NAME] as POSModel;
+                if (artifactMap.ContainsKey(EntryParserTaggerModel))
+                    return artifactMap[EntryParserTaggerModel] as POSModel;
 
                 return null;
             }
@@ -200,7 +285,7 @@ namespace SharpNL.Parser {
         #region . ParserType .
         public ParserType ParserType {
             get {
-                switch (Manifest[PARSER_TYPE]) {
+                switch (Manifest[ParserTypeParameter]) {
                     case "CHUNKING":
                         return ParserType.Chunking;
                     case "TREEINSERT":
@@ -215,6 +300,13 @@ namespace SharpNL.Parser {
 
         #region . CreateArtifactSerializers .
 
+        /// <summary>
+        /// Registers all serializers for their artifact file name extensions. Override this method to register custom file extensions.
+        /// </summary>
+        /// <seealso href="https://msdn.microsoft.com/en-us/library/ms182331.aspx" />
+        /// <remarks>The subclasses should invoke the <see cref="ArtifactProvider.RegisterArtifactType" /> to register
+        /// the proper serialization/deserialization methods for an new extension.
+        /// Warning: This method is called in constructor of the base class!! Be aware that this method is ONLY designed to register serializers.</remarks>
         protected override void CreateArtifactSerializers() {
             base.CreateArtifactSerializers();
             // note from OpenNLP (for future adaptations)
@@ -299,8 +391,8 @@ namespace SharpNL.Parser {
         protected override void ValidateArtifactMap() {
             base.ValidateArtifactMap();
 
-            if (artifactMap.ContainsKey(BUILD_MODEL_ENTRY_NAME) &&
-                (artifactMap[BUILD_MODEL_ENTRY_NAME] as AbstractModel) == null) {
+            if (artifactMap.ContainsKey(EntryBuildModel) &&
+                (artifactMap[EntryBuildModel] as AbstractModel) == null) {
                 throw new InvalidFormatException("Missing the build model!");
             }
 

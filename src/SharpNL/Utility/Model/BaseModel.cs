@@ -130,11 +130,15 @@ namespace SharpNL.Utility.Model {
 
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="BaseModel"/> class.
+        /// Initializes a new instance of the <see cref="BaseModel" /> class.
         /// </summary>
         /// <param name="componentName">Name of the component.</param>
         /// <param name="stream">The input stream containing the model.</param>
+        /// <exception cref="System.ArgumentNullException">stream</exception>
         protected BaseModel(string componentName, Stream stream) : this(componentName) {
+            if (stream == null)
+                throw new ArgumentNullException("stream");
+
             IsLoadedFromSerialized = true;
             Deserialize(stream);
         }

@@ -428,8 +428,7 @@ namespace SharpNL.Parser.Chunking {
             var checkModel = checkTrainer.Train(kes);
             MergeReportIntoManifest(manifestInfoEntries, checkReportMap, "check");
 
-            return new ParserModel(languageCode, buildModel, checkModel, posModel, chunkModel, rules,
-                ParserType.Chunking, manifestInfoEntries);
+            return new ParserModel(languageCode, buildModel, checkModel, posModel, chunkModel, rules, manifestInfoEntries);
         }
 
         #endregion
