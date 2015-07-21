@@ -305,7 +305,7 @@ namespace SharpNL.ML.MaxEntropy {
                 }
             }
 
-            lastAccuracy = ((double) numCorrect/numEvents);
+            lastAccuracy = Math.Abs(numEvents) < 0.0000001 ? 0d : ((double) numCorrect/numEvents);
 
             Display(string.Format("{0,-5} loglikelihood = {1,-20:0.00000000000} {2,20:0.00000000000}", 
                 iteration, 
