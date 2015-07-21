@@ -149,7 +149,14 @@ namespace SharpNL.WordNet {
         #region + Instantiate .
 
         internal void Instantiate(IWordNetProvider provider) {
-            Instantiate(provider.GetSynSetDefinition(Pos, Offset), null);
+            if (provider == null)
+                throw new ArgumentNullException("provider");
+
+            var sd = provider.GetSynSetDefinition(Pos, Offset);
+            if (sd == null)
+                throw new InvalidOperationException("Unable to find the Synset definition.");
+
+            Instantiate(sd, null);
         }
 
         /// <summary>
