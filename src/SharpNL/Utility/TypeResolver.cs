@@ -21,9 +21,8 @@
 //  
 
 using System;
-using System.Collections.Generic;
-using System.Threading;
-
+using System.Collections.Concurrent;
+using System.Linq;
 
 namespace SharpNL.Utility {
     /// <summary>
@@ -47,27 +46,21 @@ namespace SharpNL.Utility {
     /// </summary>
     public class TypeResolver : Disposable {
 
-        private readonly Dictionary<string, Type> types;
-        private readonly ReaderWriterLockSlim lockSlim;
+        private readonly ConcurrentDictionary<string, Type> types;
 
         public TypeResolver() {
-            types = new Dictionary<string, Type>();
-            lockSlim = new ReaderWriterLockSlim();
+            types = new ConcurrentDictionary<string, Type>();
         }
 
         #region + IsRegistered .
+
         /// <summary>
         /// Determines whether the specified type name is registered.
         /// </summary>
         /// <param name="name">The type name.</param>
         /// <returns><c>true</c> if the specified name is registered; otherwise, <c>false</c>.</returns>
         public bool IsRegistered(string name) {
-            lockSlim.EnterReadLock();
-            try {
-                return types.ContainsKey(name);
-            } finally {
-                lockSlim.ExitReadLock();
-            }           
+            return types.ContainsKey(name);
         }
 
         /// <summary>
@@ -76,17 +69,13 @@ namespace SharpNL.Utility {
         /// <param name="type">The type.</param>
         /// <returns><c>true</c> if the specified type is registered; otherwise, <c>false</c>.</returns>
         public bool IsRegistered(Type type) {
-            lockSlim.EnterReadLock();
-            try {
-                return types.ContainsValue(type);
-            } finally {
-                lockSlim.ExitReadLock();
-            }            
+            return types.Any(x => x.Value == type);
         }
 
         #endregion
 
         #region . Overwrite .
+
         /// <summary>
         /// Overwrites an specified type.
         /// </summary>
@@ -110,16 +99,14 @@ namespace SharpNL.Utility {
             if (!types.ContainsKey(name))
                 throw new ArgumentException("The specified name is not registered.");
 
-            lockSlim.EnterUpgradeableReadLock();
-            try {
-                types[name] = type;
-            } finally {
-                lockSlim.ExitUpgradeableReadLock();               
-            }
+            types[name] = type;
+
         }
+
         #endregion
 
         #region . Register .
+
         /// <summary>
         /// Registers the specified type object with its string representation.
         /// </summary>
@@ -132,19 +119,11 @@ namespace SharpNL.Utility {
             if (type == null)
                 throw new ArgumentNullException("type");
 
-            lockSlim.EnterUpgradeableReadLock();
-            try {
+            if (!types.TryAdd(name, type))
+                throw new ArgumentException("The specified name is already registered.");
 
-                if (types.ContainsKey(name))
-                    throw new ArgumentException("The specified name is already registered.");
-
-                lockSlim.EnterWriteLock();
-
-                types.Add(name, type);
-            } finally {
-                lockSlim.ExitUpgradeableReadLock();       
-            }
         }
+
         #endregion
 
         #region . ResolveType .
@@ -158,14 +137,8 @@ namespace SharpNL.Utility {
             if (string.IsNullOrEmpty(name))
                 throw new ArgumentNullException("name");
 
-            lockSlim.EnterReadLock();
-            try {
-                if (types.ContainsKey(name))
-                    return types[name];
-            } finally {
-                lockSlim.ExitReadLock();
-            }
-            return null;
+            Type type;
+            return types.TryGetValue(name, out type) ? type : null;
         }
         #endregion
 
@@ -180,27 +153,8 @@ namespace SharpNL.Utility {
             if (type == null)
                 throw new ArgumentNullException("type");
 
-            lockSlim.EnterReadLock();
-            try {
-                if (types.ContainsValue(type))
-                    return types.GetKey(type);
-            } finally {
-                lockSlim.ExitReadLock();
-            }
-            return null;
+            return (from t in types where t.Value == type select t.Key).FirstOrDefault();
         }
         #endregion
-
-        #region . DisposeManagedResources .
-        /// <summary>
-        /// Releases the managed resources.
-        /// </summary>
-        protected override void DisposeManagedResources() {
-            base.DisposeManagedResources();
-
-            lockSlim.Dispose();
-        }
-        #endregion
-
     }
 }
