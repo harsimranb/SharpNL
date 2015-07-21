@@ -210,7 +210,7 @@ namespace SharpNL.Utility.Model {
             base.CreateArtifactSerializers();
 
             // generic model 
-            RegisterArtifactType(".model", GenericModelSerializer.SerializeModel, GenericModelSerializer.DeserializeModel);
+            RegisterArtifactType(".model", GenericModelSerializer.Serialize, GenericModelSerializer.Deserialize);
 
             if (ToolFactory != null)
                 ToolFactory.CreateArtifactSerializers(this);

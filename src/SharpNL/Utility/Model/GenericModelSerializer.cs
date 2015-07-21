@@ -23,10 +23,12 @@
 using System;
 using System.IO;
 using SharpNL.ML.Model;
-using SharpNL.Utility.Serialization;
 
 namespace SharpNL.Utility.Model {
-    public class GenericModelSerializer : IArtifactSerializer {
+    /// <summary>
+    /// Represents the standard OpenNLP model serializer.
+    /// </summary>
+    public static class GenericModelSerializer {
 
         /// <summary>
         /// Deserializes the artifact using the specified input stream.
@@ -34,7 +36,7 @@ namespace SharpNL.Utility.Model {
         /// <param name="inputStream">The input stream.</param>
         /// <exception cref="ArgumentNullException">inputStream</exception>
         /// <exception cref="ArgumentException">Stream was not readable.</exception>
-        public object Deserialize(Stream inputStream) {
+        public static object Deserialize(Stream inputStream) {
             return new GenericModelReader(new BinaryFileDataReader(inputStream)).GetModel();
         }
 
@@ -45,17 +47,8 @@ namespace SharpNL.Utility.Model {
         /// <param name="outputStream">The output stream.</param>
         /// <exception cref="ArgumentNullException">outputStream</exception>
         /// <exception cref="ArgumentException">Stream was not writable.</exception>
-        public void Serialize(object artifact, Stream outputStream) {
+        public static void Serialize(object artifact, Stream outputStream) {
             ModelUtility.WriteModel((AbstractModel)artifact, outputStream);
-        }
-
-
-        internal static void SerializeModel(object artifact, Stream outStream) {
-            ModelUtility.WriteModel((AbstractModel)artifact, outStream);
-        }
-
-        internal static object DeserializeModel(Stream inStream) {
-            return new GenericModelReader(new BinaryFileDataReader(inStream)).GetModel();
         }
 
     }

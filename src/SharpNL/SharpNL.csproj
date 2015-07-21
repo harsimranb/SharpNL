@@ -507,7 +507,6 @@
     <Compile Include="Utility\Serialization\ArtifactProvider.cs" />
     <Compile Include="Utility\Model\BaseModel.cs" />
     <Compile Include="Utility\Model\GenericModelSerializer.cs" />
-    <Compile Include="Utility\Serialization\IArtifactSerializer.cs" />
     <Compile Include="Utility\IObjectStream.cs" />
     <Compile Include="Utility\Model\ModelUtility.cs" />
     <Compile Include="Utility\PlainTextByLineStream.cs" />

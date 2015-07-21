@@ -226,7 +226,6 @@
     <Compile Include="Parser\ParseTest.cs" />
     <Compile Include="Parser\PosSampleStreamTest.cs" />
     <Compile Include="Parser\TreeInsert\ParserTest.cs" />
-    <Compile Include="POSTag\DummyPOSTaggerFactory.cs" />
     <Compile Include="POSTag\POSDictionaryTest.cs" />
     <Compile Include="POSTag\POSModelTest.cs" />
     <Compile Include="POSTag\POSSampleEventStreamTest.cs" />
