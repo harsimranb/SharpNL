@@ -22,12 +22,12 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using SharpNL.ML;
-using SharpNL.ML.Model;
 using SharpNL.NGram;
 using SharpNL.Utility;
 using SharpNL.Utility.FeatureGen;
-using Dic = SharpNL.Dictionary.Dictionary;
+using Dict = SharpNL.Dictionary.Dictionary;
 using Sequence = SharpNL.Utility.Sequence;
 
 namespace SharpNL.POSTag {
@@ -45,7 +45,7 @@ namespace SharpNL.POSTag {
 
         private readonly POSModel modelPackage;
 
-        protected Dic ngramDictionary;
+        protected Dict ngramDictionary;
 
         /// <summary>
         /// Says whether a filter should be used to check whether a tag assignment
@@ -170,7 +170,7 @@ namespace SharpNL.POSTag {
         /// <param name="samples">The samples.</param>
         /// <param name="cutoff">The cutoff.</param>
         /// <returns>The NGram dictionary.</returns>
-        public static Dic BuildNGramDictionary(IObjectStream<POSSample> samples, int cutoff) {
+        public static Dict BuildNGramDictionary(IObjectStream<POSSample> samples, int cutoff) {
 
             var model = new NGramModel();
             POSSample sample;
@@ -296,15 +296,10 @@ namespace SharpNL.POSTag {
             }
 
             foreach (var wordEntry in newEntries) {
-                var tagsForWord = new List<string>();
-                foreach (var entry in wordEntry.Value) {
-                    if (entry.Value >= cutoff) {
-                        tagsForWord.Add(entry.Key);
-                    }
-                }
-                if (tagsForWord.Count > 0) {
+                var tagsForWord = (from entry in wordEntry.Value where entry.Value >= cutoff select entry.Key).ToList();
+                if (tagsForWord.Count > 0)
                     dictionary.Put(wordEntry.Key, tagsForWord.ToArray());
-                }
+                
             }
         }
         #endregion
@@ -408,38 +403,37 @@ namespace SharpNL.POSTag {
 
             var trainerType = TrainerFactory.GetTrainerType(parameters);
 
-            IMaxentModel posModel = null;
-            ML.Model.ISequenceClassificationModel<string> seqPosModel = null;
+
             switch (trainerType) {
                 case TrainerType.EventModelTrainer:
                     var es = new POSSampleEventStream(samples, contextGenerator);
                     var trainer = TrainerFactory.GetEventTrainer(parameters, manifestInfoEntries, monitor);
 
-                    posModel = trainer.Train(es);
-                    break;
+                    var eventModel = trainer.Train(es);
+
+                    return new POSModel(languageCode, eventModel, manifestInfoEntries, factory);
+
                 case TrainerType.EventModelSequenceTrainer:
                     var ss = new POSSampleSequenceStream(samples, contextGenerator);
                     var trainer2 = TrainerFactory.GetEventModelSequenceTrainer(parameters, manifestInfoEntries, monitor);
 
-                    posModel = trainer2.Train(ss);
-                    break;
+                    var seqModel = trainer2.Train(ss);
+
+                    return new POSModel(languageCode, seqModel, manifestInfoEntries, factory);
+
                 case TrainerType.SequenceTrainer:
                     var trainer3 = TrainerFactory.GetSequenceModelTrainer(parameters, manifestInfoEntries, monitor);
 
                     // TODO: This will probably cause issue, since the feature generator uses the outcomes array
 
                     var ss2 = new POSSampleSequenceStream(samples, contextGenerator);
-                    seqPosModel = trainer3.Train(ss2);
-                    break;
+                    var seqPosModel = trainer3.Train(ss2);
+
+                    return new POSModel(languageCode, seqPosModel, manifestInfoEntries, factory);
                 default:
                     throw new NotSupportedException("Trainer type is not supported.");
             }
-
-            if (posModel != null) {
-                return new POSModel(languageCode, posModel, manifestInfoEntries, factory);
-            } 
-
-            return new POSModel(languageCode, seqPosModel, manifestInfoEntries, factory);
+           
 
         }
         #endregion
