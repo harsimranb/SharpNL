@@ -50,6 +50,17 @@ namespace SharpNL.ML.Model {
         }
         #endregion
 
+        #region . DisposeManagedResources .
+        /// <summary>
+        /// Releases the managed resources.
+        /// </summary>
+        protected override void DisposeManagedResources() {
+            base.DisposeManagedResources();
+
+            digest.Dispose();
+        }
+        #endregion
+
         #region . CalculateHashSum .
         /// <summary>
         /// Calculates the hash sum of the stream. 
@@ -57,7 +68,10 @@ namespace SharpNL.ML.Model {
         /// </summary>
         /// <returns>The hash string value.</returns>
         public string CalculateHashSum() {
-            if (done) {
+            if (!done) 
+                throw new InvalidOperationException("If the stream is not consumed completely.");
+
+            lock (digest) {
                 var buff = Encoding.UTF8.GetBytes(previous.ToString());
                 digest.TransformFinalBlock(buff, 0, buff.Length);
                 previous = null;
@@ -68,7 +82,7 @@ namespace SharpNL.ML.Model {
                 }
                 return sb.ToString();
             }
-            throw new InvalidOperationException("If the stream is not consumed completely.");
+
         }
         #endregion
 
@@ -87,9 +101,10 @@ namespace SharpNL.ML.Model {
             if (ev != null) {
                 if (previous != null) {
                     var buff = Encoding.UTF8.GetBytes(previous.ToString());
-                    digest.TransformBlock(buff, 0, buff.Length, null, 0);
+                    lock (digest) {
+                        digest.TransformBlock(buff, 0, buff.Length, null, 0);    
+                    }
                 }
-
                 previous = ev;
             } else {
                 done = true;
