@@ -103,22 +103,20 @@ namespace SharpNL.Utility.Evaluation {
         public static int CountTruePositives(T[] references, T[] predictions) {
 
             var predListSpans = new List<T>(predictions);
-            int truePositives = 0;
+            var truePositives = 0;
             T matchedItem = null;
 
-            for (int referenceIndex = 0; referenceIndex < references.Length; referenceIndex++) {
-                object referenceName = references[referenceIndex];
+            foreach (object reference in references) {
+                foreach (var prediction in predListSpans) {
+                    if (!reference.Equals(prediction)) 
+                        continue;
 
-                for (int predIndex = 0; predIndex < predListSpans.Count; predIndex++) {
-
-                    if (referenceName.Equals(predListSpans[predIndex])) {
-                        matchedItem = predListSpans[predIndex];
-                        truePositives++;
-                    }
+                    matchedItem = prediction;
+                    truePositives++;
                 }
-                if (matchedItem != null) {
+                if (matchedItem != null)
                     predListSpans.Remove(matchedItem);
-                }
+                
             }
             return truePositives;
         }
