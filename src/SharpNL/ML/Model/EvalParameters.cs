@@ -21,6 +21,8 @@
 //  
 
 
+using System;
+
 namespace SharpNL.ML.Model {
     /// <summary>
     /// Encapsulates the variables used in producing probabilities from a model and facilitates passing these variables to the eval method.
@@ -32,7 +34,6 @@ namespace SharpNL.ML.Model {
         /// <param name="parameters">The parameters of the model.</param>
         /// <param name="numOutcomes">The number outcomes.</param>
         public EvalParameters(Context[] parameters, int numOutcomes) : this(parameters, 0, 0, numOutcomes) {}
-
 
         /// <summary>
         /// Initializes a new instance of the <see cref="EvalParameters"/> which can be evaluated.
@@ -46,7 +47,12 @@ namespace SharpNL.ML.Model {
             NumOutcomes = numOutcomes;
             CorrectionParam = correctionParam;
             CorrectionConstant = correctionConstant;
-            ConstantInverse = 1/correctionConstant;
+
+            // check if the double is "equal" to zero
+            if (Math.Abs(correctionConstant) < 0.000001)
+                ConstantInverse = 1/correctionConstant;
+            else
+                ConstantInverse = 1d;
         }
 
         #region . Parameters .
