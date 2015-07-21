@@ -100,11 +100,26 @@ namespace SharpNL.Chunker {
         /// </summary>
         /// <param name="tokens">an array of the tokens or words of the sequence.</param>
         /// <param name="tags">an array of the pos tags of the sequence.</param>
-        /// <returns>an array of chunk tags for each token in the sequence.</returns>
+        /// <returns>An array of chunk tags for each token in the sequence or a <c>null</c> value if none.</returns>
+        /// <exception cref="System.ArgumentNullException">
+        /// The <paramref name="tokens"/> is null.
+        /// or
+        /// The <paramref name="tags"/> is null.
+        /// </exception>
+        /// <exception cref="System.ArgumentOutOfRangeException">The token array is empty.</exception>
         public string[] Chunk(string[] tokens, string[] tags) {
+            if (tokens == null)
+                throw new ArgumentNullException("tokens");
+
+            if (tokens.Length == 0)
+                throw new ArgumentOutOfRangeException("tokens", "The token array is empty.");
+
+            if (tags == null)
+                throw new ArgumentNullException("tags");
+
             bestSequence = model.BestSequence(tokens, new object[] {tags}, contextGenerator, sequenceValidator);
 
-            return bestSequence.Outcomes.ToArray();
+            return bestSequence == null ? null : bestSequence.Outcomes.ToArray();
         }
 
         #endregion
