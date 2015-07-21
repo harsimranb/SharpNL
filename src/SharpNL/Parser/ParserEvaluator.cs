@@ -20,7 +20,6 @@
 //   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 //  
 
-using System;
 using System.Collections.Generic;
 using SharpNL.Utility;
 using SharpNL.Utility.Evaluation;
@@ -46,24 +45,27 @@ namespace SharpNL.Parser {
         /// <param name="parse">The parse from which to obtain the spans</param>
         /// <returns>An array containing every span for the parse.</returns>
         internal static Span[] GetConstituencySpans(Parse parse) {
+            if (parse == null)
+                return new Span[0];
+
             var stack = new Stack<Parse>();
-            if (parse.ChildCount > 0) {
-                foreach (var child in parse.Children) {
+            if (parse.ChildCount > 0)
+                foreach (var child in parse.Children)
                     stack.Push(child);
-                }
-            }
+            
             var list = new List<Span>();
             while (stack.Count > 0) {
                 var pop = stack.Pop();
 
-                if (!pop.IsPosTag) {
-                    var span = pop.Span;
-                    list.Add(new Span(span.Start, span.End, pop.Type));
+                if (pop.IsPosTag) 
+                    continue;
 
-                    foreach (var child in pop.Children) {
-                        stack.Push(child);
-                    }
-                }
+                var span = pop.Span;
+                list.Add(new Span(span.Start, span.End, pop.Type));
+
+                foreach (var child in pop.Children)
+                    stack.Push(child);
+                
             }
 
             return list.ToArray();
@@ -84,14 +86,13 @@ namespace SharpNL.Parser {
 
             var predictions = ParserTool.ParseLine(sentenceText, parser, 1);
 
-            Parse prediction = null;
-            if (predictions.Length > 0) {
-                prediction = predictions[0];
-            }
+            if (predictions == null || predictions.Length == 0)
+                return null;
 
-            FMeasure.UpdateScores(GetConstituencySpans(reference), GetConstituencySpans(prediction));
 
-            return prediction;
+            FMeasure.UpdateScores(GetConstituencySpans(reference), GetConstituencySpans(predictions[0]));
+
+            return predictions[0];
         }
 
         #endregion
