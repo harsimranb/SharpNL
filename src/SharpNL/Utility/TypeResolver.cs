@@ -132,14 +132,17 @@ namespace SharpNL.Utility {
             if (type == null)
                 throw new ArgumentNullException("type");
 
-            if (types.ContainsKey(name))
-                throw new ArgumentException("The specified name is already registered.");
-
-            lockSlim.EnterWriteLock();
+            lockSlim.EnterUpgradeableReadLock();
             try {
+
+                if (types.ContainsKey(name))
+                    throw new ArgumentException("The specified name is already registered.");
+
+                lockSlim.EnterWriteLock();
+
                 types.Add(name, type);
             } finally {
-                lockSlim.ExitWriteLock();
+                lockSlim.ExitUpgradeableReadLock();       
             }
         }
         #endregion
