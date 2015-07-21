@@ -323,7 +323,7 @@ namespace SharpNL.POSTag {
         /// <returns>an array of pos tags for each token provided in sentence.</returns>
         public string[] Tag(string[] sentence, object[] additionalContext) {
             bestSequence = model.BestSequence(sentence, additionalContext, ContextGenerator, SequenceValidator);
-            return bestSequence.Outcomes.ToArray();
+            return bestSequence == null ? new string[0] : bestSequence.Outcomes.ToArray();
         }
 
         /// <summary>
@@ -334,8 +334,11 @@ namespace SharpNL.POSTag {
         /// <returns>At most the specified number of taggings for the specified sentence.</returns>
         public string[][] Tag(int numTaggings, string[] sentence) {
             var bestSequences = model.BestSequences(numTaggings, sentence, null, ContextGenerator, SequenceValidator);
+            if (bestSequences == null)
+                return new string[0][];
+
             var tags = new string[bestSequences.Length][];
-            for (int i = 0; i < tags.Length; i++) {
+            for (var i = 0; i < tags.Length; i++) {
                 tags[i] = bestSequences[i].Outcomes.ToArray();
             }
             return tags;
