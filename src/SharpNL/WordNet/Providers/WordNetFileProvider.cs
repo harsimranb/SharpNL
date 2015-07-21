@@ -313,7 +313,7 @@ namespace SharpNL.WordNet.Providers {
 
                 while (start <= end) {
                     Stream.BaseStream.Position = (long)((start + end) / 2.0);
-                    int num = 0;
+                    var num = 0;
                     while (Stream.BaseStream.Position > 0L) {
                         int num2;
                         if ((num2 = Stream.BaseStream.ReadByte()) == -1) {
@@ -325,8 +325,8 @@ namespace SharpNL.WordNet.Providers {
                         }
                         Stream.BaseStream.Position -= 2L;
                     }
-                    long position = Stream.BaseStream.Position;
-                    uint num3 = (uint)position;
+                    var position = Stream.BaseStream.Position;
+                    var num3 = (uint)position;
                     if (num3 != (ulong)position) {
                         throw new Exception("uint overflow");
                     }
@@ -336,12 +336,12 @@ namespace SharpNL.WordNet.Providers {
                     //num3 -= 1u;
 
                     int comparer;
-                    if (text[0] == ' ' || string.IsNullOrEmpty(text))
+                    if (string.IsNullOrEmpty(text) || text[0] == ' ')
                         comparer = 1; // header, search further down
                     else {
                         var curWord = text.Substring(0, text.IndexOf(' '));
 
-                        comparer = String.Compare(word, curWord, StringComparison.OrdinalIgnoreCase);
+                        comparer = string.Compare(word, curWord, StringComparison.OrdinalIgnoreCase);
                     }
 
                     if (comparer == 0)
