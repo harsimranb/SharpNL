@@ -614,7 +614,7 @@ namespace SharpNL.WordNet {
                 return true;
 
             // check if either (but not both) are null
-            if ((object)second == null ^ (object)first == null)
+            if (first == null || second == null)
                 return false;
 
             return first.Equals(second);
@@ -639,10 +639,9 @@ namespace SharpNL.WordNet {
         /// <param name="obj">Other synset</param>
         /// <returns>True if equal, false otherwise</returns>
         public override bool Equals(object obj) {
-            if (!(obj is SynSet))
-                return false;
-
             var synSet = obj as SynSet;
+            if (synSet == null)
+                return false;
 
             return Pos == synSet.Pos && Offset == synSet.Offset;
         }
