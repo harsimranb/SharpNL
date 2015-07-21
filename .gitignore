@@ -18,6 +18,10 @@ bld/
 [Bb]in/
 [Oo]bj/
 
+#Coverity
+cov-int/
+cov-int.zip
+
 # Roslyn cache directories
 *.ide/
 
@@ -106,3 +110,4 @@ UpgradeLog*.htm
 Thumbs.db
 *.csproj.DotSettings
 *.userprefs
+
