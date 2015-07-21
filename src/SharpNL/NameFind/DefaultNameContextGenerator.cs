@@ -22,6 +22,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using SharpNL.Utility.FeatureGen;
 
 namespace SharpNL.NameFind {
@@ -107,14 +108,20 @@ namespace SharpNL.NameFind {
 
         #region . UpdateAdaptiveData .
         /// <summary>
-        /// Informs all the feature generators for a name finder that the specified tokens have been classified with the coorisponds set of specified outcomes.
+        /// Informs all the feature generators for a name finder that the specified tokens have been classified with the corresponds set of specified outcomes.
         /// </summary>
         /// <param name="tokens">The tokens of the sentence or other text unit which has been processed.</param>
         /// <param name="outcomes">The outcomes associated with the specified tokens.</param>
         public void UpdateAdaptiveData(string[] tokens, string[] outcomes) {
-            if (tokens != null && outcomes != null && tokens.Length != outcomes.Length) {
+            if (tokens == null)
+                throw new ArgumentNullException("tokens");
+
+            if (outcomes == null)
+                throw new ArgumentNullException("outcomes");
+
+            if (tokens.Length != outcomes.Length)
                 throw new ArgumentException("The tokens and outcome arrays MUST have the same size!");
-            }
+            
             foreach (var featureGenerator in featureGenerators) {
                 featureGenerator.UpdateAdaptiveData(tokens, outcomes);
             }
