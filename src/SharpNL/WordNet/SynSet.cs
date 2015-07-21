@@ -621,7 +621,7 @@ namespace SharpNL.WordNet {
                 return true;
 
             // check if either (but not both) are null
-            if (first == null || second == null)
+            if (ReferenceEquals(first, null) || ReferenceEquals(second, null))
                 return false;
 
             return first.Equals(second);
