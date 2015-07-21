@@ -21,9 +21,8 @@
 //  
 
 using System;
-using System.Runtime.CompilerServices;
-using System.Security.Cryptography;
 using System.Text;
+using System.Security.Cryptography;
 
 using SharpNL.Utility;
 
@@ -35,6 +34,7 @@ namespace SharpNL.ML.Model {
     public class HashSumEventStream : AbstractObjectStream<Event> {
 
         private readonly MD5 digest;
+        private readonly object syncRoot;
         private Event previous;
         private bool done;
 
@@ -45,8 +45,9 @@ namespace SharpNL.ML.Model {
         /// <param name="eventStream">The event stream.</param>
         public HashSumEventStream(IObjectStream<Event> eventStream)
             : base(eventStream) {
-
+            
             digest = MD5.Create();
+            syncRoot = new object();
         }
         #endregion
 
@@ -57,7 +58,8 @@ namespace SharpNL.ML.Model {
         protected override void DisposeManagedResources() {
             base.DisposeManagedResources();
 
-            digest.Dispose();
+            lock (syncRoot)
+                digest.Dispose();
         }
         #endregion
 
@@ -68,10 +70,10 @@ namespace SharpNL.ML.Model {
         /// </summary>
         /// <returns>The hash string value.</returns>
         public string CalculateHashSum() {
-            if (!done) 
-                throw new InvalidOperationException("If the stream is not consumed completely.");
+            lock (syncRoot) {
+                if (!done)
+                    throw new InvalidOperationException("If the stream is not consumed completely.");
 
-            lock (digest) {
                 var buff = Encoding.UTF8.GetBytes(previous.ToString());
                 digest.TransformFinalBlock(buff, 0, buff.Length);
                 previous = null;
@@ -82,7 +84,6 @@ namespace SharpNL.ML.Model {
                 }
                 return sb.ToString();
             }
-
         }
         #endregion
 
@@ -92,24 +93,27 @@ namespace SharpNL.ML.Model {
         /// </summary>
         /// <returns>The next object or null to signal that the stream is exhausted.</returns>
         /// <exception cref="System.InvalidOperationException">The CalculateHashSum was called! Theoretically this stream should be completely consumed.</exception>
-        [MethodImpl(MethodImplOptions.Synchronized)]
         public override Event Read() {
-            if (done) {
-                throw new InvalidOperationException("The stream was already completely consumed.");
-            }
-            var ev = base.Read();
-            if (ev != null) {
+            lock (syncRoot) {
+                if (done)
+                    throw new InvalidOperationException("The stream was already completely consumed.");
+
+                var ev = base.Read();
+                if (ev == null) {
+                    done = true;
+                    return null;
+                }
+
                 if (previous != null) {
                     var buff = Encoding.UTF8.GetBytes(previous.ToString());
-                    lock (digest) {
-                        digest.TransformBlock(buff, 0, buff.Length, null, 0);    
-                    }
+
+                    digest.TransformBlock(buff, 0, buff.Length, null, 0);
+                    
                 }
                 previous = ev;
-            } else {
-                done = true;
+
+                return ev; 
             }
-            return ev;
         }
         #endregion
         
