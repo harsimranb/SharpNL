@@ -20,6 +20,7 @@
 //   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 //  
 
+using System;
 using SharpNL.ML.Model;
 using SharpNL.Utility;
 using Sequence = SharpNL.ML.Model.Sequence;
@@ -28,28 +29,39 @@ namespace SharpNL.Chunker {
     /// <summary>
     /// Represents a <see cref="ChunkSample" /> sequence stream.
     /// </summary>
-    public sealed class ChunkSampleSequenceStream : ISequenceStream {
+    public sealed class ChunkSampleSequenceStream : Disposable, ISequenceStream {
         private readonly IChunkerContextGenerator contextGenerator;
         private readonly IObjectStream<ChunkSample> samples;
 
         #region . Constructor .
         /// <summary>
-        /// Initializes a new instance of the <see cref="ChunkSampleSequenceStream"/> class using the given parameters.
+        /// Initializes a new instance of the <see cref="ChunkSampleSequenceStream" /> class using the given parameters.
         /// </summary>
         /// <param name="samples">The chunk samples.</param>
         /// <param name="contextGenerator">The chunker context generator.</param>
+        /// <exception cref="System.ArgumentNullException">
+        /// The <paramref name="samples"/> is null.
+        /// or
+        /// The <paramref name="contextGenerator"/> is null.
+        /// </exception>
         public ChunkSampleSequenceStream(IObjectStream<ChunkSample> samples, IChunkerContextGenerator contextGenerator) {
+            if (samples == null)
+                throw new ArgumentNullException("samples");
+
+            if (contextGenerator == null)
+                throw new ArgumentNullException("contextGenerator");
+
             this.samples = samples;
             this.contextGenerator = contextGenerator;
         }
         #endregion
 
-        #region . Dispose .
+        #region . DisposeManagedResources .
 
         /// <summary>
-        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// Releases the managed resources.
         /// </summary>
-        public void Dispose() {
+        protected override void DisposeManagedResources() {
             samples.Dispose();
         }
 
@@ -66,20 +78,18 @@ namespace SharpNL.Chunker {
         /// </returns>
         public Sequence Read() {
             var sample = samples.Read();
+            if (sample == null) 
+                return null;
 
-            if (sample != null) {
-                var events = new Event[sample.Sentence.Count];
-                for (int i = 0, count = sample.Sentence.Count; i < count; i++) {
-                    events[i] = new Event(
-                        sample.Tags[i],
-                        // it is safe to pass the tags as previous tags because
-                        // the context generator does not look for non predicted tags
-                        contextGenerator.GetContext(i, sample.Sentence.ToArray(), sample.Tags.ToArray(), null));
-                }
-                return new Sequence(events, sample);
+            var events = new Event[sample.Sentence.Count];
+            for (int i = 0, count = sample.Sentence.Count; i < count; i++) {
+                events[i] = new Event(
+                    sample.Tags[i],
+                    // it is safe to pass the tags as previous tags because
+                    // the context generator does not look for non predicted tags
+                    contextGenerator.GetContext(i, sample.Sentence.ToArray(), sample.Tags.ToArray(), null));
             }
-
-            return null;
+            return new Sequence(events, sample);
         }
 
         #endregion
