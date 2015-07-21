@@ -149,26 +149,27 @@ namespace SharpNL.WordNet.Providers {
                 posWordSynSets.EnsureContainsKey(pos, typeof(Dictionary<string, List<SynSet>>));
 
                 // scan word index file, skipping header lines
-                var indexFile = new StreamReader(indexInfo.FullName);
-                string line;
-                while ((line = indexFile.ReadLine()) != null) {
-                    var firstSpace = line.IndexOf(' ');
-                    if (firstSpace <= 0) 
-                        continue;
+                using (var indexFile = new StreamReader(indexInfo.FullName)) {
+                    string line;
+                    while ((line = indexFile.ReadLine()) != null) {
+                        var firstSpace = line.IndexOf(' ');
+                        if (firstSpace <= 0)
+                            continue;
 
-                    // grab word and synset shells, along with the most common synset
-                    var word = line.Substring(0, firstSpace);
-                    SynSet mostCommonSynSet;
-                    var synsets = WordNetFileProvider.GetSynSetShells(line, pos, out mostCommonSynSet, wordNet);
+                        // grab word and synset shells, along with the most common synset
+                        var word = line.Substring(0, firstSpace);
+                        SynSet mostCommonSynSet;
+                        var synsets = WordNetFileProvider.GetSynSetShells(line, pos, out mostCommonSynSet, wordNet);
 
-                    // set flag on most common synset if it's ambiguous
-                    if (synsets.Count > 1)
-                        idSynset[mostCommonSynSet.Id].SetAsMostCommonSynsetFor(word);
+                        // set flag on most common synset if it's ambiguous
+                        if (synsets.Count > 1)
+                            idSynset[mostCommonSynSet.Id].SetAsMostCommonSynsetFor(word);
 
-                    // use reference to the synsets that we instantiated in our three-pass routine above
-                    posWordSynSets[pos].Add(word, new List<SynSet>(synsets.Count));
-                    foreach (var synset in synsets)
-                        posWordSynSets[pos][word].Add(idSynset[synset.Id]);
+                        // use reference to the synsets that we instantiated in our three-pass routine above
+                        posWordSynSets[pos].Add(word, new List<SynSet>(synsets.Count));
+                        foreach (var synset in synsets)
+                            posWordSynSets[pos][word].Add(idSynset[synset.Id]);
+                    }
                 }
             }
         }
