@@ -241,7 +241,9 @@ namespace SharpNL.Parser.TreeInsert {
             buildModel.Eval(buildContextGenerator.GetContext(children, advanceNodeIndex), bProbs);
             var doneProb = bProbs[doneIndex];
 
+#if DEBUG
             Debug("adi=" + advanceNodeIndex + " " + advanceNode.Type + "." + advanceNode.Label + " " + advanceNode + " choose build=" + (1 - doneProb) + " attach=" + doneProb);
+#endif
 
             if (1 - doneProb > q) {
                 double bprobSum = 0;
@@ -272,22 +274,30 @@ namespace SharpNL.Parser.TreeInsert {
                                 checkModel.Eval(checkContextGenerator.GetContext(newNode, children, advanceNodeIndex,
                                     false));
 
+#if DEBUG
                             Debug("building " + tag + " " + bprob + " c=" + cProbs[completeIndex]);
+#endif
 
                             if (cProbs[completeIndex] > probMass) {
                                 //just complete advances
                                 SetComplete(newNode);
                                 newParse1.AddProbability(Math.Log(cProbs[completeIndex]));
 
+#if DEBUG
                                 Debug("Only advancing complete node");
+#endif
                             } else if (1 - cProbs[completeIndex] > probMass) {
                                 //just incomplete advances
                                 SetIncomplete(newNode);
                                 newParse1.AddProbability(Math.Log(1 - cProbs[completeIndex]));
+#if DEBUG
                                 Debug("Only advancing incomplete node");
+#endif
                             } else {
                                 //both complete and incomplete advance
+#if DEBUG
                                 Debug("Advancing both complete and incomplete nodes");
+#endif
                                 SetComplete(newNode);
                                 newParse1.AddProbability(Math.Log(cProbs[completeIndex]));
 
@@ -299,8 +309,10 @@ namespace SharpNL.Parser.TreeInsert {
                                 newParse2.AddProbability(Math.Log(1 - cProbs[completeIndex]));
                                 SetIncomplete(newNode2); //set incomplete for non-clone
                             }
+#if DEBUG
                         } else {
                             Debug("building " + tag + " " + bprob);
+#endif
                         }
                     }
                 }
@@ -330,6 +342,8 @@ namespace SharpNL.Parser.TreeInsert {
                     for (int fi = 0, fs = rf.Count; fi < fs; fi++) {
                         var fn = rf[fi];
                         attachModel.Eval(attachContextGenerator.GetContext(children, advanceNodeIndex, rf, fi), aProbs);
+
+#if DEBUG
                         if (debugOn) {
                             //List cs = java.util.Arrays.asList(attachContextGenerator.getContext(children, advanceNodeIndex,rf,fi,punctSet));
                             Debug("Frontier node(" + fi + "): " + fn.Type + "." + fn.Label + " " + fn + " <- " +
@@ -337,6 +351,8 @@ namespace SharpNL.Parser.TreeInsert {
                                   aProbs[sisterAttachIndex] + " ");
 
                         }
+#endif
+
                         foreach (int attachment in attachments) {
                             var prob = aProbs[attachment];
                             //should we try an attach if p > threshold and
@@ -390,11 +406,15 @@ namespace SharpNL.Parser.TreeInsert {
                                         SetComplete(updatedNode);
                                         newParse2.AddProbability(Math.Log(cProbs[completeIndex]));
 
+#if DEBUG
                                         Debug("Only advancing complete node");
+#endif
                                     } else if (1 - cProbs[completeIndex] > probMass) {
                                         SetIncomplete(updatedNode);
                                         newParse2.AddProbability(Math.Log(1 - cProbs[completeIndex]));
+#if DEBUG
                                         Debug("Only advancing incomplete node");
+#endif
                                     } else {
                                         SetComplete(updatedNode);
                                         var newParse3 = newParse2.CloneRoot(updatedNode, originalZeroIndex);
@@ -402,17 +422,23 @@ namespace SharpNL.Parser.TreeInsert {
                                         newParsesList.Add(newParse3);
                                         SetIncomplete(updatedNode);
                                         newParse2.AddProbability(Math.Log(1 - cProbs[completeIndex]));
+#if DEBUG
                                         Debug("Advancing both complete and incomplete nodes; c=" + cProbs[completeIndex]);
+#endif
                                     }
                                 }
+#if DEBUG
                             } else {
                                 Debug("Skipping " + fn.Type + "." + fn.Label + " " + fn + " daughter=" +
                                       (attachment == daughterAttachIndex) + " complete=" + IsComplete(fn) +
                                       " prob=" + prob);
+#endif
                             }
                         }
                         if (checkComplete && !IsComplete(fn)) {
+#if DEBUG
                             Debug("Stopping at incomplete node(" + fi + "): " + fn.Type + "." + fn.Label + " " + fn);
+#endif
                             break;
                         }
                     }

@@ -22,7 +22,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Text;
 using SharpNL.Chunker;
 using SharpNL.NGram;
@@ -30,6 +29,9 @@ using SharpNL.Parser.Chunking;
 using SharpNL.POSTag;
 using SharpNL.Utility;
 
+#if DEBUG
+using System.Diagnostics;
+#endif
 
 using Dic = SharpNL.Dictionary.Dictionary;
 
@@ -157,17 +159,17 @@ namespace SharpNL.Parser {
         /// </summary>
         protected IChunker chunker;
 
-
-
         /// <summary>
         /// Specifies whether a derivation string should be created during parsing.
         /// </summary>
         protected bool createDerivationString = false;
 
+#if DEBUG
         /// <summary>
         /// Turns debug print on or off.
         /// </summary>
         protected bool debugOn = false;
+#endif
 
 
         /// <summary>
@@ -555,11 +557,13 @@ namespace SharpNL.Parser {
                     if (guess == null && derivationStage == 2) {
                         guess = tp;
                     }
+#if DEBUG
                     if (debugOn) {
                         Console.Out.WriteLine(derivationStage + " " + derivationRank + " " + tp.Probability);
                         Console.Out.WriteLine(tp.ToString());
                         Console.Out.WriteLine();
                     }
+#endif
 
                     Parse[] nd;
 
@@ -652,6 +656,7 @@ namespace SharpNL.Parser {
 
         #endregion
 
+#if DEBUG
         protected void Debug(string message) {
 
             if (debugOn && Debugger.IsAttached)
@@ -661,6 +666,7 @@ namespace SharpNL.Parser {
             }
             
         }
+#endif
 
     }
 }
