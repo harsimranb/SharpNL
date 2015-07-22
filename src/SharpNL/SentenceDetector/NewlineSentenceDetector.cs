@@ -29,6 +29,20 @@ namespace SharpNL.SentenceDetector {
     /// recognizes one sentence per non-empty line.
     /// </summary>
     public class NewlineSentenceDetector : ISentenceDetector {
+
+        #region . Instance .
+        private static NewlineSentenceDetector instance;
+
+        /// <summary>
+        /// Gets the <see cref="NewlineSentenceDetector"/> instance.
+        /// </summary>
+        /// <value>The <see cref="NewlineSentenceDetector"/> instance.</value>
+        public static NewlineSentenceDetector Instance {
+            get { return instance ?? (instance = new NewlineSentenceDetector()); }
+        }
+        #endregion
+
+        #region . SentDetect .
         /// <summary>
         /// Detects the sentences in the specified string.
         /// </summary>
@@ -37,36 +51,45 @@ namespace SharpNL.SentenceDetector {
         public string[] SentDetect(string text) {
             return Span.SpansToStrings(SentPosDetect(text), text);
         }
+        #endregion
 
+        #region . SentPosDetect .
         /// <summary>
         /// Detects the position of the sentences in the specified string.
         /// </summary>
         /// <param name="text">The string to be sentence detected.</param>
         /// <returns>The <see cref="T:Span[]"/> with the spans (offsets into <paramref name="text"/>) for each detected sentence as the individuals array elements.</returns>
         public Span[] SentPosDetect(string text) {
+
             var sentences = new List<Span>();
             var start = 0;
+            Span span;
 
             for (var i = 0; i < text.Length; i++) {
-                if (text[i] == '\n' || text[i] == '\r') {
-                    if (start - i > 0) {
-                        var span = new Span(start, i).Trim(text);
-                        if (span.Length > 0) {
-                            sentences.Add(span);
-                        }
-                        start = i + 1;
-                    }
-                }
+                if (text[i] != '\n' && text[i] != '\r')
+                    continue;
+
+                if (i - start <= 0)
+                    continue;
+
+                span = new Span(start, i).Trim(text);
+                if (span.Length > 0)
+                    sentences.Add(span);
+
+                start = i + 1;
             }
 
-            if (text.Length - start > 0) {
-                var span = new Span(start, text.Length).Trim(text);
-                if (span.Length > 0) {
-                    sentences.Add(span);
-                }
-            }
+            // check the last sentence
+            if (text.Length - start <= 0)
+                return sentences.ToArray();
+
+            span = new Span(start, text.Length).Trim(text);
+            if (span.Length > 0)
+                sentences.Add(span);
 
             return sentences.ToArray();
         }
+        #endregion
+        
     }
 }
