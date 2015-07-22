@@ -165,11 +165,11 @@ namespace SharpNL.Utility {
             if (lazy == null)
                 throw new ArgumentNullException("lazy");
 
-
             if (!map.ContainsKey(key))
                 Put(key, lazy.Value);
 
-            return (T)Get(key);
+            var value = Get(key);
+            return value == null ? default(T) : (T)value;
         }
         #endregion
 
