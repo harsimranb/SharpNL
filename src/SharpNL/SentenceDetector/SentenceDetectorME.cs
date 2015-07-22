@@ -54,7 +54,17 @@ namespace SharpNL.SentenceDetector {
 
         private readonly bool useTokenEnd;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SentenceDetectorME" /> using the given sentence model.
+        /// </summary>
+        /// <param name="sentenceModel">The sentence model.</param>
+        /// <exception cref="System.ArgumentNullException">
+        /// The <paramref name="sentenceModel"/> is <c>null</c>.
+        /// </exception>
         public SentenceDetectorME(SentenceModel sentenceModel) {
+            if (sentenceModel == null)
+                throw new ArgumentNullException("sentenceModel");
+
             model = sentenceModel.MaxentModel;
             cgen = sentenceModel.Factory.GetContextGenerator();
             scanner = sentenceModel.Factory.GetEndOfSentenceScanner();
@@ -223,13 +233,18 @@ namespace SharpNL.SentenceDetector {
                 return true;
 
             foreach (var token in abbreviationTokens) {
-                var tokenLength = token.Value;
-                var start = candidateIndex - tokenLength;
-                if (start < 0) start = 0;
-                var count = tokenLength * 2;
+                var start = candidateIndex - token.Value;
+                if (start < 0) 
+                    start = 0;
+
+                var count = token.Value * 2;
+                if (start + count > s.Length)
+                    count = s.Length - start;
 
                 var tokenPosition = s.IndexOf(token.Key, start, count, stringComparison);
-                if (tokenPosition == -1) continue;
+                if (tokenPosition == -1) 
+                    continue;
+
                 return false;
             }
 

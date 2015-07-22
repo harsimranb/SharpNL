@@ -51,6 +51,12 @@ namespace SharpNL.Tests.Sentence {
             }
         }
 
+        /// <summary>
+        /// In the SharpNL we change the default behavior of the <see cref="SentenceDetectorME"/> to respect the 
+        /// abbreviation dictionary when the model has a dictionary specified.
+        /// 
+        /// This method should test this change.
+        /// </summary>
         [Test]
         public void AbbreviationDefaultBehaviorTest() {
 
@@ -61,11 +67,11 @@ namespace SharpNL.Tests.Sentence {
                 "Dit is een 2e regel." + Environment.NewLine + Environment.NewLine +
 
                 "Dit is een 2e regel met een tel. 033-1333123 erin!" + Environment.NewLine +
-                "Test E-mail met zowel winst als 12. Toedracht in het onderwerp." + Environment.NewLine +
+                "Test E-mail met zowel winst als 12. toedracht in het onderwerp." + Environment.NewLine +
                 "Dit is een 2e regel!" + Environment.NewLine +
                 "Dit is een 2e regel." + Environment.NewLine;
 
-            var stringsToIgnoreDictionary = new SharpNL.Dictionary.Dictionary(true) {
+            var stringsToIgnoreDictionary = new SharpNL.Dictionary.Dictionary(false) {
                 {"12. Toedracht"},
                 {"Tel."},
             };
@@ -90,9 +96,9 @@ namespace SharpNL.Tests.Sentence {
 
 
             Assert.AreEqual(8, sentences.Length);
-            for (int i = 0; i < sentences.Length; i++) {
+            for (var i = 0; i < sentences.Length; i++)
                 Assert.AreEqual(expected[i], sentences[i]);
-            }
+            
         }
 
         [Test]
