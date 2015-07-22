@@ -125,6 +125,9 @@ namespace SharpNL.SentenceDetector {
                 var probs = model.Eval(cgen.GetContext(text, cint));
                 var bestOutcome = model.GetBestOutcome(probs);
 
+                if (bestOutcome == null) // beamSearch can theoretically return a null value.
+                    continue;
+
                 if (bestOutcome.Equals(SPLIT) && IsAcceptableBreak(text, index, cint)) {
                     if (index != cint) {
 
