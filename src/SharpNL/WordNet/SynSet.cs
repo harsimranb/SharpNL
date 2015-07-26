@@ -40,6 +40,7 @@ namespace SharpNL.WordNet {
     /// Original license: <br /> <b>Free.</b> Do whatever you want with it.
     /// </para>
     /// </remarks>
+    [Obsolete("The WordNet support will be removed by the library. I'm porting the extJWNL (Extended Java WordNet Library)", false)]
     public sealed class SynSet {
 
         /// <summary>

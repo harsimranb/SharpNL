@@ -35,6 +35,7 @@ namespace SharpNL.WordNet {
     /// Original license:
     ///  Free. Do whatever you want with it.
     /// </remarks>
+    [Obsolete("The WordNet support will be removed by the library. I'm porting the extJWNL (Extended Java WordNet Library)", false)]
     public sealed class WordNet : IDisposable {
 
         private static readonly Dictionary<WordNetPos, Dictionary<string, SynSetRelation>> symbolRelation;
