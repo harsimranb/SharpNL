@@ -36,4 +36,3 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyFileVersion("1.1.3.0")]
 
 [assembly: InternalsVisibleTo("SharpNL.Tests")]
-[assembly: InternalsVisibleTo("SharpNL.Project")]
