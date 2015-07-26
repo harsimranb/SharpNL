@@ -21,6 +21,7 @@
 //  
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using SharpNL.ML.Model;
 using SharpNL.Utility;
 using Sequence = SharpNL.ML.Model.Sequence;
@@ -29,6 +30,7 @@ namespace SharpNL.Chunker {
     /// <summary>
     /// Represents a <see cref="ChunkSample" /> sequence stream.
     /// </summary>
+    [SuppressMessage("Microsoft.Design", "CA1063:ImplementIDisposableCorrectly", Justification = "CA is using drugs again! The interface is properly implemented.")]
     public sealed class ChunkSampleSequenceStream : Disposable, ISequenceStream {
         private readonly IChunkerContextGenerator contextGenerator;
         private readonly IObjectStream<ChunkSample> samples;
