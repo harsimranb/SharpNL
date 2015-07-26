@@ -88,6 +88,12 @@ namespace SharpNL.Parser.TreeInsert {
         //private int nonAttachIndex;
         private readonly int sisterAttachIndex;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Parser"/> class using the specified model with the specified beam size and advance percentage.
+        /// </summary>
+        /// <param name="model">The parser model.</param>
+        /// <param name="beamSize">The number of different parses kept during parsing.</param>
+        /// <param name="advancePercentage">The minimal amount of probability mass which advanced outcomes must represent.</param>
         public Parser(ParserModel model, int beamSize, double advancePercentage) :
             this(model.BuildModel, model.AttachModel, model.CheckModel,
                 new POSTaggerME(model.ParserTaggerModel),
@@ -96,6 +102,10 @@ namespace SharpNL.Parser.TreeInsert {
                 beamSize,
                 advancePercentage) {}
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Parser"/> class using the specified model with the default beam size and the default advance percentage.
+        /// </summary>
+        /// <param name="model">The parser model.</param>
         public Parser(ParserModel model) : this(model, DefaultBeamSize, DefaultAdvancePercentage) {}
 
         private Parser(
