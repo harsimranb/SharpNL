@@ -148,29 +148,49 @@ namespace SharpNL.ML.MaxEntropy.QuasiNewton {
         /// </returns>
         /// <param name="other">An model to compare with this model.</param>
         public bool Equals(QNModel other) {
-            if (other == null)
+            if (other == null) {
+                Console.Out.WriteLine("QNModel.Equals(null)");
                 return false;
+            }
 
-            if (!outcomeNames.SequenceEqual(other.outcomeNames))
-                return false;
 
-            if (!map.Equals(other.map))
+            if (!outcomeNames.SequenceEqual(other.outcomeNames)) {
+                Console.Out.WriteLine("QNModel.Equals(outcomeNames.length)");
                 return false;
+            }
+
+
+            if (!map.Equals(other.map)) {
+                Console.Out.WriteLine("QNModel.Equals(map)");
+                return false;
+            }
+                
 
             // compare parameters
             var ep = evalParameters.Parameters;
             var op = other.evalParameters.Parameters;
-            if (ep.Length != op.Length)
+            if (ep.Length != op.Length) {
+                Console.Out.WriteLine("QNModel.Equals(ep op)");
                 return false;
+            }
+                
 
             for (var p = 0; p < ep.Length; p++) {
 
-                if (!ep[p].Outcomes.SequenceEqual(op[p].Outcomes))
+                if (!ep[p].Outcomes.SequenceEqual(op[p].Outcomes)) {
+                    Console.Out.WriteLine("QNModel.Equals(ep#" + p + ")");
                     return false;
+                }
+                    
 
-                if (!ep[p].Parameters.SequenceEqual(op[p].Parameters))
+                if (!ep[p].Parameters.SequenceEqual(op[p].Parameters)) {
+                    Console.Out.WriteLine("QNModel.Equals(op#" + p + ")");
                     return false;
+                }
+                    
             }
+
+            Console.Out.WriteLine("Wtf?");
 
             return true;
         }
