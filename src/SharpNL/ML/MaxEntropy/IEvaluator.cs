@@ -1,12 +1,12 @@
 ﻿// 
-//  Copyright 2014 Gustavo J Knuppe (https://github.com/knuppe)
+//  Copyright 2015 Gustavo J Knuppe (https://github.com/knuppe)
 // 
 //   Licensed under the Apache License, Version 2.0 (the "License");
 //   you may not use this file except in compliance with the License.
 //   You may obtain a copy of the License at
-// 
+//  
 //       http://www.apache.org/licenses/LICENSE-2.0
-// 
+//  
 //   Unless required by applicable law or agreed to in writing, software
 //   distributed under the License is distributed on an "AS IS" BASIS,
 //   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -20,31 +20,18 @@
 //   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 //  
 
-using System.IO;
-using System.Text;
+namespace SharpNL.ML.MaxEntropy {
+    /// <summary>
+    /// Evaluate quality of training parameters. For example, it can be used to report model's training accuracy when we train a Maximum Entropy classifier.
+    /// </summary>
+    public interface IEvaluator {
 
-namespace SharpNL.Tests {
-    internal static class Tests {
-        internal static string resourcesPath = @"../../../../resources/";
+        /// <summary>
+        /// Measure quality of the training parameters.
+        /// </summary>
+        /// <param name="parameters">The parameters.</param>
+        /// <returns>The evaluated result.</returns>
+        double Evaluate(double[] parameters);
 
-        public static FileStream OpenFile(string fileName) {
-            var path = GetFullPath(fileName);
-
-            if (!File.Exists(path)) {
-                throw new FileNotFoundException("File not found :(", path);
-            }
-
-            return new FileStream(path, FileMode.Open, FileAccess.Read);
-        }
-
-        public static StreamReader OpenFile(string fileName, Encoding encoding) {
-            return new StreamReader(OpenFile(fileName), encoding);
-        }
-
-        public static string GetFullPath(string fileName) {
-            var path = Directory.GetCurrentDirectory();
-            path = Path.Combine(path, resourcesPath, fileName.TrimStart('\\', '/'));
-            return Path.GetFullPath(path);
-        }
     }
 }

@@ -26,6 +26,11 @@ namespace SharpNL.ML.Model {
     /// </summary>
     public interface IDataIndexer {
 
+        /// <summary>
+        /// Gets a value indicating whether this <see cref="IDataIndexer"/> is completed.
+        /// </summary>
+        /// <value><c>true</c> if completed; otherwise, <c>false</c>.</value>
+        bool Completed { get; }
 
         /// <summary>
         /// Execute the data indexing.

@@ -20,10 +20,11 @@
 //   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 //  
 
-using SharpNL.Utility.Java;
+using SharpNL.Utility;
+using StringTokenizer = SharpNL.Utility.Java.StringTokenizer;
 
 namespace SharpNL.ML.Model {
-    public abstract class AbstractModelReader {
+    public abstract class AbstractModelReader : Disposable {
         protected readonly IDataReader reader;
         protected int NUM_PREDS;
 
@@ -96,19 +97,18 @@ namespace SharpNL.ML.Model {
         protected Context[] GetParameters(int[][] outcomePatterns) {
             var par = new Context[NUM_PREDS];
             var pid = 0;
-            for (var i = 0; i < outcomePatterns.Length; i++) {
+            foreach (var op in outcomePatterns) {
                 //construct outcome pattern
-                var outcomePattern = new int[outcomePatterns[i].Length - 1];
-                for (var k = 1; k < outcomePatterns[i].Length; k++) {
-                    outcomePattern[k - 1] = outcomePatterns[i][k];
-                }
+                var outcomePattern = new int[op.Length - 1];
+                for (var k = 1; k < op.Length; k++)
+                    outcomePattern[k - 1] = op[k];
 
                 //populate parameters for each context which uses this outcome pattern.
-                for (var j = 0; j < outcomePatterns[i][0]; j++) {
-                    var contextParameters = new double[outcomePatterns[i].Length - 1];
-                    for (var k = 1; k < outcomePatterns[i].Length; k++) {
+                for (var j = 0; j < op[0]; j++) {
+                    var contextParameters = new double[op.Length - 1];
+                    for (var k = 1; k < op.Length; k++)
                         contextParameters[k - 1] = ReadDouble();
-                    }
+                    
                     par[pid] = new Context(outcomePattern, contextParameters);
                     pid++;
                 }

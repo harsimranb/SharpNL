@@ -30,7 +30,7 @@ using SharpNL.Utility;
 
 namespace SharpNL.Tests.ML {
     internal static class PrepAttachDataUtility {
-        private static IEnumerable<Event> readPpaFile(String filename) {
+        public static IEnumerable<Event> ReadPpaFile(String filename) {
             var events = new List<Event>();
 
             using (var reader = new StreamReader(Tests.OpenFile("opennlp/data/ppa/" + filename))) {
@@ -47,11 +47,11 @@ namespace SharpNL.Tests.ML {
         }
 
         internal static IObjectStream<Event> CreateTrainingStream() {
-            return new GenericObjectStream<Event>(readPpaFile("training"));
+            return new GenericObjectStream<Event>(ReadPpaFile("training"));
         }
 
         internal static void TestModel(IMaxentModel model, double expecedAccuracy) {
-            var devEvents = readPpaFile("devset");
+            var devEvents = ReadPpaFile("devset");
 
             var total = 0;
             var correct = 0;

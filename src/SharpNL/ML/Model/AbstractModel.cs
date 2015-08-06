@@ -179,7 +179,6 @@ namespace SharpNL.ML.Model {
         }
         #endregion
 
-
         #region . GetIndex .
 
         /// <summary>
@@ -204,6 +203,18 @@ namespace SharpNL.ML.Model {
         /// <returns>The data structures relevant to storing the model.</returns>
         public int GetNumOutcomes() {
             return evalParameters.NumOutcomes;
+        }
+
+        #endregion
+
+        #region . GetPredIndex .
+        /// <summary>
+        /// Gets the index of the predicate.
+        /// </summary>
+        /// <param name="predicate">The predicate.</param>
+        /// <returns>The index of the predicate.</returns>
+        protected int GetPredIndex(string predicate) {
+            return map[predicate];
         }
 
         #endregion

@@ -21,6 +21,7 @@
 //  
 
 using System;
+using SharpNL.Extensions;
 
 namespace SharpNL.ML.Model {
     /// <summary>
@@ -32,7 +33,9 @@ namespace SharpNL.ML.Model {
     /// The implementation uses a hash table with open addressing and linear probing.
     /// The table is thread safe and can concurrently accessed by multiple threads, thread safety is achieved through immutability. Though its not strictly immutable which means, that the table must still be safely published to other threads.
     /// </remarks>
-    public class IndexHashTable<T> where T : class {
+    public class IndexHashTable<T> : IEquatable<IndexHashTable<T>> where T : class {
+
+
         private readonly T[] keys;
         private readonly int size;
         private readonly int[] values;
@@ -137,6 +140,8 @@ namespace SharpNL.ML.Model {
 
         #endregion
 
+        #region . ToArray .
+        // TODO: Improve or remove this ugly method.
         internal T[] ToArray(T[] array) {
             for (var i = 0; i < keys.Length; i++) {
                 if (keys[i] != null)
@@ -144,5 +149,63 @@ namespace SharpNL.ML.Model {
             }
             return array;
         }
+        #endregion
+
+        #region + Equals .
+        /// <summary>
+        /// Indicates whether the current object is equal to another object of the same type.
+        /// </summary>
+        /// <returns>
+        /// true if the current object is equal to the <paramref name="other"/> parameter; otherwise, false.
+        /// </returns>
+        /// <param name="other">An object to compare with this object.</param>
+        public bool Equals(IndexHashTable<T> other) {
+            if (ReferenceEquals(null, other)) return false;
+            if (ReferenceEquals(this, other)) return true;
+
+            if (size != other.size)
+                return false;
+
+            if (keys.Length != other.keys.Length)
+                return false;
+
+            if (values.Length != other.values.Length)
+                return false;
+
+            return keys.SequenceEqual(other.keys) && values.SequenceEqual(other.values);
+        }
+
+        /// <summary>
+        /// Determines whether the specified <see cref="T:System.Object"/> is equal to the current <see cref="T:System.Object"/>.
+        /// </summary>
+        /// <returns>
+        /// true if the specified object  is equal to the current object; otherwise, false.
+        /// </returns>
+        /// <param name="obj">The object to compare with the current object. </param>
+        public override bool Equals(object obj) {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != GetType()) return false;
+            return Equals((IndexHashTable<T>)obj);
+        }
+        #endregion
+
+        #region . GetHashCode .
+        /// <summary>
+        /// Serves as a hash function for a particular type. 
+        /// </summary>
+        /// <returns>
+        /// A hash code for the current <see cref="T:System.Object"/>.
+        /// </returns>
+        public override int GetHashCode() {
+            unchecked {
+                var hashCode = (keys != null ? keys.GetArrayHash(): 0);
+                hashCode = (hashCode * 397) ^ size;
+                hashCode = (hashCode * 397) ^ (values != null ? values.GetArrayHash() : 0);
+                return hashCode;
+            }
+        }
+        #endregion
+
     }
 }

@@ -22,7 +22,9 @@
 
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using SharpNL.ML.MaxEntropy;
+using SharpNL.ML.MaxEntropy.QuasiNewton;
 using SharpNL.ML.Model;
 using SharpNL.ML.Perceptron;
 using SharpNL.Utility;
@@ -40,6 +42,7 @@ namespace SharpNL.ML {
             CustomTrainers = new Dictionary<string, Type>();
 
             BuiltInTrainers[GIS.MaxEntropy] = typeof (GIS);
+            BuiltInTrainers[QNTrainer.MaxentQnValue] = typeof (QNTrainer);
             BuiltInTrainers[PerceptronTrainer.PerceptronValue] = typeof (PerceptronTrainer);
         }
 
@@ -83,7 +86,11 @@ namespace SharpNL.ML {
             if (trainerType.HasValue && trainerType.Value == TrainerType.EventModelTrainer) {
                 var type = GetTrainer(algorithm);
 
-                var trainer = (IEventTrainer) Activator.CreateInstance(type, monitor);
+                var ctor = type.GetConstructor(new [] {typeof (Monitor)});
+                if (ctor == null)
+                    throw new InvalidOperationException("The constructor of the trainer must have a standard constructor.");
+
+                var trainer = (IEventTrainer) ctor.Invoke(new object[] {monitor});
                 trainer.Init(parameters, reportMap);
                 return trainer;
             }

@@ -42,7 +42,7 @@ namespace SharpNL.ML.Model {
         /** The number of times each predicate occurred. */
         protected int[] predCounts;
         protected string[] predLabels;
-        private bool indexed;
+        private bool completed;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AbstractDataIndexer"/> class without a evaluation monitor.
@@ -58,6 +58,16 @@ namespace SharpNL.ML.Model {
         }
 
         #region + Properties .
+
+        #region . Completed .
+        /// <summary>
+        /// Gets a value indicating whether this <see cref="IDataIndexer" /> is completed.
+        /// </summary>
+        /// <value><c>true</c> if completed; otherwise, <c>false</c>.</value>
+        public bool Completed {
+            get { return completed; }
+        }
+        #endregion
 
         #region . Values .
         /// <summary>
@@ -105,13 +115,13 @@ namespace SharpNL.ML.Model {
         /// Do NOT call this method in the constructor of the data indexer, otherwise it will not work in C#!
         /// </remarks>
         public void Execute() {
-            if (indexed)
+            if (completed)
                 throw new InvalidOperationException("The data indexing has already been performed.");
 
             try {
                 PerformIndexing();
             } finally {
-                indexed = true;
+                completed = true;
             }
         }
         #endregion

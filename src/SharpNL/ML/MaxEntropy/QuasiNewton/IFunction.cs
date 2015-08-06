@@ -1,12 +1,12 @@
 ﻿// 
-//  Copyright 2014 Gustavo J Knuppe (https://github.com/knuppe)
+//  Copyright 2015 Gustavo J Knuppe (https://github.com/knuppe)
 // 
 //   Licensed under the Apache License, Version 2.0 (the "License");
 //   you may not use this file except in compliance with the License.
 //   You may obtain a copy of the License at
-// 
+//  
 //       http://www.apache.org/licenses/LICENSE-2.0
-// 
+//  
 //   Unless required by applicable law or agreed to in writing, software
 //   distributed under the License is distributed on an "AS IS" BASIS,
 //   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -19,32 +19,32 @@
 //   - May you share freely, never taking more than you give.                -
 //   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 //  
+namespace SharpNL.ML.MaxEntropy.QuasiNewton {
+    /// <summary>
+    /// Provides the basic function methods.
+    /// </summary>
+    public interface IFunction {
 
-using System.IO;
-using System.Text;
+        /// <summary>
+        /// Gets the current dimension.
+        /// </summary>
+        /// <value>The current dimension.</value>
+        int Dimension { get; }
 
-namespace SharpNL.Tests {
-    internal static class Tests {
-        internal static string resourcesPath = @"../../../../resources/";
+        /// <summary>
+        /// Gets the function value at the given input vector.
+        /// </summary>
+        /// <param name="x">The input vector.</param>
+        /// <returns>The function value.</returns>
+        double ValueAt(double[] x);
 
-        public static FileStream OpenFile(string fileName) {
-            var path = GetFullPath(fileName);
+        /// <summary>
+        /// Gets the gradient at the given input vector.
+        /// </summary>
+        /// <param name="x">The input vector.</param>
+        /// <returns>The gradient value.</returns>
+        double[] GradientAt(double[] x);
 
-            if (!File.Exists(path)) {
-                throw new FileNotFoundException("File not found :(", path);
-            }
 
-            return new FileStream(path, FileMode.Open, FileAccess.Read);
-        }
-
-        public static StreamReader OpenFile(string fileName, Encoding encoding) {
-            return new StreamReader(OpenFile(fileName), encoding);
-        }
-
-        public static string GetFullPath(string fileName) {
-            var path = Directory.GetCurrentDirectory();
-            path = Path.Combine(path, resourcesPath, fileName.TrimStart('\\', '/'));
-            return Path.GetFullPath(path);
-        }
     }
 }

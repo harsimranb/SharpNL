@@ -49,10 +49,22 @@ namespace SharpNL.Utility {
         /// The iterations parameter.
         /// </summary>
         public const string Iterations = "Iterations";
+
+        /// <summary>
+        /// The maximum number of function evaluations parameter.
+        /// </summary>
+        public const string MaxFctEval = "MaxFctEval";
+
+        /// <summary>
+        /// The number of updates.
+        /// </summary>
+        public const string NumOfUpdates = "NumOfUpdates";
+
         /// <summary>
         /// The tolerance parameter.
         /// </summary>
         public const string Tolerance = "Tolerance";
+
         /// <summary>
         /// The trainer type parameter.
         /// </summary>
@@ -84,6 +96,16 @@ namespace SharpNL.Utility {
         public const string Threads = "Threads";
 
         /// <summary>
+        /// The L1-regularization cost parameter.
+        /// </summary>
+        public const string L1Cost = "L1Cost";
+
+        /// <summary>
+        /// The L2-regularization cost parameter.
+        /// </summary>
+        public const string L2Cost = "L2Cost";
+
+        /// <summary>
         /// Represents the supported algorithms.
         /// </summary>
         public static class Algorithms {
@@ -96,6 +118,11 @@ namespace SharpNL.Utility {
             /// The maximum entropy algorithm.
             /// </summary>
             public const string MaxEnt = "MAXENT";
+
+            /// <summary>
+            /// The maximum entropy quasi-Newton algorithm.
+            /// </summary>
+            public const string MaxEntQn = "MAXENT_QN";
 
         }
 

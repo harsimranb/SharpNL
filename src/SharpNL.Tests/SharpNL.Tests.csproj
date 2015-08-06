@@ -197,6 +197,11 @@
     <Compile Include="Inflecter\Inflecter.cs" />
     <Compile Include="Lemmatizer\DictionaryLemmatizerTest.cs" />
     <Compile Include="ML\MaxEnt\MaxentPrepAttachTest.cs" />
+    <Compile Include="ML\MaxEnt\QuasiNewton\LineSearchTest.cs" />
+    <Compile Include="ML\MaxEnt\QuasiNewton\NegLogLikelihoodTest.cs" />
+    <Compile Include="ML\MaxEnt\QuasiNewton\QNMinimizerTest.cs" />
+    <Compile Include="ML\MaxEnt\QuasiNewton\QNPrepAttachTest.cs" />
+    <Compile Include="ML\MaxEnt\QuasiNewton\QNTrainerTest.cs" />
     <Compile Include="ML\MaxEnt\RealValueModelTest.cs" />
     <Compile Include="ML\MaxEnt\ScaleDoesntMatterTest.cs" />
     <Compile Include="ML\Model\IndexHashTableTest.cs" />
