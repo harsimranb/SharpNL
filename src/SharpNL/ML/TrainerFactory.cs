@@ -22,7 +22,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Reflection;
 using SharpNL.ML.MaxEntropy;
 using SharpNL.ML.MaxEntropy.QuasiNewton;
 using SharpNL.ML.Model;
@@ -67,11 +66,14 @@ namespace SharpNL.ML {
         /// </summary>
         /// <param name="parameters">The machine learnable parameters.</param>
         /// <param name="reportMap">The report map.</param>
-        /// <param name="monitor">
-        /// A evaluation monitor that can be used to listen the messages during the training or it can cancel the training operation.
-        /// This argument can be a <c>null</c> value.
-        /// </param>
-        /// <returns>The <see cref="IEventTrainer"/> trainer object.</returns>
+        /// <param name="monitor">A evaluation monitor that can be used to listen the messages during the training or it can cancel the training operation.
+        /// This argument can be a <c>null</c> value.</param>
+        /// <returns>The <see cref="IEventTrainer" /> trainer object.</returns>
+        /// <exception cref="System.InvalidOperationException">
+        /// Unable to retrieve the trainer from the training parameters.
+        /// or
+        /// The constructor of the trainer must have a standard constructor.
+        /// </exception>
         public static IEventTrainer GetEventTrainer(TrainingParameters parameters, Dictionary<string, string> reportMap, Monitor monitor) {
 
             var algorithm = parameters.Get(Parameters.Algorithm);
@@ -85,6 +87,9 @@ namespace SharpNL.ML {
             var trainerType = GetTrainerType(parameters);
             if (trainerType.HasValue && trainerType.Value == TrainerType.EventModelTrainer) {
                 var type = GetTrainer(algorithm);
+
+                if (type == null)
+                    throw new InvalidOperationException("Unable to retrieve the trainer from the training parameters.");
 
                 var ctor = type.GetConstructor(new [] {typeof (Monitor)});
                 if (ctor == null)
