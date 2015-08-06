@@ -78,7 +78,7 @@ namespace SharpNL.ML.MaxEntropy.QuasiNewton {
                 nTotalEvents += nEventsSeen[ei];
             }
 
-            return (double)nCorrect / nTotalEvents;
+            return nTotalEvents == 0 ? 0 : (double) nCorrect/nTotalEvents;
         }
     }
 }
