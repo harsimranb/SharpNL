@@ -45,7 +45,10 @@
             } else {
                 w_2 = "w_2=" + tokens[index - 2];
                 t_2 = "t_2=" + tags[index - 2];
-                p_2 = "p_2" + preds[index - 2];
+
+                // Knuppe: an equal sign is missing here intentionally because the OpenNLP is missing too!
+                // if I change this, the chunk models will not be compatible.
+                p_2 = "p_2" + (preds != null ? preds[index - 2] : string.Empty);
             }
 
             if (index < 1) {
@@ -55,11 +58,11 @@
             } else {
                 w_1 = "w_1=" + tokens[index - 1];
                 t_1 = "t_1=" + tags[index - 1];
-                p_1 = "p_1=" + preds[index - 1];
+                p_1 = "p_1=" + (preds != null ? preds[index - 1] : string.Empty);
             }
 
-            string w0 = "w0=" + tokens[index];
-            string t0 = "t0=" + tags[index];
+            var w0 = "w0=" + tokens[index];
+            var t0 = "t0=" + tags[index];
 
             if (index + 1 >= tokens.Length) {
                 w1 = "w1=eos";
