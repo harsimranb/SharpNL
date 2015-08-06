@@ -57,6 +57,9 @@ namespace SharpNL.DocumentCategorizer {
             var probs = documentCategorizer.Categorize(document, reference.ExtraInformation);
             var cat = documentCategorizer.GetBestCategory(probs);
 
+            if (cat == null)
+                return null;
+
             FMeasure.UpdateScores(new[] {reference.Category}, new[] {cat});
 
             return new DocumentSample(cat, reference.Text);
