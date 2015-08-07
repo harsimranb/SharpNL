@@ -169,10 +169,7 @@ namespace SharpNL.ML.Model {
             if (keys.Length != other.keys.Length)
                 return false;
 
-            if (values.Length != other.values.Length)
-                return false;
-
-            return keys.SequenceEqual(other.keys) && values.SequenceEqual(other.values);
+            return keys.SequenceEqual(other.keys);
         }
 
         /// <summary>
@@ -201,7 +198,6 @@ namespace SharpNL.ML.Model {
             unchecked {
                 var hashCode = (keys != null ? keys.GetArrayHash(): 0);
                 hashCode = (hashCode * 397) ^ size;
-                hashCode = (hashCode * 397) ^ (values != null ? values.GetArrayHash() : 0);
                 return hashCode;
             }
         }
