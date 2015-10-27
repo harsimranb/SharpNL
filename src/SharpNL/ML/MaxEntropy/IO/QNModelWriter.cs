@@ -30,9 +30,9 @@ namespace SharpNL.ML.MaxEntropy.IO {
             Write("QN");
 
             // the mapping from outcomes to their integer indexes
-            Write(OUTCOME_LABELS.Length);
+            Write(OutcomeLabels.Length);
 
-            foreach (var label in OUTCOME_LABELS)
+            foreach (var label in OutcomeLabels)
                 Write(label);
 
             // the mapping from predicates to the outcomes they contributed to.
@@ -48,7 +48,7 @@ namespace SharpNL.ML.MaxEntropy.IO {
             }
 
             // the mapping from predicate names to their integer indexes
-            Write(PARAMS.Length);
+            Write(Parameters.Length);
 
             foreach (var p in sorted)
                 Write(p.Name);

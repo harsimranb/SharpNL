@@ -298,7 +298,7 @@ namespace SharpNL.ML.Perceptron {
             outcomeList = di.GetOutcomeList();
             predLabels = di.GetPredLabels();
 
-            pMap = new IndexHashTable<string>(predLabels, 0.7d);
+            pMap = new IndexHashTable<string>(predLabels);
 
             // Incorporation indexed data for training...
 

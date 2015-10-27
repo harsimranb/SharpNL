@@ -40,7 +40,7 @@ namespace SharpNL.ML.Model {
         #region + Constructors .
 
         private AbstractModel(string[] predLabels, string[] outcomeNames) {
-            map = new IndexHashTable<string>(predLabels, 0.7d);
+            map = new IndexHashTable<string>(predLabels);
 
             this.outcomeNames = outcomeNames;
         }

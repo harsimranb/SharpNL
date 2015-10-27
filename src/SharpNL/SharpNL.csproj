@@ -98,6 +98,7 @@
     <Compile Include="ML\MaxEntropy\QuasiNewton\QNMinimizerUpdateInfo.cs" />
     <Compile Include="ML\MaxEntropy\QuasiNewton\QuadraticFunction.cs" />
     <Compile Include="ML\MaxEntropy\QuasiNewton\RosenbrockFunction.cs" />
+    <Compile Include="ML\Model\IndexHashTable.cs" />
     <Compile Include="NameFind\Entity.cs" />
     <Compile Include="NameFind\IEntity.cs" />
     <Compile Include="NameFind\NameFinderAnalyzer.cs" />
@@ -313,7 +314,6 @@
     <Compile Include="ML\Model\IDataWriter.cs" />
     <Compile Include="ML\Model\IEventTrainer.cs" />
     <Compile Include="ML\Model\IMaxentModel.cs" />
-    <Compile Include="ML\Model\IndexHashTable.cs" />
     <Compile Include="ML\Model\IPrior.cs" />
     <Compile Include="ML\Model\ISequenceClassificationModel.cs" />
     <Compile Include="ML\Model\ISequenceStream.cs" />

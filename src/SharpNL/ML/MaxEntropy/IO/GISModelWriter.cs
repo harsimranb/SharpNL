@@ -29,11 +29,11 @@ namespace SharpNL.ML.MaxEntropy.IO {
     /// Generalized Iterative Scaling model writer.
     /// </summary>
     public abstract class GISModelWriter : AbstractModelWriter {
-        protected int CORRECTION_CONSTANT;
-        protected double CORRECTION_PARAM;
-        protected string[] OUTCOME_LABELS;
-        protected Context[] PARAMS;
-        protected string[] PRED_LABELS;
+        protected int CorrectionConstant;
+        protected double CorrectionParam;
+        protected string[] OutcomeLabels;
+        protected Context[] Parameters;
+        protected string[] PredLabels;
 
         /// <para>
         ///   <c>index 0</c>: <see cref="T:Context[]"/> containing the model parameters.
@@ -46,18 +46,22 @@ namespace SharpNL.ML.MaxEntropy.IO {
         protected GISModelWriter(AbstractModel model) {
             var data = model.GetDataStructures();
 
-            PARAMS = (Context[]) data[0];
+            Parameters = (Context[]) data[0];
             var map = (IndexHashTable<string>) data[1];
-            OUTCOME_LABELS = (string[]) data[2];
-            CORRECTION_CONSTANT = (int) data[3]; // string[] ??????????
-            CORRECTION_PARAM = (Double) data[4];
+            OutcomeLabels = (string[]) data[2];
+            CorrectionConstant = (int) data[3];
+            CorrectionParam = (double) data[4];
 
-            PRED_LABELS = new String[map.Size];
-            map.ToArray(PRED_LABELS);
+            PredLabels = map.ToArray();
         }
 
         #region . CompressOutcomes .
 
+        /// <summary>
+        /// Compresses the outcomes.
+        /// </summary>
+        /// <param name="sorted">The sorted predicates.</param>
+        /// <returns>A list of compressed predicates.</returns>
         protected List<List<ComparablePredicate>> CompressOutcomes(ComparablePredicate[] sorted) {
             var cp = sorted[0];
             var outcomePatterns = new List<List<ComparablePredicate>>();
@@ -78,21 +82,24 @@ namespace SharpNL.ML.MaxEntropy.IO {
         #endregion
 
 
+        /// <summary>
+        /// Persists this instance.
+        /// </summary>
         public override void Persist() {
             // the type of model (GIS)
             Write("GIS");
 
             // the value of the correction constant
-            Write(CORRECTION_CONSTANT);
+            Write(CorrectionConstant);
 
             // the value of the correction constant
-            Write(CORRECTION_PARAM);
+            Write(CorrectionParam);
 
             // the mapping from outcomes to their integer indexes
-            Write(OUTCOME_LABELS.Length);
+            Write(OutcomeLabels.Length);
 
-            for (var i = 0; i < OUTCOME_LABELS.Length; i++)
-                Write(OUTCOME_LABELS[i]);
+            foreach (var label in OutcomeLabels)
+                Write(label);
 
             // the mapping from predicates to the outcomes they contributed to.
             // The sorting is done so that we actually can write this out more
@@ -102,21 +109,19 @@ namespace SharpNL.ML.MaxEntropy.IO {
 
             Write(compressed.Count);
 
-            for (var i = 0; i < compressed.Count; i++) {
-                var a = compressed[i];
+            foreach (var a in compressed) 
                 Write(a.Count + a[0].ToString());
-            }
 
             // the mapping from predicate names to their integer indexes
-            Write(PARAMS.Length);
+            Write(Parameters.Length);
 
-            for (var i = 0; i < sorted.Length; i++)
-                Write(sorted[i].Name);
+            foreach (var cp in sorted)
+                Write(cp.Name);
 
             // write out the parameters
-            for (var i = 0; i < sorted.Length; i++)
-                for (var j = 0; j < sorted[i].Parameters.Length; j++)
-                    Write(sorted[i].Parameters[j]);
+            foreach (var cp in sorted)
+                foreach (var p in cp.Parameters)
+                    Write(p);
 
             Close();
         }
@@ -124,12 +129,12 @@ namespace SharpNL.ML.MaxEntropy.IO {
         #region . SortValues .
 
         protected ComparablePredicate[] SortValues() {
-            var sortPreds = new ComparablePredicate[PARAMS.Length];
-            for (var pid = 0; pid < PARAMS.Length; pid++) {
+            var sortPreds = new ComparablePredicate[Parameters.Length];
+            for (var pid = 0; pid < Parameters.Length; pid++) {
                 sortPreds[pid] = new ComparablePredicate(
-                    PRED_LABELS[pid],
-                    PARAMS[pid].Outcomes,
-                    PARAMS[pid].Parameters);
+                    PredLabels[pid],
+                    Parameters[pid].Outcomes,
+                    Parameters[pid].Parameters);
             }
 
             Array.Sort(sortPreds);
