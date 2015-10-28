@@ -74,6 +74,13 @@ namespace SharpNL.DocumentCategorizer {
         int GetIndex(string category);
 
         /// <summary>
+        /// Gets the category at the given index.
+        /// </summary>
+        /// <param name="index">The index of the category.</param>
+        /// <returns>The category at the given index.</returns>
+        string GetCategory(int index);
+
+        /// <summary>
         /// Gets the number of categories.
         /// </summary>
         /// <value>The number of categories.</value>

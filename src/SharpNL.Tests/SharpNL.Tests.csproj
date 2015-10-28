@@ -175,6 +175,7 @@
     <Compile Include="Dictionary\DictionaryTest.cs" />
     <Compile Include="DocumentCategorizer\DocumentCategorizerFactoryTest.cs" />
     <Compile Include="DocumentCategorizer\DocumentCategorizerMETest.cs" />
+    <Compile Include="DocumentCategorizer\DocumentCategorizerNBTest.cs" />
     <Compile Include="DocumentCategorizer\DocumentSampleTest.cs" />
     <Compile Include="ExtensionsTest.cs" />
     <Compile Include="Extensions\ArrayExtensionTest.cs" />
@@ -205,6 +206,10 @@
     <Compile Include="ML\MaxEnt\RealValueModelTest.cs" />
     <Compile Include="ML\MaxEnt\ScaleDoesntMatterTest.cs" />
     <Compile Include="ML\Model\IndexHashTableTest.cs" />
+    <Compile Include="ML\NaiveBayes\NaiveBayesCorrectnessTest.cs" />
+    <Compile Include="ML\NaiveBayes\NaiveBayesModelReadWriteTest.cs" />
+    <Compile Include="ML\NaiveBayes\NaiveBayesPrepAttachTest.cs" />
+    <Compile Include="ML\NaiveBayes\NaiveBayesTests.cs" />
     <Compile Include="ML\Perceptron\PerceptronPrepAttachTest.cs" />
     <Compile Include="ML\PrepAttachDataUtility.cs" />
     <Compile Include="ML\TrainerFactoryTest.cs" />

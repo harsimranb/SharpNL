@@ -1,5 +1,5 @@
 ﻿//  
-//  Copyright 2014 Gustavo J Knuppe (https://github.com/knuppe)
+//  Copyright 2015 Gustavo J Knuppe (https://github.com/knuppe)
 //  
 //   Licensed under the Apache License, Version 2.0 (the "License");
 //   you may not use this file except in compliance with the License.
@@ -20,29 +20,27 @@
 //   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 //   
 
-namespace SharpNL.ML.Model {
-    /// <summary>
-    /// Enumerates the model types.
-    /// </summary>
-    public enum ModelType {
-        /// <summary>
-        /// The Maximum Entropy model type.
-        /// </summary>
-        Maxent = 1,
+using System.IO;
+using SharpNL.ML.Model;
 
+namespace SharpNL.ML.NaiveBayes {
+    public class PlainTextNaiveBayesModelReader : NaiveBayesModelReader {
         /// <summary>
-        /// The Perceptron model type.
+        /// Initializes a new instance of the <see cref="NaiveBayesModelReader"/> class.
         /// </summary>
-        Perceptron = 2,
+        /// <param name="reader">The data reader.</param>
+        public PlainTextNaiveBayesModelReader(IDataReader reader) : base(reader) {
 
-        /// <summary>
-        /// The quasi-Newton maximum entropy model type.
-        /// </summary>
-        MaxentQn = 3,
 
+        }
         /// <summary>
-        /// The Naive Bayes model type.
+        /// Constructor which directly instantiates the <see cref="Stream"/> containing the model contents.
         /// </summary>
-        NaiveBayes = 4
+        /// <param name="inputStream">The input stream containing the model information.</param>
+        public PlainTextNaiveBayesModelReader(Stream inputStream)
+            : base(new PlainTextFileDataReader(inputStream)) {
+
+        }
+
     }
 }

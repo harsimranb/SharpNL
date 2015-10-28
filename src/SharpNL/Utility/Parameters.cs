@@ -124,6 +124,11 @@ namespace SharpNL.Utility {
             /// </summary>
             public const string MaxEntQn = "MAXENT_QN";
 
+            /// <summary>
+            /// The naive bayes algorithm.
+            /// </summary>
+            public const string NaiveBayes = "NAIVEBAYES";
+
         }
 
         /// <summary>
