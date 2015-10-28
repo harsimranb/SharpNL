@@ -99,6 +99,7 @@
     <Compile Include="ML\MaxEntropy\QuasiNewton\QuadraticFunction.cs" />
     <Compile Include="ML\MaxEntropy\QuasiNewton\RosenbrockFunction.cs" />
     <Compile Include="ML\Model\IndexHashTable.cs" />
+    <Compile Include="ML\Model\PlainTextFileDataWriter.cs" />
     <Compile Include="NameFind\Entity.cs" />
     <Compile Include="NameFind\IEntity.cs" />
     <Compile Include="NameFind\NameFinderAnalyzer.cs" />
