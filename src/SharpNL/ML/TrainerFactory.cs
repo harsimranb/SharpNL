@@ -25,6 +25,7 @@ using System.Collections.Generic;
 using SharpNL.ML.MaxEntropy;
 using SharpNL.ML.MaxEntropy.QuasiNewton;
 using SharpNL.ML.Model;
+using SharpNL.ML.NaiveBayes;
 using SharpNL.ML.Perceptron;
 using SharpNL.Utility;
 
@@ -40,9 +41,10 @@ namespace SharpNL.ML {
             BuiltInTrainers = new Dictionary<string, Type>();
             CustomTrainers = new Dictionary<string, Type>();
 
-            BuiltInTrainers[GIS.MaxEntropy] = typeof (GIS);
-            BuiltInTrainers[QNTrainer.MaxentQnValue] = typeof (QNTrainer);
-            BuiltInTrainers[PerceptronTrainer.PerceptronValue] = typeof (PerceptronTrainer);
+            BuiltInTrainers[Parameters.Algorithms.MaxEnt] = typeof(GIS);
+            BuiltInTrainers[Parameters.Algorithms.MaxEntQn] = typeof(QNTrainer);
+            BuiltInTrainers[Parameters.Algorithms.Perceptron] = typeof(PerceptronTrainer);
+            BuiltInTrainers[Parameters.Algorithms.NaiveBayes] = typeof (NaiveBayesTrainer);
         }
 
         private static T CreateCustomTrainer<T>(string type, Monitor monitor) {

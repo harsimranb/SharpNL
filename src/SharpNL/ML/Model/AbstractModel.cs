@@ -30,7 +30,7 @@ namespace SharpNL.ML.Model {
     /// Represents a abstract model.
     /// </summary>
     public abstract class AbstractModel : IMaxentModel {
-        protected readonly EvalParameters evalParameters;
+        protected EvalParameters evalParameters;
         protected readonly IndexHashTable<string> map;
 
         protected readonly string[] outcomeNames;

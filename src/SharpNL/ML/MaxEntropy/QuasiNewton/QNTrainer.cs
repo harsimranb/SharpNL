@@ -35,11 +35,6 @@ namespace SharpNL.ML.MaxEntropy.QuasiNewton {
         #region + Defaults .
 
         /// <summary>
-        /// The maxent qn entry value.
-        /// </summary>
-        public const string MaxentQnValue = "MAXENT_QN";
-
-        /// <summary>
         /// The default number of threads.
         /// </summary>
         public const int DefaultThreads = 1;
@@ -200,7 +195,7 @@ namespace SharpNL.ML.MaxEntropy.QuasiNewton {
             if (!base.IsValid())
                 return false;
 
-            if (!MaxentQnValue.Equals(Algorithm))
+            if (Algorithm != Parameters.Algorithms.MaxEntQn)
                 return false;
 
             // ReSharper disable once JoinDeclarationAndInitializer

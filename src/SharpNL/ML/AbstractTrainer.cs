@@ -192,7 +192,7 @@ namespace SharpNL.ML {
         /// Initializes abstract trainer using the specified train parameters.
         /// </summary>
         /// <param name="trainParameters">The train parameters.</param>
-        /// <param name="reportMapping">The report map.</param>
+        /// <param name="reportMapping">The report map. This parameter can be null.</param>
         public void Init(TrainingParameters trainParameters, Dictionary<string, string> reportMapping) {
             trainParams = trainParameters;
             reportMap = reportMapping;

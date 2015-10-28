@@ -37,8 +37,6 @@ namespace SharpNL.ML.Perceptron {
     /// </remarks>
     public class PerceptronTrainer : AbstractEventTrainer {
 
-        public const string PerceptronValue = "PERCEPTRON";
-
         /// <summary>
         /// The default tolerance of the perception trainer.
         /// </summary>

@@ -20,6 +20,8 @@
 //   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 //  
 
+using SharpNL.Utility;
+
 namespace SharpNL.ML.MaxEntropy {
     using IO;
     using Model;
@@ -28,10 +30,6 @@ namespace SharpNL.ML.MaxEntropy {
     /// A Factory class which uses instances of <see cref="GISTrainer"/> to create and train <see cref="GISModel"/>s.
     /// </summary>
     public class GIS : AbstractEventTrainer {
-        /// <summary>
-        /// The maximum entropy entry value.
-        /// </summary>
-        public const string MaxEntropy = "MAXENT";
 
         /// <summary>
         /// If we are using smoothing, this is used as the "number" of times we want the trainer to imagine that it saw a feature that it actually didn't see.
@@ -66,7 +64,7 @@ namespace SharpNL.ML.MaxEntropy {
                 return false;
             }
 
-            return Algorithm == null || Algorithm == MaxEntropy;
+            return Algorithm == null || Algorithm == Parameters.Algorithms.MaxEnt;
         }
 
         #endregion

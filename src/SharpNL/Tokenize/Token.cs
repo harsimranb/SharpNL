@@ -21,11 +21,9 @@
 //  
 
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using SharpNL.SentenceDetector;
 using SharpNL.Utility;
-using SharpNL.WordNet;
 
 namespace SharpNL.Tokenize {
     /// <summary>
@@ -215,43 +213,13 @@ namespace SharpNL.Tokenize {
         /// <value>The token start position.</value>
         public int Start { get; internal set; }
         #endregion
-
-        #region . SyntSets .
-        private List<SynSet> synSets;
-        /// <summary>
-        /// Gets the WordNet synsets list.
-        /// </summary>
-        /// <value>
-        /// The synonym ring or synset if the <see cref="DefaultTextFactory"/> provides a WordNet instance.
-        /// </value>
-        public List<SynSet> SynSets {
-            get {
-                if (synSets != null)
-                    return synSets;
-
-                if (WordNet == null)
-                    return null;
-
-                return synSets = WordNet.GetSynSets(Lexeme);
-            }
-        }
-
-        #endregion
-
+        
         #region . SyntacticTag .
         /// <summary>
         /// Gets the syntactic tag.
         /// </summary>
         /// <value>The syntactic tag.</value>
         public string SyntacticTag { get; internal set; }
-        #endregion
-
-        #region . WordNet .
-        /// <summary>
-        /// Gets or sets the WordNet instance.
-        /// </summary>
-        /// <value>The WordNet instance.</value>
-        internal WordNet.WordNet WordNet { get; set; }
         #endregion
 
         #endregion

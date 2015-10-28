@@ -21,7 +21,6 @@
 > - Some file formats were revamped/improved (Ad and Penn Treebank).
 > - The deprecated methods from OpenNLP were not ported!
 > - English inflection tools.
-> - WordNet 3.0 integration.
 
 ## Goals
 
@@ -31,13 +30,9 @@
 
 ## TODO
 
-> - Ensure that the library is compatible with Mono.
+> - Improve the documentation and add more examples.
 
-> [How to contribute](contributing.md)
-
-## WIP/Planned
-> - [Vector Classifier](https://en.wikipedia.org/wiki/Support_vector_machine)
-> - Run a Profiler and improve the code to reduce memory and CPU utilization.
+> :heart: [How to contribute](contributing.md)
 
 ## Support
 

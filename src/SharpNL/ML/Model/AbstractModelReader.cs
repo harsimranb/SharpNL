@@ -24,35 +24,62 @@ using SharpNL.Utility;
 using StringTokenizer = SharpNL.Utility.Java.StringTokenizer;
 
 namespace SharpNL.ML.Model {
+    /// <summary>
+    /// Represents a abstract model reader.
+    /// </summary>
     public abstract class AbstractModelReader : Disposable {
         protected readonly IDataReader reader;
         protected int NUM_PREDS;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AbstractModelReader"/> class.
+        /// </summary>
+        /// <param name="reader">The data reader.</param>
         protected AbstractModelReader(IDataReader reader) {
             this.reader = reader;
         }
 
+        /// <summary>
+        /// Reads a <see cref="int"/> value.
+        /// </summary>
         protected int ReadInt() {
             return reader.ReadInt();
         }
 
+        /// <summary>
+        /// Reads a <see cref="double"/> value.
+        /// </summary>
         protected double ReadDouble() {
             return reader.ReadDouble();
         }
 
+        /// <summary>
+        /// Reads a string value.
+        /// </summary>
         protected string ReadString() {
             return reader.ReadString();
         }
 
+        /// <summary>
+        /// Gets the deserialized model.
+        /// </summary>
+        /// <returns>A deserialized model.</returns>
         public AbstractModel GetModel() {
             CheckModelType();
             return ConstructModel();
         }
 
+        /// <summary>
+        /// Checks the type of the model.
+        /// </summary>
         protected abstract void CheckModelType();
 
         internal abstract AbstractModel ConstructModel();
 
+        /// <summary>
+        /// Gets the outcomes.
+        /// </summary>
+        /// <returns>System.String[].</returns>
         protected string[] GetOutcomes() {
             var numOutcomes = ReadInt();
             var outcomeLabels = new string[numOutcomes];
@@ -63,6 +90,10 @@ namespace SharpNL.ML.Model {
             return outcomeLabels;
         }
 
+        /// <summary>
+        /// Gets the outcome patterns.
+        /// </summary>
+        /// <returns>System.Int32[][].</returns>
         protected int[][] GetOutcomePatterns() {
             var numOCTypes = ReadInt();
             var outcomePatterns = new int[numOCTypes][];
@@ -77,6 +108,10 @@ namespace SharpNL.ML.Model {
             return outcomePatterns;
         }
 
+        /// <summary>
+        /// Gets the predicates.
+        /// </summary>
+        /// <returns>System.String[].</returns>
         protected string[] GetPredicates() {
             NUM_PREDS = ReadInt();
             var predLabels = new string[NUM_PREDS];

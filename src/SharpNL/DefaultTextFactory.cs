@@ -39,32 +39,12 @@ namespace SharpNL {
 
         #region + Properties .
 
-        #region . DefaultWordNet .
-        /// <summary>
-        /// Gets or sets the default WordNet instance.
-        /// </summary>
-        /// <value>The default WordNet instance. The default value is <c>null</c>.</value>
-        public static WordNet.WordNet DefaultWordNet { get; set; }
-        #endregion
-
         #region . Instance .
         /// <summary>
         /// Gets the <see cref="DefaultTextFactory"/> instance.
         /// </summary>
         /// <value>The <see cref="DefaultTextFactory"/> instance.</value>
         public static DefaultTextFactory Instance { get; private set; }
-        #endregion
-
-        #region . WordNet .
-        /// <summary>
-        /// Gets the WordNet instance.
-        /// </summary>
-        /// <returns>Always return the value of the <see cref="DefaultWordNet"/> property.</returns>
-        public WordNet.WordNet WordNet {
-            get {
-                return DefaultWordNet;
-            }
-        }
         #endregion
 
         #endregion
@@ -210,9 +190,7 @@ namespace SharpNL {
         /// <param name="lexeme">The lexeme.</param>
         /// <returns>The created <see cref="IToken" /> object.</returns>
         public Token CreateToken(Sentence sentence, Span span, string lexeme) {
-            return new Token(sentence, span, lexeme) {
-                WordNet = WordNet
-            };
+            return new Token(sentence, span, lexeme);
         }
 
         IToken ITextFactory.CreateToken(ISentence sentence, Span span, string lexeme) {

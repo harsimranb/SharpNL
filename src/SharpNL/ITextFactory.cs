@@ -96,15 +96,5 @@ namespace SharpNL {
         IToken CreateToken(ISentence sentence, Span span, string lexeme);
         #endregion
 
-        #region . WordNet .
-
-        /// <summary>
-        /// Gets the WordNet instance.
-        /// </summary>
-        /// <returns>A WordNet instance or a <c>null</c> value if the WordNet is not necessary.</returns>
-        WordNet.WordNet WordNet { get; }
-
-        #endregion
-
     }
 }

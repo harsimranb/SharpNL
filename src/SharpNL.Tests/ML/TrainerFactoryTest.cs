@@ -49,7 +49,7 @@ namespace SharpNL.Tests.ML {
         [TestFixtureSetUp]
         public void Setup() {
             mlParams = new TrainingParameters();
-            mlParams.Set(Parameters.Algorithm, GIS.MaxEntropy);
+            mlParams.Set(Parameters.Algorithm, Parameters.Algorithms.MaxEnt);
             mlParams.Set(Parameters.Iterations, "10");
             mlParams.Set(Parameters.Cutoff, "5");
 
