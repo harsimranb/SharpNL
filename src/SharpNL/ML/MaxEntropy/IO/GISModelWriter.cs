@@ -20,8 +20,8 @@
 //   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 //  
 
-using System;
 using System.Collections.Generic;
+using SharpNL.Extensions;
 using SharpNL.ML.Model;
 
 namespace SharpNL.ML.MaxEntropy.IO {
@@ -137,10 +137,25 @@ namespace SharpNL.ML.MaxEntropy.IO {
                     Parameters[pid].Parameters);
             }
 
-            Array.Sort(sortPreds);
+            //
+            // Knuppe 2015-10-28:
+            // - We can not use the Array.Sort because it uses QuickSort algorithm in the older versions of the .net framework.
+            // - To get everything working as the java version I had to implement the MergeSort algorithm in order to keep the
+            // - same sort behavior.
+            //
+            // Array.Sort(sortPreds); works on .net45 or newer
+            //
+            // References:
+            // https://msdn.microsoft.com/en-us/library/system.array.sort(v=vs.110).aspx
+            // http://docs.oracle.com/javase/7/docs/api/java/util/Arrays.html#sort(T[],%20java.util.Comparator)
+            //
+            
+            sortPreds.MergeSort();
+
             return sortPreds;
         }
 
         #endregion
+
     }
 }
