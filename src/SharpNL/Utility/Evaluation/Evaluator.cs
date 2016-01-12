@@ -41,6 +41,7 @@ namespace SharpNL.Utility.Evaluation {
             this.listeners = listeners == null ? 
                 new List<IEvaluationMonitor<T>>().AsReadOnly():
                 new List<IEvaluationMonitor<T>>(listeners).AsReadOnly();
+            this.FMeasure = new FMeasure<F>();
         }
 
         #region . FMeasure .
