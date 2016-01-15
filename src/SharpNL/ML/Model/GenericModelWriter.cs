@@ -23,6 +23,7 @@
 using System;
 using System.IO;
 using SharpNL.ML.MaxEntropy.IO;
+using SharpNL.ML.NaiveBayes;
 using SharpNL.ML.Perceptron.IO;
 
 namespace SharpNL.ML.Model {
@@ -53,6 +54,9 @@ namespace SharpNL.ML.Model {
                     break;
                 case ModelType.Perceptron:
                     writer = new BinaryPerceptronModelWriter(model, outputStream);
+                    break;
+                case ModelType.NaiveBayes:
+                    writer = new BinaryNaiveBayesModelWriter(model, outputStream);
                     break;
                 default:
                     throw new InvalidOperationException("Invalid model type");
