@@ -23,7 +23,12 @@
 using System;
 using System.ComponentModel;
 using System.IO;
+
+#if ZIPLIB
+using ICSharpCode.SharpZipLib.Zip;
+#else
 using System.IO.Compression;
+#endif
 using SharpNL.Chunker;
 using SharpNL.DocumentCategorizer;
 using SharpNL.NameFind;
@@ -66,6 +71,21 @@ namespace SharpNL.Utility.Model {
 
             try {
 
+                #if ZIPLIB
+                using (var zip = new ZipInputStream(fileInfo.OpenRead())) {
+                    ZipEntry entry;
+                    while ((entry = zip.GetNextEntry()) != null) {
+                        if (entry.Name == ArtifactProvider.ManifestEntry) {
+                            Manifest = (Properties)Properties.Deserialize(new UnclosableStream(zip));
+                            zip.CloseEntry();
+                            break;
+                        }
+                        zip.CloseEntry();
+                    }
+
+                    zip.Flush();
+                }
+                #else
                 using (var zip = new ZipArchive(fileInfo.OpenRead(), ZipArchiveMode.Read)) {
                     foreach (var entry in zip.Entries) {
                         if (entry.Name != ArtifactProvider.ManifestEntry) 
@@ -77,6 +97,7 @@ namespace SharpNL.Utility.Model {
                         }
                     }
                 }
+                #endif
             } catch (Exception ex) {
                 throw new InvalidFormatException("Unable to load the specified model file.", ex);
             }

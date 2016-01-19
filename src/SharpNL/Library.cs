@@ -21,6 +21,7 @@
 //  
 
 using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
@@ -214,6 +215,10 @@ namespace SharpNL {
                                 if (type != null)
                                     knownTypes.Add(type);
                             }
+                        } catch (FileNotFoundException) {
+                            // Knuppe 2016-01-15: 
+                            // Some libraries on Linux are loaded dynamically, for them the GetTypes function 
+                            // rises a FileNotFoundException (at this point we dont't care about these libraries);
                         }
                     }
                 }

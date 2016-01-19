@@ -23,7 +23,13 @@
 using System;
 using System.Globalization;
 using System.IO;
+
+#if LINUX
+using ICSharpCode.SharpZipLib.GZip;
+#else
 using System.IO.Compression;
+#endif
+
 using SharpNL.ML.Model;
 
 namespace SharpNL.ML.Perceptron.IO {
@@ -41,9 +47,16 @@ namespace SharpNL.ML.Perceptron.IO {
         /// <param name="model">The PerceptronModel which is to be persisted.</param>
         /// <param name="fileName">The filename in which the model is to be persisted.</param>
         public PlainTextPerceptronModelWriter(AbstractModel model, string fileName) : base(model) {
+
+            #if LINUX
+            writer = fileName.EndsWith(".gz") 
+                ? new StreamWriter(new GZipOutputStream(new FileStream(fileName, FileMode.Create))) 
+                : new StreamWriter(new FileStream(fileName, FileMode.Create));
+            #else
             writer = fileName.EndsWith(".gz") 
                 ? new StreamWriter(new GZipStream(new FileStream(fileName, FileMode.Create), CompressionMode.Compress)) 
                 : new StreamWriter(new FileStream(fileName, FileMode.Create));
+            #endif
         }
 
         /// <summary>

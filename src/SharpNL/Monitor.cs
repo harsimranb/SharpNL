@@ -165,7 +165,8 @@ namespace SharpNL {
         public void Cancel() {
             cancelSource.Cancel();
             try {
-                task.Wait(Token);
+                if (task != null) 
+                    task.Wait(Token);
             } catch (OperationCanceledException) {
                 IsCanceled = true;
                 IsRunning = false;
@@ -192,32 +193,35 @@ namespace SharpNL {
         /// </summary>
         /// <param name="taskAction">The task action.</param>
         internal void Execute(Action<CancellationToken> taskAction) {
-            IsRunning = true;
-
-            task = Task.Factory.StartNew(() => {
-                try {
-                    taskAction(cancelSource.Token);
-                } catch (OperationCanceledException) {
-                    IsCanceled = true;
-                } catch (AggregateException ae) {
-                    ae.Handle(ex => {
-                        if (ex is TaskCanceledException) {
-                            IsCanceled = true;
-                            return true;
-                        }
+            task = Task.Run(() => {
+                    try {
+                        IsRunning = true;
+                        taskAction(cancelSource.Token);
+                    }
+                    catch (OperationCanceledException) {
+                        IsCanceled = true;
+                    }
+                    catch (AggregateException ae) {
+                        ae.Handle(ex => {
+                                if (ex is TaskCanceledException) {
+                                    IsCanceled = true;
+                                    return true;
+                                }
+                                OnException(ex);
+                                return true;
+                            });
+                    }
+                    catch (Exception ex) {
                         OnException(ex);
-                        return true;
-                    });
-                } catch (Exception ex) {
-                    OnException(ex);
-                } finally {
-                    IsRunning = false;
-                    task = null;
+                    }
+                    finally {
+                        IsRunning = false;
+                        task = null;
 
-                    if (Complete != null)
-                        Complete(this, EventArgs.Empty);
-                }
-            }, cancelSource.Token);
+                        if (Complete != null)
+                            Complete(this, EventArgs.Empty);
+                    }
+                }, cancelSource.Token);
         }
 
         #endregion
