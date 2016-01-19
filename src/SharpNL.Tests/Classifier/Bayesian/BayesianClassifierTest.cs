@@ -64,8 +64,9 @@ namespace SharpNL.Tests.Classifier.Bayesian {
 
             var r = classifier.GetBestResult("1");
 
-            Assert.NotNull(r);
-            Assert.AreEqual("num", r.Class.Name);
+            Assert.That(r, Is.Not.Null);
+
+            Assert.That(r.Class.Name, Is.EqualTo("num"));
 
             r = classifier.GetBestResult("c");
             

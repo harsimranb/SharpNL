@@ -85,9 +85,11 @@ namespace SharpNL.Tests.POSTag {
             Assert.AreEqual(string.Empty, sample.Sentence[1]);
         }
 
-        [Test, ExpectedException(typeof (InvalidFormatException))]
+        [Test]
         public void TestParseWithError() {
-            POSSample.Parse("the_DT stories");
+			Assert.Throws<InvalidFormatException> (() => {
+				POSSample.Parse ("the_DT stories");
+			});
         }
     }
 }

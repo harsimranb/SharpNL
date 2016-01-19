@@ -91,45 +91,55 @@ namespace SharpNL.Tests.NameFind {
             }
         }
 
-        [Test, ExpectedException(typeof(InvalidOperationException))]
+        [Test]
         public void TestWithoutNameTypeAndInvalidData1() {
-            var sampleStream = new NameSampleStream(new GenericObjectStream<string>(
-                "<START> <START> Name <END>"));
+			Assert.Throws<InvalidOperationException> (() => {
+				var sampleStream = new NameSampleStream (new GenericObjectStream<string> (
+					                           "<START> <START> Name <END>"));
 
-            sampleStream.Read();
+				sampleStream.Read ();
+			});
         }
 
-        [Test, ExpectedException(typeof(InvalidOperationException))]
+        [Test]
         public void TestWithoutNameTypeAndInvalidData2() {
-            var sampleStream = new NameSampleStream(new GenericObjectStream<string>(
-                "<START> Name <END> <END>"));
+			Assert.Throws<InvalidOperationException> (() => {
+				var sampleStream = new NameSampleStream (new GenericObjectStream<string> (
+					                           "<START> Name <END> <END>"));
 
-            sampleStream.Read();
+				sampleStream.Read ();
+			});
         }
 
 
-        [Test, ExpectedException(typeof(InvalidOperationException))]
+        [Test]
         public void TestWithoutNameTypeAndInvalidData3() {
-            var sampleStream = new NameSampleStream(new GenericObjectStream<string>(
-                "<START> <START> Person <END> Street <END>"));
+			Assert.Throws<InvalidOperationException> (() => {
+				var sampleStream = new NameSampleStream (new GenericObjectStream<string> (
+					                           "<START> <START> Person <END> Street <END>"));
 
-            sampleStream.Read();
+				sampleStream.Read ();
+			});
         }
 
-        [Test, ExpectedException(typeof(InvalidOperationException))]
+        [Test]
         public void TestWithNameTypeAndInvalidData1() {
-            var sampleStream = new NameSampleStream(new GenericObjectStream<string>(
-                "<START:> Name <END>"));
+			Assert.Throws<InvalidOperationException> (() => {
+				var sampleStream = new NameSampleStream (new GenericObjectStream<string> (
+					                           "<START:> Name <END>"));
 
-            sampleStream.Read();
+				sampleStream.Read ();
+			});
         }
 
-        [Test, ExpectedException(typeof(InvalidOperationException))]
+        [Test]
         public void TestWithNameTypeAndInvalidData2() {
-            var sampleStream = new NameSampleStream(new GenericObjectStream<string>(
-                "<START:street> <START:person> Name <END> <END>"));
+			Assert.Throws<InvalidOperationException> (() => {
+				var sampleStream = new NameSampleStream (new GenericObjectStream<string> (
+					                           "<START:street> <START:person> Name <END> <END>"));
 
-            sampleStream.Read();
+				sampleStream.Read ();
+			});
         }
 
         [Test]

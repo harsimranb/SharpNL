@@ -67,7 +67,7 @@ The announcement did little to quiet the protests in some cities. Many protester
                 }
             }
 
-            Assert.IsNotNullOrEmpty(text);
+			Assert.That(text, Is.Not.Null.Or.Empty);
             Assert.AreEqual("Amid complaints about the economy, protesters say they are incensed because Brazilian investigators are unraveling a huge money-laundering and bribery case centered around Petrobras, the country's national oil company.", text);
         }
 

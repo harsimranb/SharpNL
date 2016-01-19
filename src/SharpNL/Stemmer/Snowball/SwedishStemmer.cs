@@ -53,6 +53,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // This file was generated automatically by the Snowball to OpenNLP and
 // ported to SharpNL
 
+// Knuppe: I don't care about this ugly generated code...
+#pragma warning disable 0162,0164,0429
+
 namespace SharpNL.Stemmer.Snowball {
     public class SwedishStemmer : SnowballStemmer {
 
@@ -402,3 +405,5 @@ namespace SharpNL.Stemmer.Snowball {
         }
     }
 }
+
+#pragma warning restore 0162,0164,0429

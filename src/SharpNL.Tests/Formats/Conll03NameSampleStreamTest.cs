@@ -65,18 +65,22 @@ namespace SharpNL.Tests.Formats {
             Assert.Null(sampleStream.Read());
         }
 
-        [Test, ExpectedException(typeof(InvalidFormatException))]
+        [Test]
         public void TestParsingEnglishSampleWithGermanAsLanguage() {
-            var sampleStream = OpenData(CoNLL03NameSampleStream.Language.De, ENGLISH_SAMPLE);
+			Assert.Throws<InvalidFormatException> (() => {
+				var sampleStream = OpenData (CoNLL03NameSampleStream.Language.De, ENGLISH_SAMPLE);
 
-            sampleStream.Read();
+				sampleStream.Read ();
+			});
         }
 
-        [Test, ExpectedException(typeof(InvalidFormatException))]
+        [Test]
         public void TestParsingGermanSampleWithEnglishAsLanguage() {
-            var sampleStream = OpenData(CoNLL03NameSampleStream.Language.En, GERMAN_SAMPLE);
+			Assert.Throws<InvalidFormatException> (() => {
+				var sampleStream = OpenData (CoNLL03NameSampleStream.Language.En, GERMAN_SAMPLE);
 
-            sampleStream.Read();
+				sampleStream.Read ();
+			});
         }
 
         [Test]
