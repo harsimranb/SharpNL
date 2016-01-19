@@ -254,7 +254,7 @@ namespace SharpNL.DocumentCategorizer {
         /// <returns>A dictionary of categories with the score.</returns>
         public SortedDictionary<double, List<string>> SortedScoreMap(string text) {
             var descendingMap = new SortedDictionary<double, List<string>>(
-                Comparer<double>.Create((x, y) => y.CompareTo(x))
+                Comparer<double>.Create((x, y) => x.CompareTo(y))
             );
 
             var categorize = Categorize(text);

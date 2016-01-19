@@ -22,6 +22,7 @@
 
 using System.Linq;
 using NUnit.Framework;
+using SharpNL.Tokenize;
 using SharpNL.DocumentCategorizer;
 using SharpNL.Utility;
 
@@ -42,10 +43,11 @@ namespace SharpNL.Tests.DocumentCategorizer {
             var param = new TrainingParameters();
             param.Set(Parameters.Iterations, "100");
             param.Set(Parameters.Cutoff, "0");
+            param.Set(Parameters.Algorithm, Parameters.Algorithms.NaiveBayes);
 
-            var model = DocumentCategorizerNB.Train("x-unspecified", samples, param, new BagOfWordsFeatureGenerator());
+            var model = DocumentCategorizerME.Train("x-unspecified", samples, param, new DocumentCategorizerFactory(WhitespaceTokenizer.Instance, new [] { new BagOfWordsFeatureGenerator() }));
 
-            var doccat = new DocumentCategorizerNB(model);
+            var doccat = new DocumentCategorizerME(model);
 
             var aProbs = doccat.Categorize("a");
 

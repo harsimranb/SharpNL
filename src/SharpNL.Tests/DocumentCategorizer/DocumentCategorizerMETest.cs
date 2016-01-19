@@ -59,8 +59,10 @@ namespace SharpNL.Tests.DocumentCategorizer {
             //test to make sure sorted map's last key is cat 1 because it has the highest score.
             var sortedScoreMap = doccat.SortedScoreMap("a");
 
+            // first 0
+            // second 1 (last)
             foreach (var pair in sortedScoreMap) {
-                Assert.AreEqual("1", pair.Value[0]);
+                Assert.AreEqual("0", pair.Value[0]);
                 break;   
             }
         }
