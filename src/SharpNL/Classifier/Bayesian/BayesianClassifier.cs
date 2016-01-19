@@ -77,7 +77,7 @@ namespace SharpNL.Classifier.Bayesian {
         /// <exception cref="System.ArgumentNullException">
         /// <paramref name="features"/>
         /// </exception>
-        public void TeachMatch(params F[] features) {
+        public void TeachMatch(F[] features) {
             TeachMatch(BayesianSettings.DefaultClass, features);
         }
 
@@ -91,7 +91,7 @@ namespace SharpNL.Classifier.Bayesian {
         /// or
         /// <paramref name="features"/>
         /// </exception>
-        public void TeachMatch(string className, params F[] features) {
+        public void TeachMatch(string className, F[] features) {
             if (string.IsNullOrEmpty(className))
                 throw new ArgumentNullException("className");
 
@@ -116,7 +116,7 @@ namespace SharpNL.Classifier.Bayesian {
         /// <exception cref="System.ArgumentNullException">
         /// <paramref name="features"/>
         /// </exception>
-        public void TeachNonMatch(params F[] features) {
+        public void TeachNonMatch(F[] features) {
             TeachNonMatch(BayesianSettings.DefaultClass, features);
         }
 
@@ -130,7 +130,7 @@ namespace SharpNL.Classifier.Bayesian {
         /// or
         /// <paramref name="features"/>
         /// </exception>
-        public void TeachNonMatch(string className, params F[] features) {
+        public void TeachNonMatch(string className, F[] features) {
             if (string.IsNullOrEmpty(className))
                 throw new ArgumentNullException("className");
 
