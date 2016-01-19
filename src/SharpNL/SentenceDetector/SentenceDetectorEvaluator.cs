@@ -46,7 +46,6 @@ namespace SharpNL.SentenceDetector {
             params IEvaluationMonitor<SentenceSample>[] listeners) : base(listeners) {
 
             this.sentenceDetector = sentenceDetector;
-            FMeasure = new FMeasure<Span>();
         }
         #endregion
 
