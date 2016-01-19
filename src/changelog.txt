@@ -44,3 +44,9 @@ Release 1.2.3 (2015-07-26) Knuppe
  * SharpZipLib removed from the library, now we are using the .net native support.
  * Fixed several potential bugs (45+) reported by the Coverity tool.
  * Removed unnecessary debug information during the training process.
+
+2016-01-19 Knuppe
+ * Now the library is running with Mono on Linux.
+ * The tests are compatible with nunit 3.0 (preparing for future update).
+ * SharpZipLib was added again in order to make the library compatible with linux/mono.
+
