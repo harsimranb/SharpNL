@@ -28,17 +28,6 @@ namespace SharpNL.Tests.ML.NaiveBayes {
     [TestFixture]
     public class NaiveBayesCorrectnessTest {
 
-        [TestFixtureSetUp]
-        public void Setup() {
-            // Naive Bayes should always be run with smoothing, taken out here for mathematical verification
-            NaiveBayesModel.Smoothed = false;
-        }
-
-        [TestFixtureTearDown]
-        public void TearDown() {
-            // Turning smoothing back on to avoid interfering with other tests
-            NaiveBayesModel.Smoothed = true; 
-        }
 
         [Test]
         public void TestNaiveBayes1() {
@@ -47,7 +36,8 @@ namespace SharpNL.Tests.ML.NaiveBayes {
             var context = new[] {"bow=united", "bow=nations"};
             var e = new Event(label, context);
 
-            NaiveBayesTests.TestModel(model, e, 1.0);
+            //NaiveBayesTests.TestModel(model, e, 1.0);                 // Expected value without smoothing
+            NaiveBayesTests.TestModel(model, e, 0.9681650180264167);    // Expected value with smoothing
         }
 
         [Test]
@@ -57,7 +47,8 @@ namespace SharpNL.Tests.ML.NaiveBayes {
             var context = new[] { "bow=manchester", "bow=united" };
             var e = new Event(label, context);
 
-            NaiveBayesTests.TestModel(model, e, 1.0);
+            // NaiveBayesTests.TestModel(model, e, 1.0);                // Expected value without smoothing
+            NaiveBayesTests.TestModel(model, e, 0.9658833555831029);    // Expected value with smoothing
         }
 
         [Test]
@@ -67,7 +58,8 @@ namespace SharpNL.Tests.ML.NaiveBayes {
             var context = new[] { "bow=united" };
             var e = new Event(label, context);
 
-            NaiveBayesTests.TestModel(model, e, 2.0 / 3.0);
+            // NaiveBayesTests.TestModel(model, e, 2.0 / 3.0);          // Expected value without smoothing
+            NaiveBayesTests.TestModel(model, e, 0.6655036407766989);    // Expected value with smoothing
         }
 
         [Test]

@@ -67,14 +67,18 @@ namespace SharpNL.Tests.ML {
             Assert.True(TrainerFactory.IsValid(mlParams));
         }
 
-        [Test, ExpectedException(typeof(ArgumentException))]
+        [Test]
         public void testCustomTrainer2() {
-            TrainerFactory.RegisterTrainer("Dummy", typeof(DummyTrainer));
+			Assert.Throws<ArgumentException> (() => {
+				TrainerFactory.RegisterTrainer ("Dummy", typeof(DummyTrainer));
+			});
         }
 
-        [Test, ExpectedException(typeof(InvalidOperationException))]
+        [Test]
         public void testCustomTrainer3() {
-            TrainerFactory.RegisterTrainer("Nothing", typeof(object));
+			Assert.Throws<InvalidOperationException> (() => {
+				TrainerFactory.RegisterTrainer ("Nothing", typeof(object));
+			});
         }
 
         [Test]

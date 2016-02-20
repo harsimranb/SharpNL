@@ -183,9 +183,11 @@ namespace SharpNL.Tests.NameFind {
         /// <summary>
         /// Test if it fails to parse empty type
         /// </summary>
-        [Test, ExpectedException(typeof (InvalidOperationException))]
+        [Test]
         public void TestMissingType() {
-            NameSample.Parse("<START:> token <END>", false);
+			Assert.Throws<InvalidOperationException> (() => {
+				NameSample.Parse ("<START:> token <END>", false);
+			});
         }
 
         #endregion
@@ -195,9 +197,11 @@ namespace SharpNL.Tests.NameFind {
         /// <summary>
         /// Test if it fails to parse type with space
         /// </summary>
-        [Test, ExpectedException(typeof (InvalidOperationException))]
+        [Test]
         public void TestTypeWithSpace() {
-            NameSample.Parse("<START:abc a> token <END>", false);
+			Assert.Throws<InvalidOperationException> (() => {
+				NameSample.Parse ("<START:abc a> token <END>", false);
+			});
         }
 
         #endregion
@@ -207,9 +211,11 @@ namespace SharpNL.Tests.NameFind {
         /// <summary>
         /// Test if it fails to parse type with new line
         /// </summary>
-        [Test, ExpectedException(typeof (InvalidOperationException))]
+        [Test]
         public void TestTypeWithNewLine() {
-            NameSample.Parse("<START:abc\na> token <END>", false);
+			Assert.Throws<InvalidOperationException> (() => {
+				NameSample.Parse ("<START:abc\na> token <END>", false);
+			});
         }
 
         #endregion
@@ -219,9 +225,11 @@ namespace SharpNL.Tests.NameFind {
         /// <summary>
         /// Test if it fails to parse type with new line
         /// </summary>
-        [Test, ExpectedException(typeof (InvalidOperationException))]
+        [Test]
         public void TestTypeWithInvalidChar1() {
-            NameSample.Parse("<START:abc:a> token <END>", false);
+			Assert.Throws<InvalidOperationException> (() => {
+				NameSample.Parse ("<START:abc:a> token <END>", false);
+			});
         }
 
         #endregion
@@ -231,9 +239,11 @@ namespace SharpNL.Tests.NameFind {
         /// <summary>
         /// Test if it fails to parse type with new line
         /// </summary>
-        [Test, ExpectedException(typeof (InvalidOperationException))]
+        [Test]
         public void TestTypeWithInvalidChar2() {
-            NameSample.Parse("<START:abc>a> token <END>", false);
+			Assert.Throws<InvalidOperationException> (() => {
+				NameSample.Parse ("<START:abc>a> token <END>", false);
+			});
         }
 
         #endregion

@@ -43,10 +43,10 @@ namespace SharpNL.Tests.Utility {
         }
 
         [TestCase("1.5"), TestCase("1.5."), TestCase("a.b.c")]
-        [ExpectedException(typeof(InvalidFormatException))]
         public void TestInvalidVersion(string text) {
-            var nop = Version.Parse(text);
-            Assert.True(false);
+			Assert.Throws<InvalidFormatException> (() => {
+				Version.Parse (text);
+			});
         }
 
 

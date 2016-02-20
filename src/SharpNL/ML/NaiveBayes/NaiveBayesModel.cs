@@ -32,21 +32,6 @@ namespace SharpNL.ML.NaiveBayes {
         protected double[] outcomeTotals;
         protected long vocabulary;
 
-        #region . IsSmoothed .
-        /// <summary>
-        /// Gets or sets a value indicating whether the probabilities should be smoothed.
-        /// </summary>
-        /// <value><c>true</c> if the probabilities should be smoothed; otherwise, <c>false</c>.</value>
-        public static bool Smoothed { get; set; }
-        #endregion
-
-
-#if DEBUG
-        static NaiveBayesModel() {
-            Smoothed = true;
-        }
-#endif
-
         #region + Constructors .
 
         public NaiveBayesModel(Context[] parameters, string[] predLabels, string[] outcomeNames)
@@ -164,7 +149,7 @@ namespace SharpNL.ML.NaiveBayes {
                     var numerator = oid == i ? activeParameters[ai++]*value : 0;
                     var denominator = outcomeTotals[i];
 
-                    probabilities.AddIn(i, GetProbability(numerator, denominator, vocabulary), 1);
+                    probabilities.AddIn(i, GetProbability(numerator, denominator, vocabulary, true), 1);
                 }
             }
 
@@ -180,8 +165,8 @@ namespace SharpNL.ML.NaiveBayes {
             return prior;
         }
 
-        private static double GetProbability(double numerator, double denominator, double vocabulary) {
-            if (Smoothed)
+        private static double GetProbability(double numerator, double denominator, double vocabulary, bool isSmoothed) {
+            if (isSmoothed)
                 return GetSmoothedProbability(numerator, denominator, vocabulary);
 
             if (denominator.Equals(0d))

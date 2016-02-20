@@ -130,19 +130,25 @@ namespace SharpNL.Tests.Chunker {
             Assert.False(createPredSample().Equals(new Object()));
         }
 
-        [Test, ExpectedException(typeof (ArgumentException))]
+        [Test]
         public void testInvalidPhraseAsSpan1() {
-            ChunkSample.PhrasesAsSpanList(new string[2], new string[1], new string[1]);
+			Assert.Throws<ArgumentException>(() => {
+            	ChunkSample.PhrasesAsSpanList(new string[2], new string[1], new string[1]);
+			});
         }
 
-        [Test, ExpectedException(typeof (ArgumentException))]
+        [Test]
         public void testInvalidPhraseAsSpan2() {
-            ChunkSample.PhrasesAsSpanList(new string[1], new string[2], new string[1]);
+			Assert.Throws<ArgumentException> (() => {
+				ChunkSample.PhrasesAsSpanList (new string[1], new string[2], new string[1]);
+			});
         }
 
-        [Test, ExpectedException(typeof (ArgumentException))]
+        [Test]
         public void testInvalidPhraseAsSpan3() {
-            ChunkSample.PhrasesAsSpanList(new string[1], new string[1], new string[2]);
+			Assert.Throws<ArgumentException> (() => {
+				ChunkSample.PhrasesAsSpanList (new string[1], new string[1], new string[2]);
+			});
         }
 
         [Test]
@@ -154,11 +160,13 @@ namespace SharpNL.Tests.Chunker {
                             "[VP range_VBP ] [ADVP widely_RB ] ._.", sample.NicePrint);
         }
 
-        [Test, ExpectedException(typeof (ArgumentException))]
+        [Test]
         public void testParameterValidation() {
-            var dummy = new ChunkSample(new[] {string.Empty}, new[] {string.Empty}, new[] {string.Empty, "Nop!"});
+			Assert.Throws<ArgumentException> (() => {
+				var dummy = new ChunkSample (new[] { string.Empty }, new[] { string.Empty }, new[] { string.Empty, "Nop!" });
 
-            Assert.Null(dummy);
+				Assert.Null (dummy);
+			});
         }
 
         [Test]

@@ -23,7 +23,13 @@
 using System;
 using System.IO;
 using System.Collections.Generic;
+
+#if ZIPLIB
+using ICSharpCode.SharpZipLib.Zip;
+using SharpNL.ML.Model;
+#else
 using System.IO.Compression;
+#endif
 
 namespace SharpNL.Utility.Serialization {
 
@@ -179,27 +185,59 @@ namespace SharpNL.Utility.Serialization {
 
             var isSearchingForManifest = true;
 
-            using (var zip = new ZipArchive(inputStream, ZipArchiveMode.Read, true)) {
+            try {
 
-                foreach (var entry in zip.Entries) {
-                    if (entry.Name != ManifestEntry)
-                        continue;
+                #if ZIPLIB
+                var lazyStack = new Stack<LazyArtifact>();
+                using (var zip = new ZipInputStream(new UnclosableStream(inputStream))) {
+                    ZipEntry entry;
+                    while ((entry = zip.GetNextEntry()) != null) {
+                        if (entry.Name == ManifestEntry) {
+                            isSearchingForManifest = false;
 
-                    isSearchingForManifest = false;
+                            artifactMap[ManifestEntry] = Properties.Deserialize(new UnclosableStream(zip));
 
-                    using (var stream = entry.Open())
-                        artifactMap[ManifestEntry] = Properties.Deserialize(stream);
+                            zip.CloseEntry();
 
-                    ManifestDeserialized();
+                            ManifestDeserialized();
 
-                    CreateArtifactSerializers();
+                            CreateArtifactSerializers();
 
-                    FinishLoadingArtifacts(zip);
+                            FinishLoadingArtifacts(lazyStack, zip);
 
+                            break;
+                        }
 
-                    break;
+                        lazyStack.Push(new LazyArtifact(entry, zip));
+
+                        zip.CloseEntry();
+                    }
                 }
+                #else
+                using (var zip = new ZipArchive(inputStream, ZipArchiveMode.Read, true)) {
+                    
+                    foreach (var entry in zip.Entries) {
+                        if (entry.Name != ManifestEntry)
+                            continue;
 
+                        isSearchingForManifest = false;
+
+                        using (var stream = entry.Open())
+                            artifactMap[ManifestEntry] = Properties.Deserialize(stream);
+
+                        ManifestDeserialized();
+
+                        CreateArtifactSerializers();
+
+                        FinishLoadingArtifacts(zip);
+
+
+                        break;
+                    }
+                }
+                #endif
+            } catch (Exception ex) {
+                throw new InvalidOperationException("An error had occurred during the deserialization of the model file.", ex);
             }
 
             if (!isSearchingForManifest) 
@@ -273,19 +311,40 @@ namespace SharpNL.Utility.Serialization {
         /// <summary>
         /// Finish loading the artifacts now that it knows all serializers.
         /// </summary>
-        private void FinishLoadingArtifacts(ZipArchive zip) {
+        #if ZIPLIB
+        private void FinishLoadingArtifacts(Stack<LazyArtifact> lazyStack, ZipInputStream zip) {
+            // process the lazy artifacts
+            while (lazyStack.Count > 0) {
+                using (var lazy = lazyStack.Pop()) {
+                    LoadArtifact(lazy.Name, lazy.Data);
+                }
+            }
 
-            foreach (var entry in zip.Entries) {
-                if (entry.Name == ManifestEntry)
-                    continue;
-
-                using (var stream = entry.Open())
-                    LoadArtifact(entry.Name, stream);
-
+            // process the "normal" artifacts
+            ZipEntry entry;
+            while ((entry = zip.GetNextEntry()) != null) {
+                if (entry.Name != ManifestEntry) {
+                    LoadArtifact(entry.Name, zip);
+                }
+                zip.CloseEntry();
             }
 
             FinishedLoadingArtifacts = true;
         }
+        #else
+        private void FinishLoadingArtifacts(ZipArchive zip) {
+            foreach (var entry in zip.Entries) {
+            if (entry.Name == ManifestEntry)
+            continue;
+
+            using (var stream = entry.Open())
+            LoadArtifact(entry.Name, stream);
+
+            }
+            FinishedLoadingArtifacts = true;
+        }
+        #endif
+
         #endregion
 
         #region . LoadArtifact .
@@ -332,6 +391,30 @@ namespace SharpNL.Utility.Serialization {
             if (!outputStream.CanWrite)
                 throw new ArgumentException(@"The specified stream is not writable.", "outputStream");
 
+            #if ZIPLIB
+
+            using(var zip = new ZipOutputStream(outputStream)) {
+
+                foreach (var artifact in artifactMap) {
+
+                    var ext = Path.GetExtension(artifact.Key);
+                    if (string.IsNullOrEmpty(ext))
+                        throw new InvalidOperationException("Invalid artifact entry name.");
+
+                    if (!artifactSerializers.ContainsKey(ext))
+                        throw new InvalidOperationException("Missing serializer for " + artifact.Key);
+
+                    zip.PutNextEntry(new ZipEntry(artifact.Key));
+
+                    artifactSerializers[ext].Serialize(artifact.Value, new UnclosableStream(zip));
+
+                    zip.CloseEntry();
+                }
+                
+                zip.Flush();
+                zip.Close();
+            }
+            #else
             using (var zip = new ZipArchive(outputStream, ZipArchiveMode.Create)) {
                 foreach (var artifact in artifactMap) {
 
@@ -350,6 +433,7 @@ namespace SharpNL.Utility.Serialization {
 
                 }
             }
+            #endif
         }
 
         /// <summary>

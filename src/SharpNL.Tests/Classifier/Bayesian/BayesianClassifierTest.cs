@@ -55,17 +55,18 @@ namespace SharpNL.Tests.Classifier.Bayesian {
 
             var classifier = new BayesianClassifier<string>(0);
 
-            classifier.TeachMatch("num", "1", "2", "3", "1");
-            classifier.TeachMatch("num", "1", "2", "3");
-            classifier.TeachNonMatch("num", "a", "b", "c");
+            classifier.TeachMatch("num", new [] { "1", "2", "3", "1" });
+            classifier.TeachMatch("num", new [] { "1", "2", "3" });
+            classifier.TeachNonMatch("num", new [] { "a", "b", "c" });
 
-            classifier.TeachMatch("chr", "a", "b", "c");
-            classifier.TeachNonMatch("chr", "1", "2", "3");
+            classifier.TeachMatch("chr", new [] { "a", "b", "c" });
+            classifier.TeachNonMatch("chr", new [] { "1", "2", "3" });
 
             var r = classifier.GetBestResult("1");
 
-            Assert.NotNull(r);
-            Assert.AreEqual("num", r.Class.Name);
+            Assert.That(r, Is.Not.Null);
+
+            Assert.That(r.Class.Name, Is.EqualTo("num"));
 
             r = classifier.GetBestResult("c");
             

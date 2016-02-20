@@ -235,11 +235,13 @@ namespace SharpNL.Tests.Utility {
             Assert.AreEqual("nothing moves ?", new Span(8, 11).GetCoveredText(tokens));
         }
 
-        [Test, ExpectedException(typeof(ArgumentOutOfRangeException))]
+        [Test]
         public void TestCoveredTextUsingTokens2() {
-            var tokens = new[] {"one", "two"};
+			Assert.Throws<ArgumentOutOfRangeException> (() => {
+				var tokens = new[] { "one", "two" };
 
-            new Span(0, 3).GetCoveredText(tokens);
+				new Span (0, 3).GetCoveredText (tokens);
+			});
         }
 
         [Test]

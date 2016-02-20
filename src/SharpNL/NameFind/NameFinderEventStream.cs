@@ -13,7 +13,7 @@ namespace SharpNL.NameFind {
         private readonly ISequenceCodec<string> codec;
         private readonly INameContextGenerator contextGenerator;
         private readonly AdditionalContextFeatureGenerator additionalContextFeatureGenerator;
-        private readonly string Type;
+        // private readonly string Type;
 
         private static readonly CachedFeatureGenerator defaultGenerators;
 
@@ -41,9 +41,7 @@ namespace SharpNL.NameFind {
             this.contextGenerator.AddFeatureGenerator(new WindowFeatureGenerator(additionalContextFeatureGenerator, 8, 8));
 
             // TODO: How to make the type really do something?!
-
-            Type = type ?? "default";
-
+            // Type = type ?? "default";
 
         }
 

@@ -62,14 +62,16 @@ namespace SharpNL.Tests.Utility.FeatureGen {
             }
         }
 
-        [Test, ExpectedException(typeof(InvalidFormatException))]
+        [Test]
         public void TestCreationWithUnknownElement() {
-            using (var config = Tests.OpenFile("/opennlp/tools/util/featuregen/FeatureGeneratorConfigWithUnkownElement.xml")) {
+			Assert.Throws<InvalidFormatException> (() => {
+				using (var config = Tests.OpenFile ("/opennlp/tools/util/featuregen/FeatureGeneratorConfigWithUnkownElement.xml")) {
 
-                var never = GeneratorFactory.Create(config, null);
+					var never = GeneratorFactory.Create (config, null);
 
-                Assert.Fail("No exception :(");
-            }
+					Assert.Fail ("No exception :(");
+				}
+			});
         }
     }
 }

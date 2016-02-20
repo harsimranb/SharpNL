@@ -34,34 +34,35 @@ namespace SharpNL.Tests {
             var messages = 0;
             var warnings = 0;
             var exceptions = 0;
-            var task = new Monitor();
 
-            task.Message += (sender, args) => {
-                messages++;
-            };
-            task.Exception += (sender, args) => {
-                exceptions++;
-            };
-            task.Warning += (sender, args) => {
-                warnings++;
-            };
+            using (var task = new Monitor()) {
 
-            task.Execute(token => {
-                task.OnMessage("m1");
-                task.OnMessage("m2");
-                task.OnMessage("m3");
+                task.Message += (sender, args) => {
+                    messages++;
+                };
+                task.Exception += (sender, args) => {
+                    exceptions++;
+                };
+                task.Warning += (sender, args) => {
+                    warnings++;
+                };
 
-                Thread.Sleep(200);
+                task.Execute(token => {
+                        task.OnMessage("m1");
+                        task.OnMessage("m2");
+                        task.OnMessage("m3");
 
-                task.OnWarning("w1");
-                task.OnWarning("w2");
+                        Thread.Sleep(200);
 
-                task.OnException(new Exception());
+                        task.OnWarning("w1");
+                        task.OnWarning("w2");
 
-            });
+                        task.OnException(new Exception());
 
-            Assert.AreEqual(true, task.IsRunning);
-            task.Wait();
+                    });
+
+                task.Wait();
+            }
 
             Assert.AreEqual(3, messages);
             Assert.AreEqual(2, warnings);
@@ -70,25 +71,33 @@ namespace SharpNL.Tests {
 
         [Test]
         public void CancelTest() {
+            using (var task = new Monitor()) {
 
-            var task = new Monitor();
-            var count = 0;
-            task.Execute(token => {              
-                while (count != 100) {
-                    count++;
-                    token.ThrowIfCancellationRequested();
-                    Thread.Sleep(100);
+                var count = 0;
+
+                task.Execute(token => {              
+                
+                        while (count != 100) {
+                            count++;
+                            token.ThrowIfCancellationRequested();
+                            Thread.Sleep(100);
+                        }
+                    });
+
+                // Using mono this steps are too fast... #lol
+                while (!task.IsRunning) {
+                    Thread.Sleep(1);
                 }
-            });
 
-            Assert.True(task.IsRunning);
+                Assert.True(task.IsRunning);
 
-            task.Cancel();
+                task.Cancel();
 
-            Assert.True(task.IsCanceled);
-            Assert.False(task.IsRunning);
+                Assert.True(task.IsCanceled);
+                Assert.False(task.IsRunning);
 
-            Assert.AreNotEqual(100, count);
+                Assert.AreNotEqual(100, count);
+            };
         }
 
     }

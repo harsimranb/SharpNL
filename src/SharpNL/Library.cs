@@ -21,6 +21,7 @@
 //  
 
 using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
@@ -183,28 +184,6 @@ namespace SharpNL {
         }
         #endregion
 
-        #region . GetModelComment .
-        /// <summary>
-        /// Gets the model comment.
-        /// </summary>
-        /// <param name="info">The information.</param>
-        /// <returns>The comment.</returns>
-        internal static string GetModelComment(TrainingInfo info) {
-            var sb = new StringBuilder();
-
-            if (info != null) {
-                sb.AppendLine(info.Value);
-                sb.AppendLine();
-            }
-
-            sb.AppendFormat(
-                "This model was trained using SharpNL [ {0} ]\n" +
-                "https://github.com/knuppe/SharpNL", Version);
-
-            return sb.ToString();
-        }
-        #endregion
-
         #region . CurrentTimeMillis .
         internal static readonly DateTime Jan1st1970 = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
 
@@ -236,6 +215,10 @@ namespace SharpNL {
                                 if (type != null)
                                     knownTypes.Add(type);
                             }
+                        } catch (FileNotFoundException) {
+                            // Knuppe 2016-01-15: 
+                            // Some libraries on Linux are loaded dynamically, for them the GetTypes function 
+                            // rises a FileNotFoundException (at this point we dont't care about these libraries);
                         }
                     }
                 }
